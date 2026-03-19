@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Test</title>
+    <style>
+        body { background: #001219; color: #E9D8A6; padding: 20px; font-family: Arial; }
+        .test { border: 2px solid #E9D8A6; padding: 20px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>SIMPLE TEST PAGE</h1>
+    <div class="test">
+        <h2>If you can see this, the server is working</h2>
+        <p>Current time: <span id="time"></span></p>
+        <p>Images folder test: <img src="/images/gallery/Diver-1-768x432.png" style="width: 100px; height: 100px; border: 1px solid white;" /></p>
+    </div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleTimeString();
+        
+        // Test image loading
+        const img = new Image();
+        img.onload = () => console.log('✅ Image loaded');
+        img.onerror = () => console.log('❌ Image failed');
+        img.src = '/images/gallery/Diver-1-768x432.png';
+    </script>
+</body>
+</html>

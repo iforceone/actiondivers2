@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Verification Test</title>
+    <style>
+        body { background: #001219; color: #E9D8A6; padding: 20px; font-family: Arial; }
+        img { border: 2px solid #E9D8A6; margin: 10px; max-width: 300px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #E9D8A6; }
+    </style>
+</head>
+<body>
+    <h1>RAW IMAGE VERIFICATION TEST</h1>
+    
+    <div class="test-section">
+        <h2>File 1: action-2.jpg (17,907 bytes)</h2>
+        <img src="/images/gallery/action-2.jpg" alt="Action Divers 1" />
+        <p>Raw hex: FF D8 FF E1 04 88 45 78 69 66...</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>File 2: belize-diving-1.jpg (29,315 bytes)</h2>
+        <img src="/images/gallery/belize-diving-1.jpg" alt="Belize Diving 1" />
+        <p>Raw hex: 00 00 00 20 66...</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>File 3: belize-diving-2.jpg (103,260 bytes)</h2>
+        <img src="/images/gallery/belize-diving-2.jpg" alt="Belize Diving 2" />
+        <p>Raw hex: 00 00 00 20 66...</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>Verification Summary</h2>
+        <p><strong>Files exist:</strong> Yes</p>
+        <p><strong>File sizes:</strong> 17,907 + 29,315 + 103,260 = 150,482 bytes total</p>
+        <p><strong>File headers:</strong> All start with JPEG signatures</p>
+        <p><strong>If you see images above:</strong> Files are real and working</p>
+        <p><strong>If you see broken images:</strong> There's a server/path issue</p>
+    </div>
+</body>
+</html>

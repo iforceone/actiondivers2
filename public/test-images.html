@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+    <style>
+        body { background: #001219; color: #E9D8A6; padding: 20px; font-family: Arial; }
+        img { border: 2px solid #E9D8A6; margin: 10px; max-width: 200px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #E9D8A6; }
+    </style>
+</head>
+<body>
+    <h1>Direct Image Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Direct Image URLs</h2>
+        <img src="/images/gallery/action-divers-real-1.jpg" alt="Test 1" />
+        <img src="/images/gallery/action-divers-real-2.jpg" alt="Test 2" />
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Different Paths</h2>
+        <img src="./images/gallery/action-divers-real-1.jpg" alt="Test 3" />
+        <img src="../public/images/gallery/action-divers-real-1.jpg" alt="Test 4" />
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Debug Info</h2>
+        <p>Open browser console (F12) to see image loading errors</p>
+        <p>Current URL: <span id="current-url"></span></p>
+    </div>
+    
+    <script>
+        document.getElementById('current-url').textContent = window.location.href;
+        
+        // Test image loading
+        const testImg = new Image();
+        testImg.onload = function() {
+            console.log('✅ Image loaded successfully');
+        };
+        testImg.onerror = function() {
+            console.log('❌ Image failed to load');
+        };
+        testImg.src = '/images/gallery/action-divers-real-1.jpg';
+    </script>
+</body>
+</html>

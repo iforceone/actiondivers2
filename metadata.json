@@ -1,0 +1,8 @@
+{
+  "name": "Action Divers & Adventures - Luxury Belize Expeditions",
+  "description": "A high-end 'Quiet Luxury' digital experience for Belizean adventures, featuring a Glassmorphism aesthetic and a sophisticated AI concierge.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Image Debug</title>
+    <style>
+        body { background: #001219; color: #E9D8A6; padding: 20px; font-family: Arial; }
+        img { border: 2px solid #E9D8A6; margin: 10px; max-width: 200px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #E9D8A6; }
+        .file-info { font-size: 12px; color: #888; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>SIMPLE IMAGE DEBUG TEST</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Direct Image Path</h2>
+        <img src="/images/gallery/Diver-1-768x432.png" alt="Test 1" />
+        <div class="file-info">Path: /images/gallery/Diver-1-768x432.png</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Different Image</h2>
+        <img src="/images/gallery/BBQ-Food-225x300.jpg" alt="Test 2" />
+        <div class="file-info">Path: /images/gallery/BBQ-Food-225x300.jpg</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Check if folder exists</h2>
+        <div id="folder-check">Checking...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 4: List all files</h2>
+        <div id="file-list">Loading...</div>
+    </div>
+    
+    <script>
+        // Test 1: Check if images load
+        const img1 = new Image();
+        img1.onload = () => console.log('✅ Image 1 loaded');
+        img1.onerror = () => console.log('❌ Image 1 failed');
+        img1.src = '/images/gallery/Diver-1-768x432.png';
+        
+        const img2 = new Image();
+        img2.onload = () => console.log('✅ Image 2 loaded');
+        img2.onerror = () => console.log('❌ Image 2 failed');
+        img2.src = '/images/gallery/BBQ-Food-225x300.jpg';
+        
+        // Test 2: Check folder existence via fetch
+        fetch('/images/gallery/')
+            .then(response => response.text())
+            .then(text => {
+                document.getElementById('folder-check').textContent = 
+                    'Folder exists: ' + (text.includes('Diver-1-768x432.png') ? 'YES' : 'NO');
+            })
+            .catch(err => {
+                document.getElementById('folder-check').textContent = 'Folder check failed: ' + err.message;
+            });
+            
+        // Test 3: List files
+        fetch('/images/gallery/')
+            .then(response => response.text())
+            .then(text => {
+                document.getElementById('file-list').textContent = 
+                    'Files in folder: ' + text.length + ' characters received';
+            })
+            .catch(err => {
+                document.getElementById('file-list').textContent = 'File list failed: ' + err.message;
+            });
+    </script>
+</body>
+</html>
