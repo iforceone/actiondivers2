@@ -74,7 +74,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-lg xl:text-2xl font-bold serif text-[#E9D8A6] tracking-[0.2em] uppercase transition-opacity hover:opacity-80 whitespace-nowrap">
+            <Link to="/" className="text-lg xl:text-2xl font-bold font-extrabold tracking-tight text-[#E9D8A6] tracking-[0.2em] uppercase transition-opacity hover:opacity-80 whitespace-nowrap">
               Action Divers
             </Link>
           </div>
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
         <div className={`absolute top-0 right-0 w-[85%] max-w-[320px] h-full bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           
           <div className="flex items-center justify-between p-7 border-b border-white/5 bg-[#050f14] shrink-0">
-            <div className="text-sm font-bold serif text-[#E9D8A6] tracking-[0.3em] uppercase">Menu</div>
+            <div className="text-sm font-bold font-extrabold tracking-tight text-[#E9D8A6] tracking-[0.3em] uppercase">Menu</div>
             <button onClick={() => setIsOpen(false)} className="text-[#E9D8A6]/40 hover:text-[#E9D8A6] p-2">
               <X className="w-7 h-7" />
             </button>
@@ -216,7 +216,7 @@ const Navbar: React.FC = () => {
             <div className="p-8 border-t border-white/5 bg-[#030a0d]">
               <div className="mb-10">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/20 mb-4 font-bold">Inquiries</p>
-                <a href="tel:0115016712624" className="text-2xl serif text-[#E9D8A6] flex items-center gap-4">
+                <a href="tel:0115016712624" className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#005F73]/20 flex items-center justify-center">
                     <Phone className="w-4 h-4 text-[#E9D8A6]" />
                   </div>

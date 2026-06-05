@@ -20,8 +20,8 @@ const MainlandAdventures: React.FC = () => {
         
         <div className="relative z-10 text-center px-4 max-w-5xl">
           <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.6em] uppercase mb-6 block">Beyond the Barrier Reef</span>
-          <h1 className="text-6xl md:text-9xl serif mb-8 tracking-tight text-[#E9D8A6] leading-none">
-            Mainland <br /> <span className="italic">Expeditions</span>
+          <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#E9D8A6] leading-none">
+            Mainland <br /> <span className="text-[#48CAE4]">Expeditions</span>
           </h1>
           <p className="text-xl md:text-2xl font-light text-[#E9D8A6]/80 max-w-2xl mx-auto leading-relaxed">
             Journey into the emerald heart of Belize. Discover ancient Maya cities, sacred caves, and the untamed spirit of the rainforest.
@@ -32,7 +32,7 @@ const MainlandAdventures: React.FC = () => {
       {/* Narrative Section */}
       <section className="py-32 px-6 max-w-4xl mx-auto text-center">
         <Compass className="w-12 h-12 text-[#005F73] mx-auto mb-10 opacity-50" />
-        <h2 className="text-4xl serif mb-8 text-[#E9D8A6]">The Soul of the Maya World</h2>
+        <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#E9D8A6]">The Soul of the Maya World</h2>
         <p className="text-xl text-[#E9D8A6]/70 leading-relaxed font-light">
           While our crystalline waters are legendary, the secrets of Belize lie deep within its jungles. From the haunting beauty of the ATM Caves to the towering heights of Lamanai, our mainland expeditions are curated for the discerning traveler seeking depth, history, and raw natural beauty.
         </p>
@@ -61,7 +61,7 @@ const MainlandAdventures: React.FC = () => {
                 <Map className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Mainland Discovery</span>
               </div>
-              <h3 className="text-5xl md:text-6xl serif text-[#E9D8A6]">{tour.name}</h3>
+              <h3 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6]">{tour.name}</h3>
               <p className="text-lg text-[#E9D8A6]/70 leading-relaxed font-light">
                 {tour.description}
               </p>
@@ -97,7 +97,7 @@ const MainlandAdventures: React.FC = () => {
       {/* Call to Action */}
       <section className="py-32 bg-white/5">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl serif text-[#E9D8A6]">Prepare for the <span className="italic">Extraordinary</span></h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Prepare for the <span className="text-[#48CAE4]">Extraordinary</span></h2>
           <p className="text-[#E9D8A6]/60 text-xl font-light leading-relaxed">
             Mainland tours depart early to ensure we experience the sites in their most serene state. Space is limited for these curated experiences.
           </p>

@@ -20,8 +20,8 @@ const IslandAdventures: React.FC = () => {
         
         <div className="relative z-10 text-center px-4 max-w-5xl">
           <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.6em] uppercase mb-6 block">The Crystalline Caribbean</span>
-          <h1 className="text-6xl md:text-9xl serif mb-8 tracking-tight text-[#E9D8A6] leading-none">
-            Island <br /> <span className="italic">Sanctuaries</span>
+          <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#E9D8A6] leading-none">
+            Island <br /> <span className="text-[#48CAE4]">Sanctuaries</span>
           </h1>
           <p className="text-xl md:text-2xl font-light text-[#E9D8A6]/80 max-w-2xl mx-auto leading-relaxed">
             Plunge into the turquoise depths of the world's second-largest barrier reef. Pristine corals, gentle giants, and the rhythm of the tides await.
@@ -32,9 +32,9 @@ const IslandAdventures: React.FC = () => {
       {/* Narrative Section */}
       <section className="py-32 px-6 max-w-4xl mx-auto text-center">
         <Droplets className="w-12 h-12 text-[#005F73] mx-auto mb-10 opacity-50" />
-        <h2 className="text-4xl serif mb-8 text-[#E9D8A6]">Life Above and Below the Blue</h2>
+        <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#E9D8A6]">Life Above and Below the Blue</h2>
         <p className="text-xl text-[#E9D8A6]/70 leading-relaxed font-light">
-          From the vibrant marine sanctuary of Hol Chan to the secluded serenity of Mexico Rocks, our island adventures are designed to immerse you in the raw elegance of the Belizean coast. Whether you seek the thrill of a deep-sea dive or the quiet luxury of a beach-side BBQ, the sea is our home and yours.
+          From the vibrant marine sanctuary of Hol Chan to the secluded serenity of Mexico Rocks, our island adventures are designed to immerse you in the raw elegance of the Belizean coast. Whether you seek the thrill of a deep-sea dive or the exclusive fun of a beach-side BBQ, the sea is our home and yours.
         </p>
       </section>
 
@@ -61,7 +61,7 @@ const IslandAdventures: React.FC = () => {
                 <Anchor className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Island Discovery</span>
               </div>
-              <h3 className="text-5xl md:text-6xl serif text-[#E9D8A6]">{tour.name}</h3>
+              <h3 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6]">{tour.name}</h3>
               <p className="text-lg text-[#E9D8A6]/70 leading-relaxed font-light">
                 {tour.description}
               </p>
@@ -97,7 +97,7 @@ const IslandAdventures: React.FC = () => {
       {/* Call to Action */}
       <section className="py-32 bg-white/5">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl serif text-[#E9D8A6]">Embrace the <span className="italic">Horizon</span></h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Embrace the <span className="text-[#48CAE4]">Horizon</span></h2>
           <p className="text-[#E9D8A6]/60 text-xl font-light leading-relaxed">
             Our boats depart from the primary docks in San Pedro daily. We limit our group sizes to ensure every guest receives a personalized, first-class experience.
           </p>

@@ -64,7 +64,7 @@ const TourAssistant: React.FC = () => {
                   <Sparkles className="text-[#001219] w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="serif text-[#E9D8A6] font-bold text-lg">Tour Assistant</h3>
+                  <h3 className="font-extrabold tracking-tight text-[#E9D8A6] font-bold text-lg">Tour Assistant</h3>
                   <p className="text-[10px] text-[#E9D8A6]/60 uppercase tracking-[0.3em]">Bespoke Concierge</p>
                 </div>
               </div>

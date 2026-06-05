@@ -17,7 +17,7 @@ const Footer = () => (
   <footer className="bg-[#001219] border-t border-white/5 py-16 px-4">
     <div className="max-w-[1600px] mx-auto px-8 lg:px-12 grid md:grid-cols-4 gap-12 text-center md:text-left">
       <div className="md:col-span-2">
-        <h2 className="text-3xl serif mb-6 tracking-widest text-[#E9D8A6]">ACTION DIVERS</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight mb-6 tracking-widest text-[#E9D8A6]">ACTION DIVERS</h2>
         <p className="text-[#E9D8A6]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
           Belize's premier boutique tour operator. Known for our professionalism, knowledge and friendly service, we help you create that unforgettable fun-filled vacation.
         </p>
@@ -124,15 +124,15 @@ const Reservations = () => {
   return (
     <div className="pt-48 pb-32 max-w-5xl mx-auto px-6">
       <div className="text-center mb-20">
-        <h1 className="text-6xl md:text-8xl serif mb-6 text-[#E9D8A6]">Curated <span className="italic">Inquiry</span></h1>
-        <p className="text-[#E9D8A6]/60 italic text-lg uppercase tracking-[0.3em]">Design Your Bespoke Itinerary</p>
+        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Curated <span className="text-[#48CAE4]">Inquiry</span></h1>
+        <p className="text-[#E9D8A6]/60 text-[#48CAE4] text-lg uppercase tracking-[0.3em]">Design Your Bespoke Itinerary</p>
       </div>
       
       <div className="glass p-8 md:p-16 rounded-[4rem] space-y-20 shadow-2xl border border-white/5">
         {/* Step 1: Tour Selection */}
         <div className="space-y-12">
           <div className="text-center space-y-2">
-            <h3 className="text-3xl serif text-[#E9D8A6]">Select Your Expeditions</h3>
+            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Select Your Expeditions</h3>
             <p className="text-[#E9D8A6]/40 text-xs uppercase tracking-widest">Pricing is current per person unless noted</p>
           </div>
           
@@ -183,7 +183,7 @@ const Reservations = () => {
             <div className="mt-12 p-8 bg-[#E9D8A6]/5 rounded-[3rem] border border-[#E9D8A6]/10 animate-fade-in flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/30 mb-2 font-bold">Estimated Base Total</p>
-                <p className="text-5xl serif text-[#E9D8A6]">${totalPrice.toFixed(2)} <span className="text-xs font-sans font-light uppercase tracking-widest text-[#E9D8A6]/40 ml-2">USD</span></p>
+                <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">${totalPrice.toFixed(2)} <span className="text-xs font-sans font-light uppercase tracking-widest text-[#E9D8A6]/40 ml-2">USD</span></p>
               </div>
               <div className="flex items-center gap-3 glass px-6 py-4 rounded-full border border-white/5">
                 <Info className="w-4 h-4 text-[#005F73]" />
@@ -198,7 +198,7 @@ const Reservations = () => {
         {/* Step 2: Guest Details */}
         <form className="space-y-10 pt-20 border-t border-white/5" onSubmit={(e) => e.preventDefault()}>
           <div className="text-center space-y-2 mb-4">
-            <h3 className="text-3xl serif text-[#E9D8A6]">Guest <span className="italic">Manifest</span></h3>
+            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Guest <span className="text-[#48CAE4]">Manifest</span></h3>
             <p className="text-[#E9D8A6]/40 text-xs uppercase tracking-widest">How should we address you?</p>
           </div>
 
@@ -227,12 +227,12 @@ const Reservations = () => {
           <p className="text-[10px] uppercase tracking-[0.5em] text-[#E9D8A6]/20 mb-6 font-bold">Immediate Assistance</p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-10">
             <div className="space-y-1">
-               <a href="tel:0115016712624" className="text-3xl md:text-4xl serif text-[#E9D8A6] hover:text-white transition-colors">011-501-671-2624</a>
+               <a href="tel:0115016712624" className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#E9D8A6] hover:text-white transition-colors">011-501-671-2624</a>
                <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Direct Satellite Link</p>
             </div>
             <div className="h-10 w-px bg-white/5 hidden md:block"></div>
             <div className="space-y-1 text-center md:text-left">
-               <p className="text-xl serif text-[#E9D8A6]/80">reservations@actiondivers.com</p>
+               <p className="text-xl font-extrabold tracking-tight text-[#E9D8A6]/80">reservations@actiondivers.com</p>
                <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Electronic Post</p>
             </div>
           </div>

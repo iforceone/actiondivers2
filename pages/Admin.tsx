@@ -82,7 +82,7 @@ const Admin: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center px-4 bg-[#001219]">
         <div className="glass p-12 rounded-[3rem] w-full max-w-md border border-white/10 shadow-2xl">
           <div className="text-center mb-10">
-            <h2 className="text-4xl serif text-[#E9D8A6]">Owner <span className="italic">Login</span></h2>
+            <h2 className="text-4xl font-extrabold tracking-tight text-[#E9D8A6]">Owner <span className="text-[#48CAE4]">Login</span></h2>
             <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 mt-2">Action Divers Portal</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
@@ -117,7 +117,7 @@ const Admin: React.FC = () => {
     <div className="pt-32 pb-20 max-w-5xl mx-auto px-6">
       <div className="flex justify-between items-end mb-16">
         <div>
-          <h1 className="text-5xl serif text-[#E9D8A6]">Command <span className="italic">Centre</span></h1>
+          <h1 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Command <span className="text-[#48CAE4]">Centre</span></h1>
           <p className="text-[11px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 mt-3">Welcome, Barracuda</p>
         </div>
         <button onClick={() => setIsLoggedIn(false)} className="flex items-center space-x-3 text-[#E9D8A6]/40 hover:text-white transition-colors glass px-6 py-3 rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest">
@@ -127,13 +127,13 @@ const Admin: React.FC = () => {
       </div>
 
       <section className="space-y-8">
-        <h2 className="text-2xl serif text-[#E9D8A6] flex items-center space-x-3">
+        <h2 className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] flex items-center space-x-3">
           <div className="w-2 h-2 bg-[#005F73] rounded-full"></div>
           <span>Voyage Chronicles Management</span>
         </h2>
         
         <div className="glass p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <h3 className="text-xl serif text-[#E9D8A6] mb-8">{editingId ? 'Edit Chronicle' : 'Post New Chronicle'}</h3>
+          <h3 className="text-xl font-extrabold tracking-tight text-[#E9D8A6] mb-8">{editingId ? 'Edit Chronicle' : 'Post New Chronicle'}</h3>
           <form onSubmit={handleSaveLog} className="space-y-6">
             <div className="space-y-2">
               <label className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 ml-1">Chronicle Title</label>

@@ -9,7 +9,7 @@ const Reviews: React.FC = () => {
       <div className="max-w-[1600px] mx-auto px-6 md:px-12 relative z-10">
         <div className="text-center mb-20">
           <p className="text-[#005F73] uppercase tracking-[0.4em] text-[10px] font-bold mb-4">Experiences from the Reef</p>
-          <h2 className="text-5xl md:text-7xl serif text-[#E9D8A6]">Guest <span className="italic">Testimonials</span></h2>
+          <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight text-[#E9D8A6]">Guest <span className="text-[#48CAE4]">Testimonials</span></h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -26,7 +26,7 @@ const Reviews: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h4 className="text-[#E9D8A6] serif text-2xl tracking-wide">{review.reviewerName}</h4>
+                  <h4 className="text-[#E9D8A6] font-extrabold tracking-tight text-2xl tracking-wide">{review.reviewerName}</h4>
                   <div className="flex gap-1.5 mt-2">
                     {[...Array(review.starRating)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-[#E9D8A6] text-[#E9D8A6] opacity-80" />
@@ -35,7 +35,7 @@ const Reviews: React.FC = () => {
                 </div>
               </div>
               <div className="relative flex-grow">
-                <p className="text-[#E9D8A6]/60 font-light leading-loose text-sm md:text-base relative z-10 italic">
+                <p className="text-[#E9D8A6]/60 font-light leading-loose text-sm md:text-base relative z-10 text-[#48CAE4]">
                   "{review.reviewText}"
                 </p>
               </div>

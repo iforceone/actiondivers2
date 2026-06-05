@@ -14,8 +14,8 @@ const About: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
         <div className="relative z-10 px-4">
-          <h1 className="text-6xl md:text-8xl serif mb-6 text-[#E9D8A6] tracking-tight">
-            Our <span className="italic">Story</span>
+          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6] tracking-tight">
+            Our <span className="text-[#48CAE4]">Story</span>
           </h1>
           <p className="text-sm uppercase tracking-[0.5em] text-[#E9D8A6]/60">Action Divers & Adventures</p>
         </div>
@@ -23,8 +23,8 @@ const About: React.FC = () => {
 
       <section className="max-w-4xl mx-auto px-6 py-24 space-y-16">
         <div className="space-y-10">
-          <h2 className="text-4xl md:text-6xl serif text-[#E9D8A6] leading-tight">
-            A Passion for the <span className="italic text-[#E9D8A6]/80">Caribbean Sea</span>
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6] leading-tight">
+            A Passion for the <span className="text-[#48CAE4] text-[#E9D8A6]/80">Caribbean Sea</span>
           </h2>
           <div className="space-y-8 text-xl font-light leading-relaxed text-[#E9D8A6]/80">
             <p>
@@ -63,7 +63,7 @@ const About: React.FC = () => {
               className="rounded-[2.5rem] shadow-2xl w-full aspect-video object-cover"
             />
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-12 py-8 rounded-[2rem] border border-white/20 shadow-2xl whitespace-nowrap">
-              <p className="text-5xl serif text-[#E9D8A6] mb-2">20+</p>
+              <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">20+</p>
               <p className="text-[11px] uppercase tracking-[0.3em] text-[#E9D8A6]/60">Years of Elite Experience</p>
             </div>
           </div>
@@ -77,7 +77,7 @@ const About: React.FC = () => {
               <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
                 <Award className="w-10 h-10 text-[#E9D8A6]" />
               </div>
-              <h3 className="text-3xl serif text-[#E9D8A6]">Professionalism</h3>
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Professionalism</h3>
               <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
                 Our guides are fully licensed and committed to the highest standards of safety and service quality.
               </p>
@@ -86,7 +86,7 @@ const About: React.FC = () => {
               <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
                 <Users className="w-10 h-10 text-[#E9D8A6]" />
               </div>
-              <h3 className="text-3xl serif text-[#E9D8A6]">Local Knowledge</h3>
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Local Knowledge</h3>
               <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
                 With years of local experience, we know the secret canyons and hidden trails that typical tours miss.
               </p>
@@ -95,7 +95,7 @@ const About: React.FC = () => {
               <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
                 <Heart className="w-10 h-10 text-[#E9D8A6]" />
               </div>
-              <h3 className="text-3xl serif text-[#E9D8A6]">Friendly Service</h3>
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Friendly Service</h3>
               <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
                 We make friends with our customers. Our warm hospitality keeps our guests returning year after year.
               </p>
@@ -106,7 +106,7 @@ const About: React.FC = () => {
 
       <section className="py-40 px-6">
         <div className="max-w-4xl mx-auto glass p-20 rounded-[4rem] border border-white/10 shadow-3xl">
-          <h2 className="text-5xl serif text-[#E9D8A6] mb-10 leading-tight">Ready to begin your <span className="italic">extraordinary</span> journey?</h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-10 leading-tight">Ready to begin your <span className="text-[#48CAE4]">extraordinary</span> journey?</h2>
           <p className="text-[#E9D8A6]/60 mb-14 text-xl font-light">
             Let us help you design the perfect itinerary for your bespoke Belizean getaway.
           </p>

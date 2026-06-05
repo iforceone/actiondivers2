@@ -10,7 +10,7 @@ const TourDetail: React.FC = () => {
 
   if (!tour) return (
     <div className="h-screen flex items-center justify-center bg-[#001219]">
-      <h2 className="text-4xl serif text-[#E9D8A6]">Expedition not found.</h2>
+      <h2 className="text-4xl font-extrabold tracking-tight text-[#E9D8A6]">Expedition not found.</h2>
     </div>
   );
 
@@ -21,7 +21,7 @@ const TourDetail: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#001219] to-transparent"></div>
         <div className="absolute bottom-20 left-0 right-0 max-w-7xl mx-auto px-4 text-center md:text-left">
           <span className="text-[#E9D8A6] uppercase tracking-[0.4em] text-xs block mb-4">{tour.category} Adventure</span>
-          <h1 className="text-6xl md:text-8xl serif text-[#E9D8A6]">{tour.name}</h1>
+          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight text-[#E9D8A6]">{tour.name}</h1>
         </div>
       </div>
 
@@ -29,7 +29,7 @@ const TourDetail: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-16">
           <div className="lg:col-span-2 space-y-12">
             <section>
-              <h2 className="text-3xl serif mb-6 text-[#E9D8A6]">The Experience</h2>
+              <h2 className="text-3xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">The Experience</h2>
               <p className="text-xl leading-relaxed text-[#E9D8A6]/80 font-light">
                 {tour.longDescription}
               </p>
@@ -39,7 +39,7 @@ const TourDetail: React.FC = () => {
               <section className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10">
                 <div className="flex items-center space-x-3 mb-8">
                   <Info className="w-6 h-6 text-[#005F73]" />
-                  <h3 className="text-2xl serif">Luxury Inclusions</h3>
+                  <h3 className="text-2xl font-extrabold tracking-tight">Adventure Inclusions</h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between border-b border-white/5 pb-4">
@@ -69,7 +69,7 @@ const TourDetail: React.FC = () => {
                     <span className="text-2xl font-bold text-[#E9D8A6]">${tour.price.toFixed(2)} USD</span>
                   </div>
                   {tour.priceBreakdown.note && (
-                    <p className="mt-6 text-[10px] text-[#E9D8A6]/40 uppercase tracking-widest italic leading-relaxed">
+                    <p className="mt-6 text-[10px] text-[#E9D8A6]/40 uppercase tracking-widest text-[#48CAE4] leading-relaxed">
                       * {tour.priceBreakdown.note}
                     </p>
                   )}
@@ -79,7 +79,7 @@ const TourDetail: React.FC = () => {
 
             {tour.features && (
               <section className="glass p-10 rounded-3xl">
-                <h3 className="text-2xl serif mb-8">Notable Highlights</h3>
+                <h3 className="text-2xl font-extrabold tracking-tight mb-8">Notable Highlights</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   {tour.features.map((feature, i) => (
                     <div key={i} className="flex items-start space-x-3">
@@ -96,7 +96,7 @@ const TourDetail: React.FC = () => {
 
           <aside className="space-y-8">
             <div className="glass p-8 rounded-3xl sticky top-32 border border-[#E9D8A6]/10">
-              <h3 className="text-2xl serif mb-6">Booking Details</h3>
+              <h3 className="text-2xl font-extrabold tracking-tight mb-6">Booking Details</h3>
               
               <div className="space-y-6 mb-10">
                 <div className="flex items-center text-[#E9D8A6]/70">

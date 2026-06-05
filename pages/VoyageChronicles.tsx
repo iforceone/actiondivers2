@@ -26,8 +26,8 @@ const VoyageChronicles: React.FC = () => {
     return (
       <div className="pt-48 pb-32 min-h-screen flex flex-col items-center justify-center px-6 text-center">
         <Anchor className="w-16 h-16 text-[#005F73] mb-8 opacity-20 animate-pulse" />
-        <h1 className="text-5xl md:text-7xl serif mb-6 text-[#E9D8A6]">Voyage <span className="italic">Chronicles</span></h1>
-        <p className="text-[#E9D8A6]/40 italic uppercase tracking-[0.4em] text-sm mb-12">The sea has yet to speak</p>
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Voyage <span className="text-[#48CAE4]">Chronicles</span></h1>
+        <p className="text-[#E9D8A6]/40 text-[#48CAE4] uppercase tracking-[0.4em] text-sm mb-12">The sea has yet to speak</p>
         <div className="glass p-12 rounded-[3rem] border border-white/5 max-w-md">
            <p className="text-xl font-light text-[#E9D8A6]/60 leading-relaxed">
             No chronicles have been posted yet. Our captains are currently out at sea gathering stories of the blue.
@@ -40,8 +40,8 @@ const VoyageChronicles: React.FC = () => {
   return (
     <div className="pt-48 pb-32 max-w-7xl mx-auto px-6">
       <div className="text-center mb-24">
-        <h1 className="text-7xl md:text-8xl serif mb-6 text-[#E9D8A6]">Voyage <span className="italic">Chronicles</span></h1>
-        <p className="text-[#E9D8A6]/60 italic uppercase tracking-[0.4em] text-sm">Stories from the Caribbean Sea</p>
+        <h1 className="text-7xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Voyage <span className="text-[#48CAE4]">Chronicles</span></h1>
+        <p className="text-[#E9D8A6]/60 text-[#48CAE4] uppercase tracking-[0.4em] text-sm">Stories from the Caribbean Sea</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -60,7 +60,7 @@ const VoyageChronicles: React.FC = () => {
             </div>
             <div className="p-8 flex-1 flex flex-col">
               <p className="text-[10px] text-[#005F73] font-bold uppercase tracking-[0.4em] mb-4">{log.date}</p>
-              <h2 className="text-2xl serif text-[#E9D8A6] mb-4 group-hover:text-white transition-colors line-clamp-2">
+              <h2 className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] mb-4 group-hover:text-white transition-colors line-clamp-2">
                 {log.title}
               </h2>
               <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-sm line-clamp-3 mb-8">
@@ -125,7 +125,7 @@ const VoyageChronicles: React.FC = () => {
               
               <div className="p-12 md:p-20 pt-10">
                 <p className="text-xs text-[#005F73] font-bold uppercase tracking-[0.5em] mb-6">{selectedLog.date}</p>
-                <h2 className="text-4xl md:text-6xl serif text-[#E9D8A6] mb-12 leading-tight">{selectedLog.title}</h2>
+                <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6] mb-12 leading-tight">{selectedLog.title}</h2>
                 <div className="text-xl font-light text-[#E9D8A6]/80 leading-relaxed space-y-8 whitespace-pre-wrap">
                   {selectedLog.content}
                 </div>

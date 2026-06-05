@@ -131,7 +131,7 @@ const Gallery: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h1 className="text-4xl lg:text-5xl serif mb-2">Gallery</h1>
+              <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-2">Gallery</h1>
               <p className="text-[#E9D8A6]/60">Experience the beauty of Belize through our adventures</p>
             </div>
             
@@ -314,7 +314,7 @@ const Gallery: React.FC = () => {
             />
             
             <div className="mt-6 text-center">
-              <h2 className="text-2xl serif mb-2">{selectedImage.title}</h2>
+              <h2 className="text-2xl font-extrabold tracking-tight mb-2">{selectedImage.title}</h2>
               <p className="text-white/60 mb-4 capitalize">{selectedImage.category}</p>
               
               <div className="flex justify-center gap-4">
