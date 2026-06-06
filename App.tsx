@@ -21,7 +21,11 @@ const Footer = () => (
   <footer className="bg-[#001219] border-t border-white/5 py-16 px-4">
     <div className="max-w-[1600px] mx-auto px-8 lg:px-12 grid md:grid-cols-5 gap-12 text-center md:text-left">
       <div className="md:col-span-2">
-        <h2 className="text-3xl font-extrabold tracking-tight mb-6 tracking-widest text-[#E9D8A6]">ACTION DIVERS</h2>
+        <img
+          src="/images/brand/brand-logo-header-reverse-transparent.webp"
+          alt="Action Divers & Adventures"
+          className="mb-6 h-auto w-64 max-w-full object-contain mx-auto md:mx-0"
+        />
         <p className="text-[#E9D8A6]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
           Belize's premier boutique tour operator. Known for our professionalism, knowledge and friendly service, we help you create that unforgettable fun-filled vacation.
         </p>
