@@ -27,6 +27,18 @@ export interface BlogLog {
   imageUrl: string;
 }
 
+export interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  author: string;
+  image: string;
+  tags: string[];
+  relatedTours: string[];
+  body: string[];
+}
+
 export interface User {
   username: string;
   isAuthenticated: boolean;

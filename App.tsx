@@ -10,12 +10,16 @@ import About from './pages/About';
 import MainlandAdventures from './pages/MainlandAdventures';
 import IslandAdventures from './pages/IslandAdventures';
 import VoyageChronicles from './pages/VoyageChronicles';
+import BlogPostPage from './pages/BlogPost';
 import Gallery from './pages/Gallery';
 import { Check, Info, Anchor, Map, Ship, Droplets } from 'lucide-react';
+import SEO, { SITE_URL } from './components/SEO';
+import { INITIAL_TOURS } from './constants';
+import { BLOG_POSTS } from './data/blogPosts';
 
 const Footer = () => (
   <footer className="bg-[#001219] border-t border-white/5 py-16 px-4">
-    <div className="max-w-[1600px] mx-auto px-8 lg:px-12 grid md:grid-cols-4 gap-12 text-center md:text-left">
+    <div className="max-w-[1600px] mx-auto px-8 lg:px-12 grid md:grid-cols-5 gap-12 text-center md:text-left">
       <div className="md:col-span-2">
         <h2 className="text-3xl font-extrabold tracking-tight mb-6 tracking-widest text-[#E9D8A6]">ACTION DIVERS</h2>
         <p className="text-[#E9D8A6]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
@@ -39,6 +43,14 @@ const Footer = () => (
           <Link to="/island-adventures" className="hover:text-white transition-colors">Island Adventures</Link>
           <Link to="/mainland-adventures" className="hover:text-white transition-colors">Mainland Tours</Link>
           <Link to="/about" className="hover:text-white transition-colors">About Us</Link>
+        </div>
+      </div>
+      <div>
+        <h4 className="text-[#E9D8A6] font-bold uppercase tracking-widest text-[10px] mb-6">Travel Guides</h4>
+        <div className="flex flex-col space-y-4 text-xs tracking-widest text-[#E9D8A6]/60">
+          {BLOG_POSTS.slice(0, 4).map((post) => (
+            <Link key={post.slug} to={`/blog/${post.slug}`} className="hover:text-white transition-colors">{post.title}</Link>
+          ))}
         </div>
       </div>
     </div>
@@ -123,6 +135,11 @@ const Reservations = () => {
 
   return (
     <div className="pt-48 pb-32 max-w-5xl mx-auto px-6">
+      <SEO
+        title="Belize Tour Reservations & Custom Inquiries"
+        description="Send Action Divers & Adventures a custom inquiry for Belize scuba diving, snorkeling, fishing, island tours, cave tubing, Maya ruins, and mainland expeditions."
+        path="/reservations"
+      />
       <div className="text-center mb-20">
         <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Curated <span className="text-[#48CAE4]">Inquiry</span></h1>
         <p className="text-[#E9D8A6]/60 text-[#48CAE4] text-lg uppercase tracking-[0.3em]">Design Your Bespoke Itinerary</p>
@@ -243,6 +260,42 @@ const Reservations = () => {
 };
 
 const App: React.FC = () => {
+  const businessStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristBusiness',
+    name: 'Action Divers & Adventures',
+    description: "Belize boutique tour operator offering scuba diving, snorkeling, fishing, island adventures, cave tubing, Maya ruins, and mainland tours from San Pedro.",
+    url: SITE_URL,
+    telephone: '011-501-671-2624',
+    email: 'reservations@actiondivers.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'San Pedro',
+      addressLocality: 'Ambergris Caye',
+      addressCountry: 'Belize',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 18.4663,
+      longitude: -87.9667,
+    },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Belize Adventure Tours',
+      itemListElement: INITIAL_TOURS.map((tour) => ({
+        '@type': 'Offer',
+        url: `${SITE_URL}/tour/${tour.id}`,
+        price: tour.price,
+        priceCurrency: 'USD',
+        itemOffered: {
+          '@type': 'TouristTrip',
+          name: tour.name,
+          description: tour.description,
+        },
+      })),
+    },
+  };
+
   return (
     <Router>
       <ScrollToTop />
@@ -250,15 +303,16 @@ const App: React.FC = () => {
         <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/island-adventures" element={<IslandAdventures />} />
-            <Route path="/mainland-adventures" element={<MainlandAdventures />} />
+            <Route path="/" element={<><SEO title="Belize Scuba Diving, Snorkeling & Adventure Tours" description="Action Divers & Adventures offers boutique Belize scuba diving, Hol Chan snorkeling, Shark Ray Alley, fishing, beach BBQs, cave tubing, Maya ruins, and mainland tours from San Pedro." path="/" structuredData={businessStructuredData} /><Home /></>} />
+            <Route path="/about" element={<><SEO title="About Action Divers & Adventures Belize" description="Meet Action Divers & Adventures, a San Pedro, Ambergris Caye tour operator known for professional guides, personal service, and memorable Belize reef and mainland adventures." path="/about" image="/images/gallery/SCUBA-and-Snorkelers-1.png" /><About /></>} />
+            <Route path="/gallery" element={<><SEO title="Belize Reef, Snorkeling & Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland expeditions." path="/gallery" image="/images/gallery/Turtle.png" /><Gallery /></>} />
+            <Route path="/island-adventures" element={<><SEO title="Island Adventures from San Pedro Belize" description="Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures." path="/island-adventures" image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" /><IslandAdventures /></>} />
+            <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours, Maya Ruins & Cave Adventures" description="Book Belize mainland expeditions from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
             <Route path="/tour/:id" element={<TourDetail />} />
             <Route path="/blog" element={<VoyageChronicles />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/reservations" element={<Reservations />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin" element={<><SEO title="Owner Portal" description="Action Divers & Adventures owner portal." path="/admin" noindex /><Admin /></>} />
           </Routes>
         </main>
         <Footer />

@@ -5,6 +5,7 @@ import { INITIAL_TOURS } from '../constants';
 import { Link } from 'react-router-dom';
 import TourSearch from '../components/TourSearch';
 import Reviews from '../components/Reviews';
+import { BLOG_POSTS } from '../data/blogPosts';
 
 const Home: React.FC = () => {
   const [filteredTours, setFilteredTours] = useState(INITIAL_TOURS);
@@ -106,6 +107,33 @@ const Home: React.FC = () => {
               Explore Mainland Tours <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Blog Guides Section */}
+      <section className="py-24 px-4 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12">
+          <div>
+            <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Belize Travel Guides</p>
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">Plan the Right Adventure</h2>
+          </div>
+          <Link to="/blog" className="inline-flex items-center text-[#E9D8A6]/60 hover:text-[#E9D8A6] text-xs font-bold uppercase tracking-[0.25em]">
+            View All Guides <ArrowRight className="ml-3 w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8">
+          {BLOG_POSTS.slice(0, 3).map((post) => (
+            <Link key={post.slug} to={`/blog/${post.slug}`} className="group glass rounded-3xl overflow-hidden border border-white/5 hover:border-[#48CAE4]/40 transition-colors">
+              <div className="aspect-[4/3] overflow-hidden">
+                <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+              </div>
+              <div className="p-7">
+                <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">{post.date}</p>
+                <h3 className="text-2xl font-extrabold tracking-tight text-white mb-4 leading-tight">{post.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{post.excerpt}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 

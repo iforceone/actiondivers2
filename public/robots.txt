@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://actiondivers2.davebze.workers.dev/sitemap.xml

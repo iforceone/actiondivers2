@@ -3,6 +3,8 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { INITIAL_TOURS } from '../constants';
 import { MapPin, CheckCircle2, Calendar, DollarSign, Info } from 'lucide-react';
+import SEO, { SITE_URL } from '../components/SEO';
+import { BLOG_POSTS } from '../data/blogPosts';
 
 const TourDetail: React.FC = () => {
   const { id } = useParams();
@@ -10,12 +12,64 @@ const TourDetail: React.FC = () => {
 
   if (!tour) return (
     <div className="h-screen flex items-center justify-center bg-[#001219]">
+      <SEO
+        title="Tour Not Found"
+        description="This Action Divers & Adventures tour could not be found."
+        path={`/tour/${id || ''}`}
+        noindex
+      />
       <h2 className="text-4xl font-extrabold tracking-tight text-[#E9D8A6]">Expedition not found.</h2>
     </div>
   );
 
+  const relatedPosts = BLOG_POSTS.filter((post) => post.relatedTours.includes(tour.id)).slice(0, 3);
+  const tourStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: `${tour.name} in Belize`,
+    description: tour.longDescription,
+    image: `${SITE_URL}${tour.image}`,
+    url: `${SITE_URL}/tour/${tour.id}`,
+    touristType: ['Adventure travelers', 'Families', 'Belize visitors'],
+    offers: {
+      '@type': 'Offer',
+      price: tour.price,
+      priceCurrency: 'USD',
+      availability: tour.isAvailable ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+      url: `${SITE_URL}/tour/${tour.id}`,
+    },
+    provider: {
+      '@type': 'TouristBusiness',
+      name: 'Action Divers & Adventures',
+      url: SITE_URL,
+      telephone: '011-501-671-2624',
+    },
+  };
+
+  const breadcrumbStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: tour.category === 'island' ? 'Island Adventures' : 'Mainland Adventures',
+        item: `${SITE_URL}/${tour.category === 'island' ? 'island-adventures' : 'mainland-adventures'}`,
+      },
+      { '@type': 'ListItem', position: 3, name: tour.name, item: `${SITE_URL}/tour/${tour.id}` },
+    ],
+  };
+
   return (
     <div className="pt-20">
+      <SEO
+        title={`${tour.name} in Belize`}
+        description={`${tour.description} Book ${tour.name.toLowerCase()} with Action Divers & Adventures from San Pedro, Ambergris Caye.`}
+        path={`/tour/${tour.id}`}
+        image={tour.image}
+        structuredData={[tourStructuredData, breadcrumbStructuredData]}
+      />
       <div className="relative h-[60vh]">
         <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#001219] to-transparent"></div>
@@ -88,6 +142,20 @@ const TourDetail: React.FC = () => {
                       </div>
                       <span className="text-lg text-[#E9D8A6]/90">{feature}</span>
                     </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {relatedPosts.length > 0 && (
+              <section className="glass p-10 rounded-3xl">
+                <h3 className="text-2xl font-extrabold tracking-tight mb-8">Helpful Planning Guides</h3>
+                <div className="space-y-5">
+                  {relatedPosts.map((post) => (
+                    <Link key={post.slug} to={`/blog/${post.slug}`} className="block p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors">
+                      <span className="block text-lg font-bold text-[#E9D8A6]">{post.title}</span>
+                      <span className="block text-sm text-[#E9D8A6]/55 mt-2 leading-relaxed">{post.excerpt}</span>
+                    </Link>
                   ))}
                 </div>
               </section>
