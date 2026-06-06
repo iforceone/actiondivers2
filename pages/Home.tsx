@@ -51,39 +51,16 @@ const Home: React.FC = () => {
         <TourSearch onToursFiltered={setFilteredTours} />
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-12 text-center">
-          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <Anchor className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
-            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Real Belize Experiences</h3>
-            <p className="text-white/70 leading-relaxed font-medium">
-              We focus on what matters: exploring the breathtaking beauty of the Belizean Caribbean with expert guides who know the waters.
-            </p>
-          </div>
-          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <Shield className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
-            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Highly Personal Service</h3>
-            <p className="text-white/70 leading-relaxed font-medium">
-              Skip the crowded boats. We cater to small groups, ensuring your day on the water is flexible, safe, and tailored exactly to you.
-            </p>
-          </div>
-          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <BadgeDollarSign className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
-            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Memorable Days on the Water</h3>
-            <p className="text-white/70 leading-relaxed font-medium">
-              From reeling in a big catch to drifting over vibrant reefs, we guarantee an adventure you'll talk about long after you return home.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Tour Grid Section */}
-      <section className="py-24 bg-white/5">
+      <section className="pb-24 bg-white/5">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-5xl font-extrabold tracking-tight text-center mb-16 text-white">Choose Your <span className="text-[#48CAE4]">Adventure</span></h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredTours.slice(0, 6).map(tour => (
+          <div className="pt-20 pb-12 text-center">
+            <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Matching Tours</p>
+            <h2 className="text-5xl font-extrabold tracking-tight text-white">Choose Your <span className="text-[#48CAE4]">Adventure</span></h2>
+          </div>
+          {filteredTours.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredTours.slice(0, 6).map(tour => (
               <Link key={tour.id} to={`/tour/${tour.id}`} className="group relative h-[400px] overflow-hidden rounded-3xl block shadow-2xl border border-white/10 hover:border-[#48CAE4]/50 transition-colors">
                 <img src={tour.image} alt={`${tour.name} - ${tour.description}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219] via-[#001219]/40 to-transparent group-hover:via-[#001219]/60 transition-all"></div>
@@ -97,8 +74,19 @@ const Home: React.FC = () => {
                   </div>
                 </div>
             </Link>
-          ))}
-          </div>
+            ))}
+            </div>
+          ) : (
+            <div className="mx-auto max-w-2xl rounded-[2rem] border border-white/10 bg-white/5 p-10 text-center">
+              <h3 className="text-3xl font-extrabold tracking-tight text-white mb-4">No exact match yet</h3>
+              <p className="text-[#E9D8A6]/65 leading-relaxed mb-8">
+                Try a broader search, raise the max price, or send us a note and we can help shape the right Belize day.
+              </p>
+              <Link to="/reservations" className="inline-flex justify-center items-center bg-[#F4A261] text-white px-8 py-4 rounded-full font-bold tracking-widest uppercase hover:bg-[#E76F51] transition-colors">
+                Ask Us to Customize It
+              </Link>
+            </div>
+          )}
           <div className="mt-16 flex flex-col sm:flex-row justify-center gap-6 px-4">
             <Link to="/island-adventures" className="inline-flex justify-center items-center bg-[#F4A261] text-white px-8 py-5 rounded-full font-bold tracking-widest uppercase hover:bg-[#E76F51] shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1">
               Explore Island Tours <ArrowRight className="ml-2 w-5 h-5" />
@@ -134,6 +122,33 @@ const Home: React.FC = () => {
               </div>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 px-4 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-12 text-center">
+          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
+            <Anchor className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Real Belize Experiences</h3>
+            <p className="text-white/70 leading-relaxed font-medium">
+              We focus on what matters: exploring the breathtaking beauty of the Belizean Caribbean with expert guides who know the waters.
+            </p>
+          </div>
+          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
+            <Shield className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Highly Personal Service</h3>
+            <p className="text-white/70 leading-relaxed font-medium">
+              Skip the crowded boats. We cater to small groups, ensuring your day on the water is flexible, safe, and tailored exactly to you.
+            </p>
+          </div>
+          <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
+            <BadgeDollarSign className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Memorable Days on the Water</h3>
+            <p className="text-white/70 leading-relaxed font-medium">
+              From reeling in a big catch to drifting over vibrant reefs, we guarantee an adventure you'll talk about long after you return home.
+            </p>
+          </div>
         </div>
       </section>
 
