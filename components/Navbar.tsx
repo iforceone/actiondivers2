@@ -74,12 +74,16 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-20">
           
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-lg xl:text-2xl font-bold font-extrabold tracking-tight text-[#E9D8A6] tracking-[0.2em] uppercase transition-opacity hover:opacity-80 whitespace-nowrap">
-              Action Divers
+            <Link to="/" className="flex items-center transition-opacity hover:opacity-85" aria-label="Action Divers & Adventures home">
+              <img
+                src="/images/brand/brand-logo-header-reverse-transparent.webp"
+                alt="Action Divers & Adventures"
+                className="h-11 w-auto max-w-[210px] object-contain sm:h-12 lg:h-14 lg:max-w-[260px]"
+              />
             </Link>
           </div>
 
-          <div className="hidden lg:flex items-center justify-end flex-1 gap-x-6 xl:gap-x-10 h-full lg:ml-48 lg:mt-1.5 xl:ml-32 xl:mt-0">
+          <div className="hidden lg:flex items-center justify-end flex-1 gap-x-5 xl:gap-x-8 h-full lg:ml-12 lg:mt-1.5 xl:ml-20 xl:mt-0">
             {navItems.map((item) => (
               <div 
                 key={item.name} 
