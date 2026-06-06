@@ -97,17 +97,17 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center h-full cursor-pointer group">
                       <Link 
                         to={item.path}
-                        className={`flex items-center text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none h-full whitespace-nowrap ${activeDropdown === item.name || location.pathname === item.path ? 'text-[#E9D8A6]' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'}`}
+                        className={`flex items-center text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none h-full whitespace-nowrap ${activeDropdown === item.name || location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
                       >
                         {item.name}
                       </Link>
-                      <ChevronDown className={`ml-1 w-3 h-3 text-[#E9D8A6]/40 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`ml-1 w-3 h-3 text-[#8DDCE7]/45 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-[var(--brand-aqua)]' : ''}`} />
                     </div>
                   </div>
                 ) : (
                   <Link 
                     to={item.path!} 
-                    className={`group relative flex items-center h-full text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none whitespace-nowrap ${location.pathname === item.path ? 'text-[#E9D8A6]' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'}`}
+                    className={`group relative flex items-center h-full text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none whitespace-nowrap ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
                   >
                     {item.name}
                   </Link>
@@ -120,7 +120,7 @@ const Navbar: React.FC = () => {
                         <Link
                           key={sub.name}
                           to={sub.path}
-                          className="block px-6 py-3 text-[9px] font-bold tracking-[0.2em] text-[#E9D8A6]/50 hover:text-[#E9D8A6] hover:bg-white/5 transition-all uppercase"
+                          className="block px-6 py-3 text-[9px] font-bold tracking-[0.2em] text-[#8DDCE7]/60 hover:text-[var(--brand-aqua)] hover:bg-white/5 transition-all uppercase"
                         >
                           {sub.name}
                         </Link>
@@ -133,7 +133,7 @@ const Navbar: React.FC = () => {
             
             <div className="h-full flex items-center ml-2 xl:ml-4">
               <Link to="/admin" className="p-2 rounded-full hover:bg-white/5 transition-all group" title="Owner Portal">
-                <Settings className="w-5 h-5 text-[#E9D8A6]/40 group-hover:text-[#E9D8A6]" />
+                <Settings className="w-5 h-5 text-[#8DDCE7]/40 group-hover:text-[var(--brand-aqua)]" />
               </Link>
             </div>
           </div>
@@ -141,7 +141,7 @@ const Navbar: React.FC = () => {
           <div className="lg:hidden flex items-center">
             <button 
               onClick={() => setIsOpen(true)} 
-              className="text-[#E9D8A6] p-2"
+              className="text-[var(--brand-aqua)] p-2"
               aria-label="Open Menu"
             >
               <Menu className="h-7 w-7" />
@@ -162,8 +162,8 @@ const Navbar: React.FC = () => {
         <div className={`absolute top-0 right-0 w-[85%] max-w-[320px] h-full bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           
           <div className="flex items-center justify-between p-7 border-b border-white/5 bg-[#050f14] shrink-0">
-            <div className="text-sm font-bold font-extrabold tracking-tight text-[#E9D8A6] tracking-[0.3em] uppercase">Menu</div>
-            <button onClick={() => setIsOpen(false)} className="text-[#E9D8A6]/40 hover:text-[#E9D8A6] p-2">
+            <div className="text-sm font-bold font-extrabold tracking-tight text-[var(--brand-ivory)] tracking-[0.3em] uppercase">Menu</div>
+            <button onClick={() => setIsOpen(false)} className="text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] p-2">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -176,9 +176,9 @@ const Navbar: React.FC = () => {
                     <div>
                       <button 
                         onClick={() => setMobileExpanded(mobileExpanded === item.name ? null : item.name)}
-                        className={`w-full flex items-center px-7 py-5 gap-5 transition-colors ${mobileExpanded === item.name ? 'text-[#E9D8A6] bg-white/5' : 'text-[#E9D8A6]/80'}`}
+                        className={`w-full flex items-center px-7 py-5 gap-5 transition-colors ${mobileExpanded === item.name ? 'text-[var(--brand-ivory)] bg-white/5' : 'text-[#8DDCE7]/80'}`}
                       >
-                        <span className="text-[#E9D8A6]/30">{item.icon}</span>
+                        <span className="text-[#8DDCE7]/40">{item.icon}</span>
                         <span className="flex-1 text-left text-lg font-bold tracking-tight">{item.name}</span>
                         <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === item.name ? 'rotate-180' : 'text-[#E9D8A6]/20'}`} />
                       </button>
@@ -188,7 +188,7 @@ const Navbar: React.FC = () => {
                           {/* Top-level link added to mobile expanded view */}
                           <Link
                             to={item.path!}
-                            className="flex items-center px-16 py-4 text-[11px] font-bold text-[#E9D8A6] hover:text-white transition-colors uppercase tracking-widest bg-white/5"
+                            className="flex items-center px-16 py-4 text-[11px] font-bold text-[var(--brand-ivory)] hover:text-white transition-colors uppercase tracking-widest bg-white/5"
                           >
                             All {item.name}
                           </Link>
@@ -196,7 +196,7 @@ const Navbar: React.FC = () => {
                             <Link
                               key={sub.name}
                               to={sub.path}
-                              className="flex items-center px-16 py-4 text-[11px] font-bold text-[#E9D8A6]/40 hover:text-[#E9D8A6] transition-colors uppercase tracking-widest"
+                              className="flex items-center px-16 py-4 text-[11px] font-bold text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] transition-colors uppercase tracking-widest"
                             >
                               {sub.name}
                             </Link>
@@ -207,9 +207,9 @@ const Navbar: React.FC = () => {
                   ) : (
                     <Link
                       to={item.path!}
-                      className={`flex items-center px-7 py-5 gap-5 transition-colors ${location.pathname === item.path ? 'text-[#E9D8A6] bg-white/5' : 'text-[#E9D8A6]/80'}`}
+                      className={`flex items-center px-7 py-5 gap-5 transition-colors ${location.pathname === item.path ? 'text-[var(--brand-ivory)] bg-white/5' : 'text-[#8DDCE7]/80'}`}
                     >
-                      <span className="text-[#E9D8A6]/30">{item.icon}</span>
+                      <span className="text-[#8DDCE7]/40">{item.icon}</span>
                       <span className="text-lg font-bold tracking-tight">{item.name}</span>
                     </Link>
                   )}

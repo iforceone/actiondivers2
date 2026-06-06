@@ -30,13 +30,13 @@ const Home: React.FC = () => {
         
         <div className="relative z-10 text-center px-4 max-w-4xl">
           <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-tight text-white drop-shadow-lg">
-            Dive, Explore, <br className="hidden md:block" /><span className="text-[#F4A261]">Experience Belize</span>
+            Dive, Explore, <br className="hidden md:block" /><span className="text-[var(--brand-orange)]">Experience Belize</span>
           </h1>
           <p className="text-xl md:text-2xl font-medium mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
             Real Belize experiences with personalized service. From world-class reef dives to unforgettable island escapes, your adventure starts here.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/island-adventures" className="bg-[#F4A261] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[#E76F51] shadow-lg transition-all transform hover:-translate-y-1 text-center">
+            <Link to="/island-adventures" className="bg-[var(--brand-orange)] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] shadow-lg shadow-orange-950/30 transition-all transform hover:-translate-y-1 text-center">
               Explore Tours
             </Link>
             <Link to="/reservations" className="bg-white/10 backdrop-blur-md text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-[#003049] transition-all border border-white/30 shadow-lg text-center">
@@ -66,7 +66,7 @@ const Home: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219] via-[#001219]/40 to-transparent group-hover:via-[#001219]/60 transition-all"></div>
                 
                 <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                  <span className="inline-block bg-[#F4A261] text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full mb-3 font-bold">{tour.category}</span>
+                <span className="inline-block bg-[var(--brand-orange)] text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full mb-3 font-bold">{tour.category}</span>
                   <h3 className="text-3xl font-bold tracking-tight text-white mb-2">{tour.name}</h3>
                   <div className="flex items-center text-[#48CAE4] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <span className="text-sm font-bold tracking-widest uppercase mr-2">View Experience</span>
@@ -82,13 +82,13 @@ const Home: React.FC = () => {
               <p className="text-[#E9D8A6]/65 leading-relaxed mb-8">
                 Try a broader search, raise the max price, or send us a note and we can help shape the right Belize day.
               </p>
-              <Link to="/reservations" className="inline-flex justify-center items-center bg-[#F4A261] text-white px-8 py-4 rounded-full font-bold tracking-widest uppercase hover:bg-[#E76F51] transition-colors">
+              <Link to="/reservations" className="inline-flex justify-center items-center bg-[var(--brand-orange)] text-white px-8 py-4 rounded-full font-bold tracking-widest uppercase hover:bg-[var(--brand-orange-light)] transition-colors">
                 Ask Us to Customize It
               </Link>
             </div>
           )}
           <div className="mt-16 flex flex-col sm:flex-row justify-center gap-6 px-4">
-            <Link to="/island-adventures" className="inline-flex justify-center items-center bg-[#F4A261] text-white px-8 py-5 rounded-full font-bold tracking-widest uppercase hover:bg-[#E76F51] shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1">
+            <Link to="/island-adventures" className="inline-flex justify-center items-center bg-[var(--brand-orange)] text-white px-8 py-5 rounded-full font-bold tracking-widest uppercase hover:bg-[var(--brand-orange-light)] shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1">
               Explore Island Tours <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
             <Link to="/mainland-adventures" className="inline-flex justify-center items-center bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-5 rounded-full font-bold tracking-widest uppercase hover:bg-white hover:text-[#001219] shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1">
