@@ -22,7 +22,7 @@ const Home: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000"
           poster="/images/gallery/Boat-out-at-sea.jpg"
         >
-          <source src="https://new1.actiondiversbelize.com/media/hero1.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/dmmtiqunw/video/upload/q_auto/f_auto/v1780760922/belize-dive-adventure_arycfl.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
