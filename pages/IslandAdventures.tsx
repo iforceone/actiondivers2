@@ -19,12 +19,12 @@ const IslandAdventures: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
         
         <div className="relative z-10 text-center px-4 max-w-5xl">
-          <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.6em] uppercase mb-6 block">The Crystalline Caribbean</span>
+          <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.45em] uppercase mb-6 block">San Pedro Reef Trips</span>
           <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#E9D8A6] leading-none">
-            Island <br /> <span className="text-[#48CAE4]">Sanctuaries</span>
+            Island <br /> <span className="text-[#48CAE4]">Adventures</span>
           </h1>
           <p className="text-xl md:text-2xl font-light text-[#E9D8A6]/80 max-w-2xl mx-auto leading-relaxed">
-            Plunge into the turquoise depths of the world's second-largest barrier reef. Pristine corals, gentle giants, and the rhythm of the tides await.
+            Snorkel, dive, fish, and spend the day on the water with friendly local guides from Ambergris Caye.
           </p>
         </div>
       </section>
@@ -34,7 +34,7 @@ const IslandAdventures: React.FC = () => {
         <Droplets className="w-12 h-12 text-[#005F73] mx-auto mb-10 opacity-50" />
         <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#E9D8A6]">Life Above and Below the Blue</h2>
         <p className="text-xl text-[#E9D8A6]/70 leading-relaxed font-light">
-          From the vibrant marine sanctuary of Hol Chan to the secluded serenity of Mexico Rocks, our island adventures are designed to immerse you in the raw elegance of the Belizean coast. Whether you seek the thrill of a deep-sea dive or the exclusive fun of a beach-side BBQ, the sea is our home and yours.
+          From Hol Chan and Shark Ray Alley to Mexico Rocks, reef fishing, and beach barbecues, our island tours make it easy to experience the Belize Barrier Reef with guides who know the water.
         </p>
       </section>
 
@@ -78,7 +78,7 @@ const IslandAdventures: React.FC = () => {
               <div className="pt-8 flex items-center space-x-8">
                 <Link 
                   to={`/tour/${tour.id}`} 
-                  className="bg-[#E9D8A6] text-[#001219] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white transition-all transform hover:-translate-y-1"
+                  className="bg-[var(--brand-orange)] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all transform hover:-translate-y-1"
                 >
                   View Adventure
                 </Link>
@@ -97,9 +97,9 @@ const IslandAdventures: React.FC = () => {
       {/* Call to Action */}
       <section className="py-32 bg-white/5">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Embrace the <span className="text-[#48CAE4]">Horizon</span></h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Ready for a <span className="text-[#48CAE4]">Reef Day?</span></h2>
           <p className="text-[#E9D8A6]/60 text-xl font-light leading-relaxed">
-            Our boats depart from the primary docks in San Pedro daily. We limit our group sizes to ensure every guest receives a personalized, first-class experience.
+            Our tour desk is 5 miles north of San Pedro at La Perla Del Caribe. Tell us what your group wants to do, and we will help match you with the right day on the water.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
             <div className="flex items-center justify-center space-x-3 text-[#E9D8A6]/40">

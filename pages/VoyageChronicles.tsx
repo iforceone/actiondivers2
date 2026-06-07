@@ -19,7 +19,7 @@ const VoyageChronicles: React.FC = () => {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    name: 'Voyage Chronicles',
+    name: 'Belize Travel Guides',
     url: `${SITE_URL}/blog`,
     description: 'Belize travel guides, snorkeling tips, scuba diving advice, and adventure planning from Action Divers & Adventures.',
     blogPost: BLOG_POSTS.map((post) => ({
@@ -35,14 +35,14 @@ const VoyageChronicles: React.FC = () => {
     <div className="pt-48 pb-32 max-w-7xl mx-auto px-6">
       <SEO
         title="Belize Travel Blog & Adventure Guides"
-        description="Read Action Divers & Adventures guides to snorkeling, scuba diving, island tours, mainland expeditions, and family-friendly Belize activities from San Pedro."
+        description="Read Action Divers & Adventures guides to snorkeling, scuba diving, island tours, mainland tours, and family-friendly Belize activities from San Pedro."
         path="/blog"
         image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png"
         structuredData={structuredData}
       />
       <div className="text-center mb-24">
-        <h1 className="text-7xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Voyage <span className="text-[#48CAE4]">Chronicles</span></h1>
-        <p className="text-[#E9D8A6]/60 text-[#48CAE4] uppercase tracking-[0.4em] text-sm">Stories from the Caribbean Sea</p>
+        <h1 className="text-7xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Belize <span className="text-[#48CAE4]">Travel Guides</span></h1>
+        <p className="text-[#E9D8A6]/60 uppercase tracking-[0.3em] text-sm">Snorkeling, diving, fishing, and tour planning tips</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -72,7 +72,7 @@ const VoyageChronicles: React.FC = () => {
                   to={`/blog/${post.slug}`}
                   className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#E9D8A6]/40 hover:text-[#E9D8A6] transition-all flex items-center group/btn"
                 >
-                  Read Chronicle <ArrowRight className="ml-2 w-3 h-3 transform group-hover/btn:translate-x-1 transition-transform" />
+                  Read Guide <ArrowRight className="ml-2 w-3 h-3 transform group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </div>

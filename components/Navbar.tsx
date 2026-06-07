@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
       ]
     },
     { name: 'Reservations', path: '/reservations', icon: <Calendar className="w-5 h-5" /> },
-    { name: 'Voyage Chronicles', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
+    { name: 'Travel Guides', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
   ];
 
   return (

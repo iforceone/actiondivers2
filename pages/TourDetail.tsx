@@ -18,7 +18,7 @@ const TourDetail: React.FC = () => {
         path={`/tour/${id || ''}`}
         noindex
       />
-      <h2 className="text-4xl font-extrabold tracking-tight text-[#E9D8A6]">Expedition not found.</h2>
+      <h2 className="text-4xl font-extrabold tracking-tight text-[#E9D8A6]">Tour not found.</h2>
     </div>
   );
 
@@ -93,7 +93,7 @@ const TourDetail: React.FC = () => {
               <section className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10">
                 <div className="flex items-center space-x-3 mb-8">
                   <Info className="w-6 h-6 text-[#005F73]" />
-                  <h3 className="text-2xl font-extrabold tracking-tight">Adventure Inclusions</h3>
+                  <h3 className="text-2xl font-extrabold tracking-tight">Pricing Details</h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex justify-between border-b border-white/5 pb-4">
@@ -102,7 +102,7 @@ const TourDetail: React.FC = () => {
                   </div>
                   {tour.priceBreakdown.gear && (
                     <div className="flex justify-between border-b border-white/5 pb-4">
-                      <span className="text-[#E9D8A6]/60 text-sm uppercase tracking-widest">Premium Gear</span>
+                      <span className="text-[#E9D8A6]/60 text-sm uppercase tracking-widest">Gear Rental</span>
                       <span className="font-bold">${tour.priceBreakdown.gear.toFixed(2)} USD</span>
                     </div>
                   )}
@@ -119,7 +119,7 @@ const TourDetail: React.FC = () => {
                     </div>
                   )}
                   <div className="flex justify-between pt-4">
-                    <span className="text-[#E9D8A6] font-bold text-lg uppercase tracking-[0.2em]">Total Expedition Price</span>
+                    <span className="text-[#E9D8A6] font-bold text-lg uppercase tracking-[0.2em]">Estimated Total</span>
                     <span className="text-2xl font-bold text-[#E9D8A6]">${tour.price.toFixed(2)} USD</span>
                   </div>
                   {tour.priceBreakdown.note && (
@@ -177,7 +177,7 @@ const TourDetail: React.FC = () => {
                 </div>
                 <div className="flex items-center text-[#E9D8A6]/70">
                   <MapPin className="w-5 h-5 mr-3 text-[#005F73]" />
-                  <span>Ambergris Caye, Belize</span>
+                  <span>5 miles north of San Pedro</span>
                 </div>
                 <div className="flex items-center text-[#E9D8A6]/70">
                   <Calendar className="w-5 h-5 mr-3 text-[#005F73]" />
@@ -187,7 +187,7 @@ const TourDetail: React.FC = () => {
 
               <Link 
                 to="/reservations" 
-                className="block w-full text-center bg-[#E9D8A6] text-[#001219] py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white transition-all shadow-xl"
+                className="block w-full text-center bg-[var(--brand-orange)] text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all shadow-xl"
               >
                 Inquire Now
               </Link>

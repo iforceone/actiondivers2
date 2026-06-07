@@ -154,7 +154,7 @@ const Gallery: React.FC = () => {
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-lg transition-all ${
-                    viewMode === 'grid' ? 'bg-[#E9D8A6] text-[#001219]' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'
+                    viewMode === 'grid' ? 'bg-[var(--brand-orange)] text-white' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'
                   }`}
                 >
                   <Grid3x3 className="w-4 h-4" />
@@ -162,7 +162,7 @@ const Gallery: React.FC = () => {
                 <button
                   onClick={() => setViewMode('masonry')}
                   className={`p-2 rounded-lg transition-all ${
-                    viewMode === 'masonry' ? 'bg-[#E9D8A6] text-[#001219]' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'
+                    viewMode === 'masonry' ? 'bg-[var(--brand-orange)] text-white' : 'text-[#E9D8A6]/60 hover:text-[#E9D8A6]'
                   }`}
                 >
                   <List className="w-4 h-4" />
@@ -268,7 +268,7 @@ const Gallery: React.FC = () => {
                   onClick={() => setCurrentPage(page)}
                   className={`w-10 h-10 rounded-full transition-all ${
                     currentPage === page
-                      ? 'bg-[#E9D8A6] text-[#001219] font-semibold'
+                      ? 'bg-[var(--brand-orange)] text-white font-semibold'
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >

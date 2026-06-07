@@ -6,7 +6,7 @@ import { getAssistantResponse } from '../services/geminiService';
 const TourAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: "Welcome to Action Divers. I am your Tour Assistant. How can I help you discover the magic of Belize today?" }
+    { role: 'assistant', content: "Welcome to Action Divers. I can help you compare scuba diving, snorkeling, fishing, island tours, and mainland trips from San Pedro. What are you hoping to do in Belize?" }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -38,7 +38,7 @@ const TourAssistant: React.FC = () => {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#005F73] to-[#E9D8A6] flex items-center justify-center shadow-2xl hover:scale-110 transition-transform ring-4 ring-white/5"
+            className="w-16 h-16 rounded-full bg-gradient-to-tr from-[var(--brand-teal)] to-[var(--brand-orange)] flex items-center justify-center shadow-2xl hover:scale-110 transition-transform ring-4 ring-white/5"
             aria-label="Open AI Assistant"
           >
             <Sparkles className="text-[#001219] w-8 h-8" />
@@ -65,7 +65,7 @@ const TourAssistant: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-extrabold tracking-tight text-[#E9D8A6] font-bold text-lg">Tour Assistant</h3>
-                  <p className="text-[10px] text-[#E9D8A6]/60 uppercase tracking-[0.3em]">Bespoke Concierge</p>
+                  <p className="text-[10px] text-[#E9D8A6]/60 uppercase tracking-[0.25em]">Tour Help</p>
                 </div>
               </div>
               <button 
@@ -94,7 +94,7 @@ const TourAssistant: React.FC = () => {
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="bg-white/5 p-4 rounded-3xl rounded-tl-none border border-white/5 animate-pulse text-[#E9D8A6]/40 text-[10px] uppercase tracking-widest font-bold">
-                    Analyzing Expeditions...
+                    Checking tour options...
                   </div>
                 </div>
               )}
@@ -112,7 +112,7 @@ const TourAssistant: React.FC = () => {
               />
               <button
                 onClick={handleSend}
-                className="w-14 h-14 rounded-full bg-[#E9D8A6] text-[#001219] flex items-center justify-center hover:bg-white transition-all shadow-2xl shrink-0 active:scale-90"
+                className="w-14 h-14 rounded-full bg-[var(--brand-orange)] text-white flex items-center justify-center hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl shrink-0 active:scale-90"
               >
                 <Send className="w-5 h-5" />
               </button>

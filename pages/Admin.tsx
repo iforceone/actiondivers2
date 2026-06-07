@@ -71,7 +71,7 @@ const Admin: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this chronicle?')) {
+    if (window.confirm('Are you sure you want to delete this guide?')) {
       const updatedLogs = logs.filter(l => l.id !== id);
       saveLogsToStorage(updatedLogs);
     }
@@ -104,8 +104,8 @@ const Admin: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button className="w-full bg-[#E9D8A6] text-[#001219] font-bold py-5 rounded-full uppercase tracking-widest hover:bg-white transition-all shadow-xl active:scale-95">
-              Enter Command Centre
+            <button className="w-full bg-[var(--brand-orange)] text-white font-bold py-5 rounded-full uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all shadow-xl active:scale-95">
+              Open Dashboard
             </button>
           </form>
         </div>
@@ -117,8 +117,8 @@ const Admin: React.FC = () => {
     <div className="pt-32 pb-20 max-w-5xl mx-auto px-6">
       <div className="flex justify-between items-end mb-16">
         <div>
-          <h1 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Command <span className="text-[#48CAE4]">Centre</span></h1>
-          <p className="text-[11px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 mt-3">Welcome, Barracuda</p>
+          <h1 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Owner <span className="text-[#48CAE4]">Dashboard</span></h1>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 mt-3">Action Divers & Adventures</p>
         </div>
         <button onClick={() => setIsLoggedIn(false)} className="flex items-center space-x-3 text-[#E9D8A6]/40 hover:text-white transition-colors glass px-6 py-3 rounded-full border border-white/10 text-xs font-bold uppercase tracking-widest">
           <LogOut className="w-4 h-4" />
@@ -129,16 +129,16 @@ const Admin: React.FC = () => {
       <section className="space-y-8">
         <h2 className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] flex items-center space-x-3">
           <div className="w-2 h-2 bg-[#005F73] rounded-full"></div>
-          <span>Voyage Chronicles Management</span>
+          <span>Travel Guide Management</span>
         </h2>
         
         <div className="glass p-10 rounded-[2.5rem] border border-white/5 shadow-2xl">
-          <h3 className="text-xl font-extrabold tracking-tight text-[#E9D8A6] mb-8">{editingId ? 'Edit Chronicle' : 'Post New Chronicle'}</h3>
+          <h3 className="text-xl font-extrabold tracking-tight text-[#E9D8A6] mb-8">{editingId ? 'Edit Guide' : 'Post New Guide'}</h3>
           <form onSubmit={handleSaveLog} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 ml-1">Chronicle Title</label>
+              <label className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 ml-1">Guide Title</label>
               <input 
-                placeholder="The Whispers of Mexico Rocks..." 
+                placeholder="Best Snorkeling Tours from San Pedro..."
                 className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[#E9D8A6] focus:outline-none focus:border-[#E9D8A6]/40"
                 value={formData.title}
                 onChange={e => setFormData({...formData, title: e.target.value})}
@@ -177,9 +177,9 @@ const Admin: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 ml-1">The Narrative</label>
+              <label className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 ml-1">Guide Content</label>
               <textarea 
-                placeholder="Capture the magic of the sea..." 
+                placeholder="Write helpful planning advice for Belize visitors..."
                 className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[#E9D8A6] h-48 focus:outline-none focus:border-[#E9D8A6]/40 leading-relaxed"
                 value={formData.content}
                 onChange={e => setFormData({...formData, content: e.target.value})}
@@ -187,9 +187,9 @@ const Admin: React.FC = () => {
               ></textarea>
             </div>
             <div className="flex gap-4">
-              <button type="submit" className="flex-1 bg-[#E9D8A6] text-[#001219] px-8 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-white transition-all shadow-xl flex items-center justify-center">
+              <button type="submit" className="flex-1 bg-[var(--brand-orange)] text-white px-8 py-5 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all shadow-xl flex items-center justify-center">
                 {editingId ? <Save className="w-4 h-4 mr-3" /> : <Plus className="w-4 h-4 mr-3" />}
-                {editingId ? 'Update Chronicle' : 'Publish to World'}
+                {editingId ? 'Update Guide' : 'Publish Guide'}
               </button>
               {editingId && (
                  <button 
@@ -205,10 +205,10 @@ const Admin: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 ml-1">Existing Chronicles</h3>
+          <h3 className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/40 ml-1">Existing Guides</h3>
           {logs.length === 0 ? (
             <div className="glass p-12 rounded-3xl text-center border border-white/5">
-              <p className="text-[#E9D8A6]/30 text-xs uppercase tracking-widest">No chronicles recorded yet.</p>
+              <p className="text-[#E9D8A6]/30 text-xs uppercase tracking-widest">No guides recorded yet.</p>
             </div>
           ) : (
             logs.map(log => (

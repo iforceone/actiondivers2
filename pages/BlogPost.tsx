@@ -18,8 +18,8 @@ const BlogPostPage: React.FC = () => {
           path={`/blog/${slug || ''}`}
           noindex
         />
-        <h1 className="text-5xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Chronicle not found.</h1>
-        <Link to="/blog" className="text-[#48CAE4] font-bold uppercase tracking-widest">Return to Voyage Chronicles</Link>
+        <h1 className="text-5xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Guide not found.</h1>
+        <Link to="/blog" className="text-[#48CAE4] font-bold uppercase tracking-widest">Return to Travel Guides</Link>
       </div>
     );
   }
@@ -48,7 +48,7 @@ const BlogPostPage: React.FC = () => {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-      { '@type': 'ListItem', position: 2, name: 'Voyage Chronicles', item: `${SITE_URL}/blog` },
+      { '@type': 'ListItem', position: 2, name: 'Travel Guides', item: `${SITE_URL}/blog` },
       { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}/blog/${post.slug}` },
     ],
   };
@@ -68,7 +68,7 @@ const BlogPostPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#001219] via-[#001219]/50 to-[#001219]/40"></div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
           <Link to="/blog" className="inline-flex items-center text-[#E9D8A6]/50 hover:text-[#E9D8A6] text-xs font-bold uppercase tracking-[0.3em] mb-10">
-            <ArrowLeft className="w-4 h-4 mr-3" /> Voyage Chronicles
+            <ArrowLeft className="w-4 h-4 mr-3" /> Travel Guides
           </Link>
           <div className="flex flex-wrap items-center gap-4 text-[10px] uppercase tracking-[0.35em] text-[#48CAE4] font-bold mb-6">
             <span className="inline-flex items-center"><Calendar className="w-4 h-4 mr-2" /> {post.date}</span>

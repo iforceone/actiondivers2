@@ -27,13 +27,13 @@ const Footer = () => (
           className="mb-6 h-auto w-64 max-w-full object-contain mx-auto md:mx-0"
         />
         <p className="text-[#E9D8A6]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
-          Belize's premier boutique tour operator. Known for our professionalism, knowledge and friendly service, we help you create that unforgettable fun-filled vacation.
+          Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. Visit our dive shop and tour desk 5 miles north of town at La Perla Del Caribe.
         </p>
       </div>
       <div>
         <h4 className="text-[#E9D8A6] font-bold uppercase tracking-widest text-[10px] mb-6">Contact</h4>
         <div className="space-y-4 text-xs tracking-widest text-[#E9D8A6]/60">
-          <p>San Pedro, Ambergris Caye, Belize</p>
+          <p>5 miles north of San Pedro at La Perla Del Caribe</p>
           <p>011-501-671-2624</p>
           <p>reservations@actiondivers.com</p>
         </div>
@@ -141,19 +141,19 @@ const Reservations = () => {
     <div className="pt-48 pb-32 max-w-5xl mx-auto px-6">
       <SEO
         title="Belize Tour Reservations & Custom Inquiries"
-        description="Send Action Divers & Adventures a custom inquiry for Belize scuba diving, snorkeling, fishing, island tours, cave tubing, Maya ruins, and mainland expeditions."
+        description="Send Action Divers & Adventures a custom inquiry for Belize scuba diving, snorkeling, fishing, island tours, cave tubing, Maya ruins, and mainland tours."
         path="/reservations"
       />
       <div className="text-center mb-20">
-        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Curated <span className="text-[#48CAE4]">Inquiry</span></h1>
-        <p className="text-[#E9D8A6]/60 text-[#48CAE4] text-lg uppercase tracking-[0.3em]">Design Your Bespoke Itinerary</p>
+        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Plan Your <span className="text-[#48CAE4]">Belize Trip</span></h1>
+        <p className="text-[#E9D8A6]/60 text-lg uppercase tracking-[0.22em]">Choose tours, share your dates, and we will follow up with details.</p>
       </div>
       
       <div className="glass p-8 md:p-16 rounded-[4rem] space-y-20 shadow-2xl border border-white/5">
         {/* Step 1: Tour Selection */}
         <div className="space-y-12">
           <div className="text-center space-y-2">
-            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Select Your Expeditions</h3>
+            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Select Your Tours</h3>
             <p className="text-[#E9D8A6]/40 text-xs uppercase tracking-widest">Pricing is current per person unless noted</p>
           </div>
           
@@ -173,7 +173,7 @@ const Reservations = () => {
                       onClick={() => toggleOption(opt.id)}
                       className={`group p-6 rounded-[2rem] border text-left transition-all flex items-center justify-between ${
                         selectedOptions.includes(opt.id)
-                          ? 'bg-[#E9D8A6] border-[#E9D8A6] shadow-[0_0_30px_rgba(233,216,166,0.15)]'
+                          ? 'bg-[var(--brand-orange)] border-[var(--brand-orange)] shadow-[0_0_30px_rgba(255,90,0,0.18)]'
                           : 'bg-white/5 border-white/10 hover:border-white/20'
                       }`}
                     >
@@ -184,10 +184,10 @@ const Reservations = () => {
                           {selectedOptions.includes(opt.id) && <Check className="w-3 h-3 text-[#E9D8A6]" />}
                         </div>
                         <div>
-                          <p className={`text-[11px] font-bold uppercase tracking-widest ${selectedOptions.includes(opt.id) ? 'text-[#001219]' : 'text-[#E9D8A6]'}`}>
+                          <p className={`text-[11px] font-bold uppercase tracking-widest ${selectedOptions.includes(opt.id) ? 'text-white' : 'text-[#E9D8A6]'}`}>
                             {opt.name}
                           </p>
-                          <p className={`text-[9px] uppercase tracking-widest mt-1 ${selectedOptions.includes(opt.id) ? 'text-[#001219]/40' : 'text-[#E9D8A6]/30'}`}>
+                          <p className={`text-[9px] uppercase tracking-widest mt-1 ${selectedOptions.includes(opt.id) ? 'text-white/70' : 'text-[#E9D8A6]/30'}`}>
                             ${opt.price.toFixed(2)} USD
                           </p>
                         </div>
@@ -203,7 +203,7 @@ const Reservations = () => {
           {selectedOptions.length > 0 && (
             <div className="mt-12 p-8 bg-[#E9D8A6]/5 rounded-[3rem] border border-[#E9D8A6]/10 animate-fade-in flex flex-col md:flex-row justify-between items-center gap-6">
               <div className="text-center md:text-left">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/30 mb-2 font-bold">Estimated Base Total</p>
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/30 mb-2 font-bold">Estimated Starting Total</p>
                 <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">${totalPrice.toFixed(2)} <span className="text-xs font-sans font-light uppercase tracking-widest text-[#E9D8A6]/40 ml-2">USD</span></p>
               </div>
               <div className="flex items-center gap-3 glass px-6 py-4 rounded-full border border-white/5">
@@ -219,8 +219,8 @@ const Reservations = () => {
         {/* Step 2: Guest Details */}
         <form className="space-y-10 pt-20 border-t border-white/5" onSubmit={(e) => e.preventDefault()}>
           <div className="text-center space-y-2 mb-4">
-            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Guest <span className="text-[#48CAE4]">Manifest</span></h3>
-            <p className="text-[#E9D8A6]/40 text-xs uppercase tracking-widest">How should we address you?</p>
+            <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Contact <span className="text-[#48CAE4]">Details</span></h3>
+            <p className="text-[#E9D8A6]/40 text-xs uppercase tracking-widest">Tell us how to reach you.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -229,32 +229,32 @@ const Reservations = () => {
               <input placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-[#E9D8A6] focus:outline-none focus:border-[#E9D8A6]/40 transition-colors" />
             </div>
             <div className="space-y-3">
-              <label className="block text-[10px] uppercase tracking-[0.4em] ml-2 text-[#E9D8A6]/40 font-bold">Email Coordinate</label>
+              <label className="block text-[10px] uppercase tracking-[0.4em] ml-2 text-[#E9D8A6]/40 font-bold">Email Address</label>
               <input type="email" placeholder="adventure@example.com" className="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-[#E9D8A6] focus:outline-none focus:border-[#E9D8A6]/40 transition-colors" />
             </div>
           </div>
           
           <div className="space-y-3">
-            <label className="block text-[10px] uppercase tracking-[0.4em] ml-2 text-[#E9D8A6]/40 font-bold">Expedition Notes</label>
+            <label className="block text-[10px] uppercase tracking-[0.4em] ml-2 text-[#E9D8A6]/40 font-bold">Trip Notes</label>
             <textarea placeholder="Tell us about your party size, preferred dates, and any dietary or gear requirements..." className="w-full bg-white/5 border border-white/10 rounded-[2rem] p-6 text-[#E9D8A6] h-40 focus:outline-none focus:border-[#E9D8A6]/40 transition-colors leading-relaxed"></textarea>
           </div>
 
-          <button type="button" className="w-full bg-[#E9D8A6] text-[#001219] font-bold py-6 rounded-full uppercase tracking-[0.4em] hover:bg-white transition-all shadow-3xl active:scale-[0.98] text-lg">
-            Submit Inquiry to Base
+          <button type="button" className="w-full bg-[var(--brand-orange)] text-white font-bold py-6 rounded-full uppercase tracking-[0.4em] hover:bg-[var(--brand-orange-light)] transition-all shadow-3xl active:scale-[0.98] text-lg">
+            Send Tour Inquiry
           </button>
         </form>
 
         <div className="pt-12 text-center border-t border-white/5">
-          <p className="text-[10px] uppercase tracking-[0.5em] text-[#E9D8A6]/20 mb-6 font-bold">Immediate Assistance</p>
+          <p className="text-[10px] uppercase tracking-[0.5em] text-[#E9D8A6]/20 mb-6 font-bold">Need Help Now?</p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-10">
             <div className="space-y-1">
                <a href="tel:0115016712624" className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#E9D8A6] hover:text-white transition-colors">011-501-671-2624</a>
-               <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Direct Satellite Link</p>
+               <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Call or WhatsApp</p>
             </div>
             <div className="h-10 w-px bg-white/5 hidden md:block"></div>
             <div className="space-y-1 text-center md:text-left">
                <p className="text-xl font-extrabold tracking-tight text-[#E9D8A6]/80">reservations@actiondivers.com</p>
-               <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Electronic Post</p>
+               <p className="text-[9px] uppercase tracking-widest text-[#005F73] font-bold">Email Reservations</p>
             </div>
           </div>
         </div>
@@ -303,15 +303,15 @@ const App: React.FC = () => {
   return (
     <Router>
       <ScrollToTop />
-      <div className="min-h-screen bg-[#001219] text-[#E9D8A6] selection:bg-[#E9D8A6] selection:text-[#001219]">
+      <div className="min-h-screen bg-[#001219] text-[#E9D8A6] selection:bg-[var(--brand-orange)] selection:text-white">
         <Navbar />
         <main>
           <Routes>
             <Route path="/" element={<><SEO title="Belize Scuba Diving, Snorkeling & Adventure Tours" description="Action Divers & Adventures offers boutique Belize scuba diving, Hol Chan snorkeling, Shark Ray Alley, fishing, beach BBQs, cave tubing, Maya ruins, and mainland tours from San Pedro." path="/" structuredData={businessStructuredData} /><Home /></>} />
             <Route path="/about" element={<><SEO title="About Action Divers & Adventures Belize" description="Meet Action Divers & Adventures, a San Pedro, Ambergris Caye tour operator known for professional guides, personal service, and memorable Belize reef and mainland adventures." path="/about" image="/images/gallery/SCUBA-and-Snorkelers-1.png" /><About /></>} />
-            <Route path="/gallery" element={<><SEO title="Belize Reef, Snorkeling & Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland expeditions." path="/gallery" image="/images/gallery/Turtle.png" /><Gallery /></>} />
+            <Route path="/gallery" element={<><SEO title="Belize Reef, Snorkeling & Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours." path="/gallery" image="/images/gallery/Turtle.png" /><Gallery /></>} />
             <Route path="/island-adventures" element={<><SEO title="Island Adventures from San Pedro Belize" description="Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures." path="/island-adventures" image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" /><IslandAdventures /></>} />
-            <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours, Maya Ruins & Cave Adventures" description="Book Belize mainland expeditions from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
+            <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours, Maya Ruins & Cave Adventures" description="Book Belize mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
             <Route path="/tour/:id" element={<TourDetail />} />
             <Route path="/blog" element={<VoyageChronicles />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />

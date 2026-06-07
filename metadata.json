@@ -1,6 +1,6 @@
 {
-  "name": "Action Divers & Adventures - Luxury Belize Expeditions",
-  "description": "A high-end 'Quiet Luxury' digital experience for Belizean adventures, featuring a Glassmorphism aesthetic and a sophisticated AI concierge.",
+  "name": "Action Divers & Adventures Belize Tours",
+  "description": "Website for Action Divers & Adventures, a San Pedro, Ambergris Caye dive shop and tour operator offering scuba diving, snorkeling, fishing, island adventures, and mainland tours.",
   "requestFramePermissions": [
     "camera",
     "microphone"

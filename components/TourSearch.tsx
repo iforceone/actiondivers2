@@ -135,7 +135,7 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
                   }
                   className={`rounded-full border px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-all ${
                     isActive
-                      ? 'border-[#E9D8A6] bg-[#E9D8A6] text-[#001219]'
+                      ? 'border-[var(--brand-orange)] bg-[var(--brand-orange)] text-white'
                       : 'border-white/15 bg-white/5 text-[#E9D8A6]/60 hover:border-[#E9D8A6]/50 hover:text-[#E9D8A6]'
                   }`}
                 >
@@ -186,7 +186,7 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
               <button
                 type="button"
                 onClick={clearFilters}
-                className="rounded-full bg-[#E9D8A6] px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#001219] transition-colors hover:bg-white"
+                className="rounded-full bg-[var(--brand-orange)] px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-white transition-colors hover:bg-[var(--brand-orange-light)]"
               >
                 View All Tours
               </button>

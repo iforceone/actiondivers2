@@ -61,7 +61,7 @@ export const BLOG_POSTS: BlogPost[] = [
     relatedTours: ['beach-bbq', 'altun-ha-cave-tubing', 'xunantunich-cave-tubing'],
     body: [
       'A Belize vacation can be shaped around the reef, the mainland, or both. Island tours keep you close to Ambergris Caye with snorkeling, scuba diving, fishing, beach barbecues, and time on the Caribbean Sea.',
-      'Mainland tours take you into a different Belize. Maya temples, cave tubing, zip-lining, rainforest roads, and river journeys make these days feel more like expeditions. They usually start earlier and run longer, but the payoff is a deeper look at the country beyond the coast.',
+      'Mainland tours take you into a different Belize. Maya temples, cave tubing, zip-lining, rainforest roads, and river journeys make these days feel more like full-day adventures. They usually start earlier and run longer, but the payoff is a deeper look at the country beyond the coast.',
       'Choose island tours if you want easier logistics, shorter boat rides, and more time in the water. Choose mainland tours if your group wants history, caves, jungle, and a full-day adventure. For most visitors, the best itinerary includes at least one reef day and one mainland day.',
       'If you are traveling with children, mixed ages, or guests with different energy levels, balance matters. Follow an early mainland day with a relaxed snorkeling or beach day so the trip feels exciting without becoming exhausting.'
     ],

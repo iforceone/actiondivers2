@@ -29,20 +29,26 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/70 via-transparent to-[#001219]"></div>
         
         <div className="relative z-10 text-center px-4 max-w-4xl">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.32em] text-white/85">
+            San Pedro, Ambergris Caye Dive Shop & Tour Operator
+          </p>
           <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-tight text-white drop-shadow-lg">
             Dive, Explore, <br className="hidden md:block" /><span className="text-[var(--brand-orange)]">Experience Belize</span>
           </h1>
           <p className="text-xl md:text-2xl font-medium mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-            Real Belize experiences with personalized service. From world-class reef dives to unforgettable island escapes, your adventure starts here.
+            Scuba diving, snorkeling, fishing, and unforgettable island adventures from San Pedro, Ambergris Caye, with friendly local guides and personalized service.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/island-adventures" className="bg-[var(--brand-orange)] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] shadow-lg shadow-orange-950/30 transition-all transform hover:-translate-y-1 text-center">
               Explore Tours
             </Link>
             <Link to="/reservations" className="bg-white/10 backdrop-blur-md text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white hover:text-[#003049] transition-all border border-white/30 shadow-lg text-center">
-              Book Your Adventure
+              Plan Your Trip
             </Link>
           </div>
+          <p className="mt-6 text-sm font-semibold text-white/75">
+            Tour desk located 5 miles north of San Pedro at La Perla Del Caribe.
+          </p>
         </div>
       </section>
 

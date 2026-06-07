@@ -14,7 +14,7 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'island',
     price: 116.25,
     description: 'Bespoke diving experiences for all skill levels, from Mexico Rocks to the barrier reef.',
-    longDescription: 'Are you involved in the world of SCUBA diving, or are you interested in trying it out? Action Divers and Adventures offers Discover Scuba classes, full certification classes, refreshers, and reef diving. Belize has the second-largest barrier reef in the world and the island of Ambergris Caye offers easy access to a wide variety of spectacular dive sites. A short 5 – 10 minute boat ride, takes you to an array of dive sites. We offer one, two, or three-tank dives including night expeditions.',
+    longDescription: 'Are you involved in the world of SCUBA diving, or are you interested in trying it out? Action Divers and Adventures offers Discover Scuba classes, full certification classes, refreshers, and reef diving. Belize has the second-largest barrier reef in the world and the island of Ambergris Caye offers easy access to a wide variety of spectacular dive sites. A short 5 – 10 minute boat ride, takes you to an array of dive sites. We offer one, two, or three-tank dives including night dives.',
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
     priceBreakdown: {
@@ -109,7 +109,7 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'mainland',
     price: 337.50,
     description: 'A perfect blend of Mayan history and natural wonder, featuring ruins and cave exploration.',
-    longDescription: 'Experience the best of Belize’s mainland. Start your day by exploring the ancient Mayan city of Altun Ha, famous for the discovery of the Jade Head. Wander through its impressive plazas and climb the Temple of the Masonry Altars for a breathtaking view. Afterward, journey to the Nohoch Che’en Caves for a refreshing cave tubing expedition. Drift through mystical limestone caves while learning about the sacred rituals of the ancient Maya.',
+    longDescription: 'Experience the best of Belize’s mainland. Start your day by exploring the ancient Mayan city of Altun Ha, famous for the discovery of the Jade Head. Wander through its impressive plazas and climb the Temple of the Masonry Altars for a breathtaking view. Afterward, journey to the Nohoch Che’en Caves for a refreshing cave tubing tour. Drift through mystical limestone caves while learning about the sacred rituals of the ancient Maya.',
     isAvailable: true,
     image: '/images/gallery/web-maya-ruin.jpg', // REAL Action Divers Belize image
     priceBreakdown: {

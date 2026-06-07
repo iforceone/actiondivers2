@@ -28,30 +28,30 @@ const About: React.FC = () => {
           </h2>
           <div className="space-y-8 text-xl font-light leading-relaxed text-[#E9D8A6]/80">
             <p>
-              It’s time to get started on your Adventure! Known for our professionalism, knowledge and friendly service, 
+              It's time to get started on your Belize adventure. Known for professionalism, knowledge, and friendly service,
               Action Divers and Adventures is your one-stop tour operator ready to help you create that unforgettable 
               fun-filled vacation.
             </p>
             <p>
-              Our team is made up of licensed tour guides each with several years of experience. We do our best to 
-              assist all our guest in whatever their needs are. We invite you to discover Belize through our 
-              expertise—where safety meets the thrill of exploration.
+              Our team is made up of licensed tour guides, each with several years of experience. We do our best to
+              assist our guests with whatever they need. We invite you to discover Belize with a team focused on
+              safety, service, and memorable days on the water.
             </p>
             <p>
-              We invite you to review our website and if there is any questions that you may have please feel free 
-              to contact us by way of our contact form or our telephone number provided.
+              Have questions about scuba diving, snorkeling, fishing, or mainland tours? Call us or send an inquiry and
+              we will help you plan the right trip for your group.
             </p>
           </div>
           
           <div className="pt-10 flex flex-col items-center gap-4">
             <a 
               href="tel:0115016712624" 
-              className="inline-flex items-center space-x-4 bg-[#E9D8A6] text-[#001219] px-12 py-5 rounded-full font-bold uppercase tracking-[0.2em] hover:bg-white transition-all shadow-2xl active:scale-95"
+              className="inline-flex items-center space-x-4 bg-[var(--brand-orange)] text-white px-12 py-5 rounded-full font-bold uppercase tracking-[0.2em] hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl active:scale-95"
             >
               <Phone className="w-4 h-4" />
               <span>011-501-671-2624</span>
             </a>
-            <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40">Call us to plan your bespoke itinerary</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40">Call us to plan your Belize tours</p>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ const About: React.FC = () => {
             />
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-12 py-8 rounded-[2rem] border border-white/20 shadow-2xl whitespace-nowrap">
               <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">20+</p>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#E9D8A6]/60">Years of Elite Experience</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-[#E9D8A6]/60">Years of Local Experience</p>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@ const About: React.FC = () => {
               </div>
               <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Local Knowledge</h3>
               <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
-                With years of local experience, we know the secret canyons and hidden trails that typical tours miss.
+                With years of local experience, we help guests choose the reef, fishing, island, and mainland tours that fit their group.
               </p>
             </div>
             <div className="space-y-8 group">
@@ -106,13 +106,13 @@ const About: React.FC = () => {
 
       <section className="py-40 px-6">
         <div className="max-w-4xl mx-auto glass p-20 rounded-[4rem] border border-white/10 shadow-3xl">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-10 leading-tight">Ready to begin your <span className="text-[#48CAE4]">extraordinary</span> journey?</h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-10 leading-tight">Ready to plan your <span className="text-[#48CAE4]">Belize adventure?</span></h2>
           <p className="text-[#E9D8A6]/60 mb-14 text-xl font-light">
-            Let us help you design the perfect itinerary for your bespoke Belizean getaway.
+            Tell us your dates, group size, and the tours you are interested in. We will help you choose the right options.
           </p>
           <Link 
             to="/reservations" 
-            className="inline-block bg-[#E9D8A6] text-[#001219] px-16 py-6 rounded-full font-bold uppercase tracking-[0.3em] hover:bg-white transition-all shadow-2xl active:scale-95"
+            className="inline-block bg-[var(--brand-orange)] text-white px-16 py-6 rounded-full font-bold uppercase tracking-[0.3em] hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl active:scale-95"
           >
             Inquire Today
           </Link>

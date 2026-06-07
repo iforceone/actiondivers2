@@ -19,12 +19,12 @@ const MainlandAdventures: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
         
         <div className="relative z-10 text-center px-4 max-w-5xl">
-          <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.6em] uppercase mb-6 block">Beyond the Barrier Reef</span>
+          <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.45em] uppercase mb-6 block">Belize Mainland Tours</span>
           <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#E9D8A6] leading-none">
-            Mainland <br /> <span className="text-[#48CAE4]">Expeditions</span>
+            Mainland <br /> <span className="text-[#48CAE4]">Adventures</span>
           </h1>
           <p className="text-xl md:text-2xl font-light text-[#E9D8A6]/80 max-w-2xl mx-auto leading-relaxed">
-            Journey into the emerald heart of Belize. Discover ancient Maya cities, sacred caves, and the untamed spirit of the rainforest.
+            Visit Maya ruins, caves, rivers, and rainforest sites on full-day tours from Ambergris Caye.
           </p>
         </div>
       </section>
@@ -34,7 +34,7 @@ const MainlandAdventures: React.FC = () => {
         <Compass className="w-12 h-12 text-[#005F73] mx-auto mb-10 opacity-50" />
         <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#E9D8A6]">The Soul of the Maya World</h2>
         <p className="text-xl text-[#E9D8A6]/70 leading-relaxed font-light">
-          While our crystalline waters are legendary, the secrets of Belize lie deep within its jungles. From the haunting beauty of the ATM Caves to the towering heights of Lamanai, our mainland expeditions are curated for the discerning traveler seeking depth, history, and raw natural beauty.
+          Belize is more than the reef. Mainland day trips connect you with Maya history, cave tubing, zip-lining, river journeys, and rainforest scenery, with logistics handled from San Pedro.
         </p>
       </section>
 
@@ -68,7 +68,7 @@ const MainlandAdventures: React.FC = () => {
               <div className="grid grid-cols-2 gap-6 pt-4">
                 <div className="glass p-6 rounded-2xl border border-white/5">
                   <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 mb-2">Duration</p>
-                  <p className="text-[#E9D8A6] font-medium">Full Day Expedition</p>
+                  <p className="text-[#E9D8A6] font-medium">Full Day Tour</p>
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
                   <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 mb-2">Departures</p>
@@ -78,9 +78,9 @@ const MainlandAdventures: React.FC = () => {
               <div className="pt-8 flex items-center space-x-8">
                 <Link 
                   to={`/tour/${tour.id}`} 
-                  className="bg-[#E9D8A6] text-[#001219] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-white transition-all transform hover:-translate-y-1"
+                  className="bg-[var(--brand-orange)] text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all transform hover:-translate-y-1"
                 >
-                  View Expedition
+                  View Tour
                 </Link>
                 <Link 
                   to="/reservations" 
@@ -97,9 +97,9 @@ const MainlandAdventures: React.FC = () => {
       {/* Call to Action */}
       <section className="py-32 bg-white/5">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Prepare for the <span className="text-[#48CAE4]">Extraordinary</span></h2>
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Plan a <span className="text-[#48CAE4]">Mainland Day</span></h2>
           <p className="text-[#E9D8A6]/60 text-xl font-light leading-relaxed">
-            Mainland tours depart early to ensure we experience the sites in their most serene state. Space is limited for these curated experiences.
+            Mainland tours start early and run most of the day. Contact us with your travel dates and group size so we can help choose the right route.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
             <div className="flex items-center justify-center space-x-3 text-[#E9D8A6]/40">
@@ -109,7 +109,7 @@ const MainlandAdventures: React.FC = () => {
             <div className="h-px w-12 bg-white/10 self-center hidden sm:block"></div>
             <div className="flex items-center justify-center space-x-3 text-[#E9D8A6]/40">
               <Compass className="w-5 h-5" />
-              <span className="text-xs font-bold uppercase tracking-widest">Licensed Elite Guides</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Licensed Local Guides</span>
             </div>
           </div>
         </div>
