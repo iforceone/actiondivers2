@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, Sparkles, MessageCircle } from 'lucide-react';
+import { X, Send, Sparkles } from 'lucide-react';
 import { getAssistantResponse } from '../services/geminiService';
-import { buildWhatsAppUrl } from '../config';
+import AssistantLauncher from './AssistantLauncher';
 
 const TourAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,31 +34,8 @@ const TourAssistant: React.FC = () => {
 
   return (
     <>
-      {/* Floating Action Button - z-40 so it is below navbar/drawer */}
-      <div className="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[40]">
-        {!isOpen && (
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[#071820]/95 p-2 shadow-2xl backdrop-blur-xl">
-            <a
-              href={buildWhatsAppUrl('Hi Action Divers & Adventures! I would like help planning a Belize tour.')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:scale-105"
-              aria-label="Chat with Action Divers on WhatsApp"
-              title="WhatsApp"
-            >
-              <MessageCircle className="h-5 w-5" fill="currentColor" strokeWidth={1.5} />
-            </a>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="flex h-12 items-center gap-2 rounded-full bg-[var(--brand-aqua)] px-4 font-bold text-[#001219] transition-transform hover:scale-[1.03]"
-              aria-label="Open tour assistant"
-            >
-              <Sparkles className="h-5 w-5" />
-              <span className="hidden text-xs uppercase tracking-widest sm:inline">Need help?</span>
-            </button>
-          </div>
-        )}
-      </div>
+      {/* Launcher dock — hidden while the chat is open. z-40 keeps it below navbar/drawer. */}
+      {!isOpen && <AssistantLauncher onOpen={() => setIsOpen(true)} />}
 
       {/* Centered Modal Assistant - z-210 to be on top of everything including drawer */}
       {isOpen && (
