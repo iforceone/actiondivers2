@@ -16,7 +16,7 @@ import { Check, Info, Anchor, Map, Ship, Droplets, MessageCircle, Loader2, Check
 import SEO, { SITE_URL } from './components/SEO';
 import { INITIAL_TOURS } from './constants';
 import { BLOG_POSTS } from './data/blogPosts';
-import { CONTACT, isInquiryConfigured, buildWhatsAppUrl } from './config';
+import { CONTACT, API, buildWhatsAppUrl } from './config';
 
 const Footer = () => (
   <footer className="bg-[#001219] border-t border-white/5 py-16 px-4">
@@ -182,7 +182,7 @@ const Reservations = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isInquiryConfigured()) {
+    if (!API.isConfigured()) {
       setStatus('error');
       setErrorMsg('Online form is being set up. Please reach us by WhatsApp or phone below.');
       return;
@@ -190,7 +190,7 @@ const Reservations = () => {
     setStatus('submitting');
     setErrorMsg('');
     try {
-      const res = await fetch(CONTACT.inquiryEndpoint, {
+      const res = await fetch(API.url('/inquiry'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

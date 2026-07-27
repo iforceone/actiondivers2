@@ -1,6 +1,7 @@
-name = "actiondivers-inquiry"
+name = "actiondivers-api"
 main = "src/index.ts"
 compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
 # Non-secret config. Edit these to taste.
@@ -12,14 +13,27 @@ FROM_EMAIL = "Action Divers & Adventures <reservations@actiondiversbelize.com>"
 # Comma-separated site origins allowed to POST to this Worker (no trailing slash).
 ALLOWED_ORIGINS = "https://actiondivers2.davebze.workers.dev,http://localhost:3000"
 
-# Rate limit: max 5 inquiries per client IP per 60s. `period` must be 10 or 60.
+# Rate limits are per client IP. `period` must be 10 or 60; each block needs its
+# own namespace_id. Requires wrangler 4 — v3 ignores these silently.
+
+# Reservation form: 5 per minute is plenty for a human filling out a form.
 [[ratelimits]]
-name = "RATE_LIMITER"
+name = "INQUIRY_LIMITER"
 namespace_id = "1001"
 
   [ratelimits.simple]
   limit = 5
   period = 60
 
-# RESEND_API_KEY is a SECRET — never put it here. Set it with:
+# Tour Assistant: every call bills against our Gemini quota, so cap chattiness.
+[[ratelimits]]
+name = "ASSISTANT_LIMITER"
+namespace_id = "1002"
+
+  [ratelimits.simple]
+  limit = 12
+  period = 60
+
+# RESEND_API_KEY and GEMINI_API_KEY are SECRETS — never put them here. Set with:
 #   npx wrangler secret put RESEND_API_KEY
+#   npx wrangler secret put GEMINI_API_KEY

@@ -1,57 +1,44 @@
+import { API } from '../config';
 
-import { GoogleGenAI } from "@google/genai";
-import { INITIAL_TOURS } from "../constants";
+const FALLBACK =
+  "I apologize, my connection to the mainland is slightly interrupted. Please contact us directly at 011-501-671-2624 for immediate assistance.";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+/**
+ * Ask the Tour Assistant.
+ *
+ * The Gemini call happens in the site API Worker (see /worker-api), not here —
+ * the API key must never reach the browser. The system prompt and model choice
+ * live there too, so this only ships the guest's message.
+ */
+export async function getAssistantResponse(message: string): Promise<string> {
+  if (!API.isConfigured()) {
+    console.warn('Assistant endpoint not configured; set apiBaseUrl in config.ts');
+    return FALLBACK;
+  }
 
-const SYSTEM_INSTRUCTION = `
-You are the "Tour Assistant" for Action Divers & Adventures in Belize. 
-Your tone must be energetic, welcoming, and highly knowledgeable (fun, friendly adventure vibe).
-
-SOLE SOURCE OF TRUTH:
-You must use the following content as your primary knowledge base. If asked about tours, diving sites, or mainland adventures, use the specific details and exact pricing provided here.
-
-PRICING DETAILS:
-- Diving (Single Mexico Rocks): Total $116.25 (Base $65, Gear $25, Park $15, Tax $11.25).
-- Two Dives: Total $144.38.
-- Hol Chan Combo Dive: Total $133.13.
-- Night Dive: Total $155.63.
-- Courses: Refresher ($208.75), Resort Course ($211.88), Scuba Discovery / Discover Scuba ($211.88), Open Water Referral 2-day ($480.00), Scuba Diver ($436.88), Open Water Certification 3-day ($564.38), Advanced Open Water ($493.13).
-- Snorkeling: Hol Chan/Shark Ray ($90.00), Mexico Rocks ($75.00), Caye Caulker/Manatee/Tarpon Feeding ($175.00), Sailing - Hol Chan/Caye Caulker ($175.00, lunch not included), Bacalar Chico ($175.00).
-- Fishing: Reef (1-4 ppl) Half Day $309.38 / Full Day $562.50. Deep Sea (1-4 ppl) Half Day $900.00 / Full Day $1800.00. Flat Fishing (1-2 ppl) Half Day $393.75 / Full Day $600.00.
-- Beach BBQ (1-4 ppl): $562.50 (includes food/gear/drinks).
-- Mainland Tours: 
-    - Altun Ha & Cave Tubing: $337.50
-    - Xunantunich & Cave Tubing: $337.50
-    - Cave Tubing & Zip-lining: $337.50
-    - Lamanai: $281.25
-    - ATM Caves: $450.00
-- All mainland experiences include park fees, a prepared lunch, and professional transportation from the island.
-
-CONTACT INFO:
-- Phone: 011-501-671-2624
-
-GUIDELINES:
-- Be concise but warm and clear.
-- If guests ask about price breakdowns, share the gear and tax details clearly.
-- Never mention your underlying AI model.
-- You represent Action Divers & Adventures.
-`;
-
-export async function getAssistantResponse(message: string) {
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: message,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.7,
-        topP: 0.95,
-      }
+    const res = await fetch(API.url('/assistant'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message }),
     });
-    return response.text;
+
+    const data = (await res.json().catch(() => null)) as
+      | { ok?: boolean; text?: string; error?: string }
+      | null;
+
+    if (!res.ok || !data?.ok) {
+      // 429 is the one case worth wording differently — nothing is broken.
+      if (res.status === 429) {
+        return "I'm getting a lot of questions right now. Give me a moment and try again.";
+      }
+      console.error('Assistant request failed:', res.status, data?.error ?? '');
+      return FALLBACK;
+    }
+
+    return data.text?.trim() || FALLBACK;
   } catch (error) {
-    console.error("Gemini Error:", error);
-    return "I apologize, my connection to the mainland is slightly interrupted. Please contact us directly at 011-501-671-2624 for immediate assistance.";
+    console.error('Assistant network error:', error);
+    return FALLBACK;
   }
 }

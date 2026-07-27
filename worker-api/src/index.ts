@@ -1,24 +1,39 @@
 /**
- * Action Divers & Adventures — Tour Inquiry Worker
+ * Action Divers & Adventures — Site API Worker
  *
- * Standalone Cloudflare Worker that receives reservation-form submissions and
- * sends them as a clean, unbranded email FROM your own domain via Resend.
+ * Standalone Cloudflare Worker backing the website. Two routes:
+ *   POST /inquiry   — emails reservation-form submissions from our own domain via Resend
+ *   POST /assistant — proxies Tour Assistant chat to Gemini
+ *
+ * Both API keys live only as Worker secrets. In particular the Gemini key must
+ * never be bundled into the site: anything shipped to the browser is public, and
+ * a leaked key is billable to us.
  *
  * Secrets / vars (see wrangler.toml + `wrangler secret put`):
- *   RESEND_API_KEY  (secret)  — Resend API key
- *   TO_EMAIL        (var)     — where inquiries are delivered
- *   FROM_EMAIL      (var)     — verified sender, e.g. "Action Divers <reservations@actiondiversbelize.com>"
- *   ALLOWED_ORIGINS (var)     — comma-separated site origins allowed to POST
- *   RATE_LIMITER    (binding) — Workers rate limit, keyed by client IP
+ *   RESEND_API_KEY    (secret)  — Resend API key
+ *   GEMINI_API_KEY    (secret)  — Google Gemini API key
+ *   TO_EMAIL          (var)     — where inquiries are delivered
+ *   FROM_EMAIL        (var)     — verified sender, e.g. "Action Divers <reservations@actiondiversbelize.com>"
+ *   ALLOWED_ORIGINS   (var)     — comma-separated site origins allowed to POST
+ *   INQUIRY_LIMITER   (binding) — rate limit for /inquiry, keyed by client IP
+ *   ASSISTANT_LIMITER (binding) — rate limit for /assistant, keyed by client IP
  */
+
+import { GoogleGenAI } from '@google/genai';
+import { SYSTEM_INSTRUCTION } from './systemInstruction';
 
 export interface Env {
   RESEND_API_KEY: string;
+  GEMINI_API_KEY: string;
   TO_EMAIL: string;
   FROM_EMAIL: string;
   ALLOWED_ORIGINS: string;
-  RATE_LIMITER: RateLimit;
+  INQUIRY_LIMITER: RateLimit;
+  ASSISTANT_LIMITER: RateLimit;
 }
+
+const ASSISTANT_MODEL = 'gemini-3-flash-preview';
+const MAX_MESSAGE_CHARS = 2000;
 
 interface InquiryPayload {
   name?: string;
@@ -113,29 +128,12 @@ function renderText(p: InquiryPayload): string {
     .join('\n');
 }
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const origin = request.headers.get('Origin') ?? '';
-    const allowed = (env.ALLOWED_ORIGINS ?? '')
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const cors = corsHeaders(origin, allowed);
-    const json = (body: unknown, status: number) =>
-      new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...cors } });
+type Json = (body: unknown, status: number) => Response;
 
-    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
-    if (request.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
-
-    // CORS headers only constrain browsers. Enforce the allowlist server-side so
-    // curl/scripts can't use this Worker as an open relay to send mail from our domain.
-    if (!allowed.includes(origin)) {
-      return json({ ok: false, error: 'Forbidden' }, 403);
-    }
-
+async function handleInquiry(request: Request, env: Env, json: Json): Promise<Response> {
     // Rate limit per client IP so a single source can't flood the inbox.
     const clientIp = request.headers.get('CF-Connecting-IP') ?? 'unknown';
-    const { success } = await env.RATE_LIMITER.limit({ key: clientIp });
+    const { success } = await env.INQUIRY_LIMITER.limit({ key: clientIp });
     if (!success) {
       return json({ ok: false, error: 'Too many inquiries. Please try WhatsApp or phone.' }, 429);
     }
@@ -192,5 +190,79 @@ export default {
     }
 
     return json({ ok: true }, 200);
+}
+
+async function handleAssistant(request: Request, env: Env, json: Json): Promise<Response> {
+  // The LLM call costs money per request, so this is limited harder than the form.
+  const clientIp = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+  const { success } = await env.ASSISTANT_LIMITER.limit({ key: clientIp });
+  if (!success) {
+    return json({ ok: false, error: 'Too many questions at once. Please wait a moment.' }, 429);
+  }
+
+  let body: { message?: unknown };
+  try {
+    body = (await request.json()) as { message?: unknown };
+  } catch {
+    return json({ ok: false, error: 'Invalid request.' }, 400);
+  }
+
+  const message = typeof body.message === 'string' ? body.message.trim() : '';
+  if (!message) return json({ ok: false, error: 'Please include a message.' }, 422);
+  // Cap input length so a huge prompt can't run up the bill on one request.
+  if (message.length > MAX_MESSAGE_CHARS) {
+    return json({ ok: false, error: 'That message is too long. Please shorten it.' }, 413);
+  }
+
+  try {
+    const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+    const response = await ai.models.generateContent({
+      model: ASSISTANT_MODEL,
+      contents: message,
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 0.7,
+        topP: 0.95,
+      },
+    });
+    return json({ ok: true, text: response.text ?? '' }, 200);
+  } catch (error) {
+    console.error('Gemini call failed', error);
+    return json({ ok: false, error: 'Assistant unavailable.' }, 502);
+  }
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const origin = request.headers.get('Origin') ?? '';
+    const allowed = (env.ALLOWED_ORIGINS ?? '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const cors = corsHeaders(origin, allowed);
+    const json: Json = (body, status) =>
+      new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...cors } });
+
+    if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+    if (request.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
+
+    // CORS headers only constrain browsers. Enforce the allowlist server-side so
+    // curl/scripts can't use this Worker as an open relay to send mail from our
+    // domain or burn through our Gemini quota.
+    if (!allowed.includes(origin)) {
+      return json({ ok: false, error: 'Forbidden' }, 403);
+    }
+
+    const { pathname } = new URL(request.url);
+    switch (pathname) {
+      // '/' kept for the original single-purpose deploy shape.
+      case '/':
+      case '/inquiry':
+        return handleInquiry(request, env, json);
+      case '/assistant':
+        return handleAssistant(request, env, json);
+      default:
+        return json({ ok: false, error: 'Not found' }, 404);
+    }
   },
 };

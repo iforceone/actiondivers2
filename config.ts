@@ -7,15 +7,20 @@ export const CONTACT = {
   // wa.me uses the full international number with no +, spaces, or dashes.
   whatsappNumber: '5016712624',
   email: 'reservations@actiondiversbelize.com',
-  // POST endpoint for the reservations form — your standalone Cloudflare Worker
-  // (see /worker-inquiry). After `wrangler deploy`, paste the Worker URL here, e.g.
-  // 'https://actiondivers-inquiry.<your-subdomain>.workers.dev'.
-  // The form falls back to WhatsApp/phone until this is set.
-  inquiryEndpoint: 'https://REPLACE_WITH_INQUIRY_WORKER_URL',
 };
 
-export const isInquiryConfigured = () =>
-  !CONTACT.inquiryEndpoint.includes('REPLACE_WITH_INQUIRY_WORKER_URL');
+// Base URL of the site API Worker (see /worker-api). After `wrangler deploy`,
+// paste the Worker URL here, e.g. 'https://actiondivers-api.<subdomain>.workers.dev'.
+// No trailing slash. Until this is set the reservations form falls back to
+// WhatsApp/phone and the Tour Assistant returns its offline message.
+const API_BASE_URL = 'https://REPLACE_WITH_API_WORKER_URL';
+
+export const API = {
+  baseUrl: API_BASE_URL,
+  isConfigured: () => !API_BASE_URL.includes('REPLACE_WITH_API_WORKER_URL'),
+  /** url('/inquiry') -> 'https://.../inquiry' */
+  url: (path: string) => `${API_BASE_URL.replace(/\/$/, '')}${path}`,
+};
 
 /** Build a wa.me deep link with a pre-filled message. */
 export function buildWhatsAppUrl(message?: string): string {
