@@ -6,10 +6,14 @@ workers_dev = true
 
 # Non-secret config. Edit these to taste.
 [vars]
-# Where inquiries are delivered. Point at a test inbox while testing, then switch to the live one.
-TO_EMAIL = "reservations@actiondiversbelize.com"
+# Where inquiries are delivered. Must be a real mailbox — reservations@ does not
+# exist and bounced with "Recipient not found" (MX records prove the domain accepts
+# mail, not that a given address does).
+TO_EMAIL = "info@actiondiversbelize.com"
 # Verified sender (the domain must be verified in Resend). Name + address form is fine.
-FROM_EMAIL = "Action Divers & Adventures <reservations@actiondiversbelize.com>"
+# Kept on a real mailbox so bounce notifications land somewhere and filters don't
+# penalise a From address that can't receive mail.
+FROM_EMAIL = "Action Divers & Adventures <info@actiondiversbelize.com>"
 # Comma-separated site origins allowed to POST to this Worker (no trailing slash).
 ALLOWED_ORIGINS = "https://actiondivers2.davebze.workers.dev,http://localhost:3000"
 
