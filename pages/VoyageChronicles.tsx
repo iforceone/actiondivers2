@@ -41,8 +41,8 @@ const VoyageChronicles: React.FC = () => {
         structuredData={structuredData}
       />
       <div className="text-center mb-24">
-        <h1 className="text-7xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6]">Belize <span className="text-[#48CAE4]">Travel Guides</span></h1>
-        <p className="text-[#E9D8A6]/60 uppercase tracking-[0.3em] text-sm">Snorkeling, diving, fishing, and tour planning tips</p>
+        <h1 className="text-7xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#F8F4E8]">Belize <span className="text-[#11C7D9]">Travel Guides</span></h1>
+        <p className="text-[#F8F4E8]/60 uppercase tracking-[0.3em] text-sm">Snorkeling, diving, fishing, and tour planning tips</p>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -60,17 +60,17 @@ const VoyageChronicles: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-[#001219]/80 to-transparent"></div>
             </div>
             <div className="p-8 flex-1 flex flex-col">
-              <p className="text-[10px] text-[#005F73] font-bold uppercase tracking-[0.4em] mb-4">{post.date}</p>
-              <h2 className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] mb-4 group-hover:text-white transition-colors line-clamp-2">
+              <p className="text-[10px] text-[#11C7D9] font-bold uppercase tracking-[0.4em] mb-4">{post.date}</p>
+              <h2 className="text-2xl font-extrabold tracking-tight text-[#F8F4E8] mb-4 group-hover:text-white transition-colors line-clamp-2">
                 {post.title}
               </h2>
-              <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-sm line-clamp-3 mb-8">
+              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-sm line-clamp-3 mb-8">
                 {post.excerpt}
               </p>
               <div className="mt-auto pt-6 border-t border-white/5">
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#E9D8A6]/40 hover:text-[#E9D8A6] transition-all flex items-center group/btn"
+                  className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#F8F4E8]/40 hover:text-[#F8F4E8] transition-all flex items-center group/btn"
                 >
                   Read Guide <ArrowRight className="ml-2 w-3 h-3 transform group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
@@ -90,7 +90,7 @@ const VoyageChronicles: React.FC = () => {
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#E9D8A6]/40">
+          <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-[#F8F4E8]/40">
             Page {currentPage} of {totalPages}
           </span>
           <button 

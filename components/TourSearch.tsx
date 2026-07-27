@@ -77,36 +77,36 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.45em] text-[#48CAE4]">Adventure Finder</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.45em] text-[#11C7D9]">Adventure Finder</p>
             <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
               Find Your Belize Adventure
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#E9D8A6]/60 md:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/60 md:text-base">
               Search by reef, ruin, cave, snorkel, dive, or fishing. Matching tours update right below.
             </p>
           </div>
           <div className="text-left lg:text-right">
-            <p className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">{filteredTours.length}</p>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#E9D8A6]/40">
+            <p className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">{filteredTours.length}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#F8F4E8]/40">
               {filteredTours.length === 1 ? 'Adventure Found' : 'Adventures Found'}
             </p>
           </div>
         </div>
 
         <div className="relative">
-          <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-[#E9D8A6]/40" />
+          <Search className="absolute left-5 top-1/2 h-6 w-6 -translate-y-1/2 text-[#F8F4E8]/40" />
           <input
             type="text"
             placeholder="Try “Hol Chan”, “cave”, “snorkeling”, “fishing”..."
             value={filters.searchTerm}
             onChange={(e) => updateFilter('searchTerm', e.target.value)}
-            className="w-full rounded-2xl border border-white/20 bg-white/10 py-5 pl-14 pr-14 text-lg text-[#E9D8A6] placeholder-[#E9D8A6]/40 transition-all focus:border-[#E9D8A6]/60 focus:bg-white/[0.13] focus:outline-none"
+            className="w-full rounded-2xl border border-white/20 bg-white/10 py-5 pl-14 pr-14 text-lg text-[#F8F4E8] placeholder-[#F8F4E8]/40 transition-all focus:border-[#F8F4E8]/60 focus:bg-white/[0.13] focus:outline-none"
           />
           {filters.searchTerm && (
             <button
               type="button"
               onClick={() => updateFilter('searchTerm', '')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-2 text-[#E9D8A6]/45 transition-colors hover:bg-white/10 hover:text-[#E9D8A6]"
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-2 text-[#F8F4E8]/45 transition-colors hover:bg-white/10 hover:text-[#F8F4E8]"
               aria-label="Clear search"
             >
               <X className="h-5 w-5" />
@@ -136,7 +136,7 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
                   className={`rounded-full border px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] transition-all ${
                     isActive
                       ? 'border-[var(--brand-orange)] bg-[var(--brand-orange)] text-white'
-                      : 'border-white/15 bg-white/5 text-[#E9D8A6]/60 hover:border-[#E9D8A6]/50 hover:text-[#E9D8A6]'
+                      : 'border-white/15 bg-white/5 text-[#F8F4E8]/60 hover:border-[#F8F4E8]/50 hover:text-[#F8F4E8]'
                   }`}
                 >
                   {filter.label}
@@ -146,8 +146,8 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <label className="text-xs font-bold uppercase tracking-[0.25em] text-[#E9D8A6]/45">
-              Max price: <span className="text-[#E9D8A6]">${filters.priceRange[1]}</span>
+            <label className="text-xs font-bold uppercase tracking-[0.25em] text-[#F8F4E8]/45">
+              Max price: <span className="text-[#F8F4E8]">${filters.priceRange[1]}</span>
             </label>
             <input
               type="range"
@@ -156,13 +156,13 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
               step="50"
               value={filters.priceRange[1]}
               onChange={(e) => updateFilter('priceRange', [0, parseInt(e.target.value)])}
-              className="w-full accent-[#E9D8A6] sm:w-44"
+              className="w-full accent-[#F8F4E8] sm:w-44"
             />
             {activeFiltersCount > 0 && (
               <button
                 type="button"
                 onClick={clearFilters}
-                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#E9D8A6]/45 transition-colors hover:text-[#E9D8A6]"
+                className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F8F4E8]/45 transition-colors hover:text-[#F8F4E8]"
               >
                 <X className="h-4 w-4" />
                 Reset
@@ -173,14 +173,14 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
 
         <div className="rounded-2xl border border-white/10 bg-[#001219]/45 px-5 py-4">
           {filteredTours.length > 0 ? (
-            <p className="text-sm text-[#E9D8A6]/65">
-              Showing <span className="font-bold text-[#E9D8A6]">{filteredTours.length}</span>{' '}
+            <p className="text-sm text-[#F8F4E8]/65">
+              Showing <span className="font-bold text-[#F8F4E8]">{filteredTours.length}</span>{' '}
               {filteredTours.length === 1 ? 'adventure' : 'adventures'}
               {searchLabel}.
             </p>
           ) : (
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-[#E9D8A6]/70">
+              <p className="text-sm text-[#F8F4E8]/70">
                 No exact matches{searchLabel}. Try a broader search or ask us to customize the day.
               </p>
               <button

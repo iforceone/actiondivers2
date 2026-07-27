@@ -10,7 +10,7 @@ const IslandAdventures: React.FC = () => {
   return (
     <div className="pt-20 bg-[#001219]">
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[62vh] min-h-[520px] max-h-[720px] flex items-center justify-center overflow-hidden">
         <img 
           src="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" 
           alt="Belizean Barrier Reef" 
@@ -19,21 +19,21 @@ const IslandAdventures: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
         
         <div className="relative z-10 text-center px-4 max-w-5xl">
-          <span className="text-[#E9D8A6]/60 text-xs font-bold tracking-[0.45em] uppercase mb-6 block">San Pedro Reef Trips</span>
-          <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#E9D8A6] leading-none">
-            Island <br /> <span className="text-[#48CAE4]">Adventures</span>
+          <span className="text-[#F8F4E8]/60 text-xs font-bold tracking-[0.45em] uppercase mb-6 block">San Pedro Reef Trips</span>
+          <h1 className="text-6xl md:text-9xl font-extrabold tracking-tight mb-8 tracking-tight text-[#F8F4E8] leading-none">
+            Island <br /> <span className="text-[#11C7D9]">Adventures</span>
           </h1>
-          <p className="text-xl md:text-2xl font-light text-[#E9D8A6]/80 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl font-light text-[#F8F4E8]/80 max-w-2xl mx-auto leading-relaxed">
             Snorkel, dive, fish, and spend the day on the water with friendly local guides from Ambergris Caye.
           </p>
         </div>
       </section>
 
       {/* Narrative Section */}
-      <section className="py-32 px-6 max-w-4xl mx-auto text-center">
-        <Droplets className="w-12 h-12 text-[#005F73] mx-auto mb-10 opacity-50" />
-        <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#E9D8A6]">Life Above and Below the Blue</h2>
-        <p className="text-xl text-[#E9D8A6]/70 leading-relaxed font-light">
+      <section className="py-20 px-6 max-w-4xl mx-auto text-center">
+        <Droplets className="w-12 h-12 text-[#11C7D9] mx-auto mb-10 opacity-50" />
+        <h2 className="text-4xl font-extrabold tracking-tight mb-8 text-[#F8F4E8]">Life Above and Below the Blue</h2>
+        <p className="text-xl text-[#F8F4E8]/70 leading-relaxed font-light">
           From Hol Chan and Shark Ray Alley to Mexico Rocks, reef fishing, and beach barbecues, our island tours make it easy to experience the Belize Barrier Reef with guides who know the water.
         </p>
       </section>
@@ -44,7 +44,7 @@ const IslandAdventures: React.FC = () => {
           <div key={tour.id} className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-16 items-center`}>
             {/* Image Side */}
             <div className="w-full lg:w-1/2 relative group">
-              <div className="absolute -inset-4 bg-[#005F73]/10 rounded-[3rem] blur-2xl group-hover:bg-[#005F73]/20 transition-all duration-700"></div>
+              <div className="absolute -inset-4 bg-[#11C7D9]/10 rounded-[3rem] blur-2xl group-hover:bg-[#11C7D9]/20 transition-all duration-700"></div>
               <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <img 
                   src={tour.image} 
@@ -57,22 +57,22 @@ const IslandAdventures: React.FC = () => {
 
             {/* Content Side */}
             <div className="w-full lg:w-1/2 space-y-8">
-              <div className="inline-flex items-center space-x-3 text-[#005F73]">
+              <div className="inline-flex items-center space-x-3 text-[#11C7D9]">
                 <Anchor className="w-4 h-4" />
                 <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Island Discovery</span>
               </div>
-              <h3 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6]">{tour.name}</h3>
-              <p className="text-lg text-[#E9D8A6]/70 leading-relaxed font-light">
+              <h3 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#F8F4E8]">{tour.name}</h3>
+              <p className="text-lg text-[#F8F4E8]/70 leading-relaxed font-light">
                 {tour.description}
               </p>
               <div className="grid grid-cols-2 gap-6 pt-4">
                 <div className="glass p-6 rounded-2xl border border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 mb-2">Setting</p>
-                  <p className="text-[#E9D8A6] font-medium">Marine Reserve & Reef</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Setting</p>
+                  <p className="text-[#F8F4E8] font-medium">Marine Reserve & Reef</p>
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40 mb-2">Departures</p>
-                  <p className="text-[#E9D8A6] font-medium">Daily from 9:00 AM</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Departures</p>
+                  <p className="text-[#F8F4E8] font-medium">Daily from 9:00 AM</p>
                 </div>
               </div>
               <div className="pt-8 flex items-center space-x-8">
@@ -84,7 +84,7 @@ const IslandAdventures: React.FC = () => {
                 </Link>
                 <Link 
                   to="/reservations" 
-                  className="text-[#E9D8A6]/60 hover:text-[#E9D8A6] text-xs font-bold uppercase tracking-[0.2em] flex items-center group transition-colors"
+                  className="text-[#F8F4E8]/60 hover:text-[#F8F4E8] text-xs font-bold uppercase tracking-[0.2em] flex items-center group transition-colors"
                 >
                   Inquire Now <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -95,19 +95,19 @@ const IslandAdventures: React.FC = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-32 bg-white/5">
+      <section className="py-24 bg-white/5">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6]">Ready for a <span className="text-[#48CAE4]">Reef Day?</span></h2>
-          <p className="text-[#E9D8A6]/60 text-xl font-light leading-relaxed">
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#F8F4E8]">Ready for a <span className="text-[#11C7D9]">Reef Day?</span></h2>
+          <p className="text-[#F8F4E8]/60 text-xl font-light leading-relaxed">
             Our tour desk is 5 miles north of San Pedro at La Perla Del Caribe. Tell us what your group wants to do, and we will help match you with the right day on the water.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
-            <div className="flex items-center justify-center space-x-3 text-[#E9D8A6]/40">
+            <div className="flex items-center justify-center space-x-3 text-[#F8F4E8]/40">
               <Calendar className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-widest">Year-Round Availability</span>
             </div>
             <div className="h-px w-12 bg-white/10 self-center hidden sm:block"></div>
-            <div className="flex items-center justify-center space-x-3 text-[#E9D8A6]/40">
+            <div className="flex items-center justify-center space-x-3 text-[#F8F4E8]/40">
               <Anchor className="w-5 h-5" />
               <span className="text-xs font-bold uppercase tracking-widest">Professional Crew</span>
             </div>

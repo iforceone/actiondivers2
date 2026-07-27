@@ -3,8 +3,11 @@ import { Tour } from './types';
 
 export const COLORS = {
   navy: '#001219',
-  teal: '#005F73',
-  gold: '#E9D8A6',
+  ivory: '#F8F4E8',
+  aqua: '#11C7D9',
+  teal: '#008BA3',
+  orange: '#FF5A00',
+  sand: '#E9D8A6',
 };
 
 export const INITIAL_TOURS: Tour[] = [
@@ -13,16 +16,20 @@ export const INITIAL_TOURS: Tour[] = [
     name: 'Scuba Diving',
     category: 'island',
     price: 116.25,
-    description: 'Bespoke diving experiences for all skill levels, from Mexico Rocks to the barrier reef.',
+    description: 'Guided dives for all skill levels, from Mexico Rocks to the barrier reef.',
     longDescription: 'Are you involved in the world of SCUBA diving, or are you interested in trying it out? Action Divers and Adventures offers Discover Scuba classes, full certification classes, refreshers, and reef diving. Belize has the second-largest barrier reef in the world and the island of Ambergris Caye offers easy access to a wide variety of spectacular dive sites. A short 5 – 10 minute boat ride, takes you to an array of dive sites. We offer one, two, or three-tank dives including night dives.',
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
+    duration: 'Single, two-tank, and night-dive options',
+    departureTime: 'Daily from 9:00 AM',
+    includes: ['Professional local dive guide', 'Boat transport to the dive site'],
+    whatToBring: ['Certification card if certified', 'Swimsuit and towel', 'Reef-safe sunscreen'],
     priceBreakdown: {
       base: 65.00,
       gear: 25.00,
       parkFee: 15.00,
       tax: 11.25,
-      note: 'Pricing based on Single Dive Mexico Rocks. Two dives: $144.38. Night dives: $155.63.'
+      note: 'Single Dive Mexico Rocks: $116.25. Hol Chan Combo: $133.13. Two dives: $144.38. Night dive: $155.63.'
     },
     features: [
       'Daily Departures: Diving excursions start at 9:00 AM.',
@@ -42,9 +49,15 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'There are a couple of popular snorkeling excursions that are a must-see when visiting Ambergris Caye. One excursion is Hol Chan and Shark-Ray Alley where you snorkel at the marine reserve through protected coral reefs with turtles, barracudas, spotted eagle rays, and more! After, feed the nurse sharks and rays at Shark-Ray Alley. Those who are brave enough can snorkel with them! Another great location is Mexico Rocks, located north of our shop.',
     isAvailable: true,
     image: '/images/gallery/Male-Snorkeler-OK-Sign.png', // REAL Action Divers Belize image - SNORKELING
+    duration: 'Half-day and full-day options',
+    departureTime: 'Daily from 9:00 AM',
+    includes: ['Snorkeling gear', 'Marine park fee', 'Local guide'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Reusable water bottle'],
     priceBreakdown: {
-      base: 75.00,
+      base: 61.67,
+      gear: 5.00,
       parkFee: 15.00,
+      tax: 8.33,
       note: 'Includes Park Fees. Hol Chan/Shark Ray: $90. Mexico Rocks: $75. Hol Chan/Caye Caulker/Manatee: $175. Sailing (Caye Caulker): $175 (Lunch extra).'
     },
     features: [
@@ -63,8 +76,13 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Enjoy a fun-filled day of reef fishing & snorkeling. Start your morning off by trolling & fishing along the barrier reef, keeping the fish for your lunch. During the trip, you will stop to snorkel and hunt for conchs and lobsters (depending on the season). Once you are back on the boat, we will bring you to the beach to enjoy some fresh ceviche and a delicious tour guide prepared BBQ.',
     isAvailable: true,
     image: '/images/gallery/beach-bbq-belize.webp', // HIGH-RES REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: 'Confirm when booking',
+    includes: ['Fresh beach BBQ', 'Water and sodas', 'Fishing and snorkeling gear'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Hat or sun shirt'],
     priceBreakdown: {
-      base: 562.50,
+      base: 500.00,
+      tax: 62.50,
       note: 'Total for groups of 1-4 people. Includes BBQ, gear, and drinks.'
     }
   },
@@ -77,8 +95,13 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Fishing off Ambergris Caye is a great adventure! Ambergris Caye is located less than a mile away from the Barrier Reef where excellent reef and deep sea fishing occurs. Enjoy a calm day for bottom fishing & trolling for snappers, barracudas, and jacks. We also offer half-day and full-day fishing trips outside of the reef.',
     isAvailable: true,
     image: '/images/gallery/fishing-hero-highres.jpg', // HIGH-RES REAL Action Divers Belize image
+    duration: 'Half-day and full-day options',
+    departureTime: 'Daily from 9:00 AM',
+    includes: ['Water and sodas', 'Tackle and bait', 'Local fishing guide'],
+    whatToBring: ['Hat and sunglasses', 'Reef-safe sunscreen', 'Light long-sleeve shirt'],
     priceBreakdown: {
-      base: 309.38,
+      base: 275.00,
+      tax: 34.38,
       note: 'Reef Fishing (1-4 people): Half Day $309.38 | Full Day $562.50. Deep Sea (1-4 people): Half Day $900.00 | Full Day $1800.00. Flat Fishing (1-2 people): Half Day $393.75 | Full Day $600.00.'
     },
     features: [
@@ -98,8 +121,13 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Cave Tubing has been around since 1995 gaining popularity as a must-do tour when visiting Belize. Experience the ancient Maya Underworld where the Mayas once performed many sacred rituals and sacrifices to the gods. After reaching our destination, a trek through the rainforest will reveal medicinal plants. Your Zip Lining adventure begins after you complete your cave-tubing segment.',
     isAvailable: true,
     image: '/images/gallery/zipline-belize-01.webp', // UPGRADED REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: 'Early morning; confirm when booking',
+    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    whatToBring: ['Closed-toe shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
-      base: 337.50,
+      base: 300.00,
+      tax: 37.50,
       note: 'Includes Park Fee and Lunch.'
     }
   },
@@ -112,6 +140,10 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Experience the best of Belize’s mainland. Start your day by exploring the ancient Mayan city of Altun Ha, famous for the discovery of the Jade Head. Wander through its impressive plazas and climb the Temple of the Masonry Altars for a breathtaking view. Afterward, journey to the Nohoch Che’en Caves for a refreshing cave tubing tour. Drift through mystical limestone caves while learning about the sacred rituals of the ancient Maya.',
     isAvailable: true,
     image: '/images/gallery/web-maya-ruin.jpg', // REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: 'Early morning; confirm when booking',
+    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 300.00,
       tax: 37.50,
@@ -128,6 +160,10 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Explore Xunantunich, one of the most prominent Mayan sites, by crossing the Mopan River on a hand-cranked ferry. Climb El Castillo temple for panoramic views of the jungle and nearby Guatemala. Following your archaeological exploration, head to the caves for a serene tubing trip through the subterranean world of the Maya, where history and nature meet in an unforgettable adventure.',
     isAvailable: true,
     image: '/images/gallery/web-xunantunich02.jpg', // REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: 'Early morning; confirm when booking',
+    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 300.00,
       tax: 37.50,
@@ -144,8 +180,13 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Lamanai "Submerged Crocodile", is the third largest archaeological site in Belize. Located in the Orange Walk District and surrounded by the majestic rainforest, Lamanai’s location on the New River allowed for easy trade of goods which impacted their long occupation of the site. On your journey you will be fascinated by all the birds and wild life you encounter.',
     isAvailable: true,
     image: '/images/gallery/web-lamani.jpg', // REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: 'Early morning; confirm when booking',
+    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    whatToBring: ['Comfortable walking shoes', 'Hat and sunscreen', 'Insect repellent'],
     priceBreakdown: {
-      base: 281.25,
+      base: 250.00,
+      tax: 31.25,
       note: 'Includes Park Fee and Lunch.'
     }
   },
@@ -158,8 +199,13 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 6:00 am boat.',
     isAvailable: true,
     image: '/images/gallery/cave-exploration-real.jpg', // UPGRADED REAL Action Divers Belize image
+    duration: 'Full day',
+    departureTime: '6:00 AM water taxi',
+    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    whatToBring: ['Closed-toe water shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
-      base: 450.00,
+      base: 400.00,
+      tax: 50.00,
       note: 'Includes Park Fee and Lunch. Leaves island at 6:00 am.'
     }
   }

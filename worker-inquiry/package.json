@@ -1,0 +1,13 @@
+{
+  "name": "actiondivers-inquiry-worker",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260727.1",
+    "wrangler": "^4.114.0"
+  }
+}

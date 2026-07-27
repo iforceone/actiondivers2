@@ -180,7 +180,7 @@ const Navbar: React.FC = () => {
                       >
                         <span className="text-[#8DDCE7]/40">{item.icon}</span>
                         <span className="flex-1 text-left text-lg font-bold tracking-tight">{item.name}</span>
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === item.name ? 'rotate-180' : 'text-[#E9D8A6]/20'}`} />
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobileExpanded === item.name ? 'rotate-180' : 'text-[#F8F4E8]/20'}`} />
                       </button>
                       
                       {mobileExpanded === item.name && (
@@ -219,10 +219,10 @@ const Navbar: React.FC = () => {
 
             <div className="p-8 border-t border-white/5 bg-[#030a0d]">
               <div className="mb-10">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#E9D8A6]/20 mb-4 font-bold">Inquiries</p>
-                <a href="tel:0115016712624" className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#005F73]/20 flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-[#E9D8A6]" />
+                <p className="text-[10px] uppercase tracking-[0.4em] text-[#F8F4E8]/20 mb-4 font-bold">Inquiries</p>
+                <a href="tel:0115016712624" className="text-2xl font-extrabold tracking-tight text-[#F8F4E8] flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[#11C7D9]/20 flex items-center justify-center">
+                    <Phone className="w-4 h-4 text-[#F8F4E8]" />
                   </div>
                   011-501-671-2624
                 </a>
@@ -230,10 +230,10 @@ const Navbar: React.FC = () => {
 
               <div className="flex items-center justify-between border-t border-white/5 pt-6">
                 <div className="flex items-center gap-2">
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#E9D8A6]/10 font-bold">Action Divers Belize</p>
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#F8F4E8]/10 font-bold">Action Divers Belize</p>
                   <Link 
                     to="/admin" 
-                    className="p-1 text-[#E9D8A6]/10 hover:text-[#E9D8A6]/40 transition-colors"
+                    className="p-1 text-[#F8F4E8]/10 hover:text-[#F8F4E8]/40 transition-colors"
                     title="Access"
                   >
                     <Settings className="w-3.5 h-3.5" />

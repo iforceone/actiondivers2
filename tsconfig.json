@@ -25,5 +25,12 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  // The inquiry Worker is a separate build with its own tsconfig and
+  // Cloudflare (non-DOM) types. Typecheck it from worker-inquiry/.
+  "exclude": [
+    "node_modules",
+    "dist",
+    "worker-inquiry"
+  ]
 }

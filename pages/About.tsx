@@ -14,19 +14,19 @@ const About: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
         <div className="relative z-10 px-4">
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#E9D8A6] tracking-tight">
-            Our <span className="text-[#48CAE4]">Story</span>
+          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#F8F4E8] tracking-tight">
+            Our <span className="text-[#11C7D9]">Story</span>
           </h1>
-          <p className="text-sm uppercase tracking-[0.5em] text-[#E9D8A6]/60">Action Divers & Adventures</p>
+          <p className="text-sm uppercase tracking-[0.5em] text-[#F8F4E8]/60">Action Divers & Adventures</p>
         </div>
       </section>
 
       <section className="max-w-4xl mx-auto px-6 py-24 space-y-16">
         <div className="space-y-10">
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#E9D8A6] leading-tight">
-            A Passion for the <span className="text-[#48CAE4] text-[#E9D8A6]/80">Caribbean Sea</span>
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#F8F4E8] leading-tight">
+            A Passion for the <span className="text-[#11C7D9]">Caribbean Sea</span>
           </h2>
-          <div className="space-y-8 text-xl font-light leading-relaxed text-[#E9D8A6]/80">
+          <div className="space-y-8 text-xl font-light leading-relaxed text-[#F8F4E8]/80">
             <p>
               It's time to get started on your Belize adventure. Known for professionalism, knowledge, and friendly service,
               Action Divers and Adventures is your one-stop tour operator ready to help you create that unforgettable 
@@ -51,7 +51,7 @@ const About: React.FC = () => {
               <Phone className="w-4 h-4" />
               <span>011-501-671-2624</span>
             </a>
-            <p className="text-[10px] uppercase tracking-widest text-[#E9D8A6]/40">Call us to plan your Belize tours</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40">Call us to plan your Belize tours</p>
           </div>
         </div>
 
@@ -64,7 +64,7 @@ const About: React.FC = () => {
             />
             <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-12 py-8 rounded-[2rem] border border-white/20 shadow-2xl whitespace-nowrap">
               <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">20+</p>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#E9D8A6]/60">Years of Local Experience</p>
+              <p className="text-[11px] uppercase tracking-[0.3em] text-[#F8F4E8]/60">Years of Local Experience</p>
             </div>
           </div>
         </div>
@@ -74,29 +74,29 @@ const About: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-16">
             <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
-                <Award className="w-10 h-10 text-[#E9D8A6]" />
+              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
+                <Award className="w-10 h-10 text-[#F8F4E8]" />
               </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Professionalism</h3>
-              <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Professionalism</h3>
+              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
                 Our guides are fully licensed and committed to the highest standards of safety and service quality.
               </p>
             </div>
             <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
-                <Users className="w-10 h-10 text-[#E9D8A6]" />
+              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
+                <Users className="w-10 h-10 text-[#F8F4E8]" />
               </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Local Knowledge</h3>
-              <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Local Knowledge</h3>
+              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
                 With years of local experience, we help guests choose the reef, fishing, island, and mainland tours that fit their group.
               </p>
             </div>
             <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#005F73]/20 rounded-full flex items-center justify-center mx-auto border border-[#005F73]/40 group-hover:bg-[#005F73]/30 transition-all">
-                <Heart className="w-10 h-10 text-[#E9D8A6]" />
+              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
+                <Heart className="w-10 h-10 text-[#F8F4E8]" />
               </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#E9D8A6]">Friendly Service</h3>
-              <p className="text-[#E9D8A6]/60 leading-relaxed font-light text-lg">
+              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Friendly Service</h3>
+              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
                 We make friends with our customers. Our warm hospitality keeps our guests returning year after year.
               </p>
             </div>
@@ -106,8 +106,8 @@ const About: React.FC = () => {
 
       <section className="py-40 px-6">
         <div className="max-w-4xl mx-auto glass p-20 rounded-[4rem] border border-white/10 shadow-3xl">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-10 leading-tight">Ready to plan your <span className="text-[#48CAE4]">Belize adventure?</span></h2>
-          <p className="text-[#E9D8A6]/60 mb-14 text-xl font-light">
+          <h2 className="text-5xl font-extrabold tracking-tight text-[#F8F4E8] mb-10 leading-tight">Ready to plan your <span className="text-[#11C7D9]">Belize adventure?</span></h2>
+          <p className="text-[#F8F4E8]/60 mb-14 text-xl font-light">
             Tell us your dates, group size, and the tours you are interested in. We will help you choose the right options.
           </p>
           <Link 

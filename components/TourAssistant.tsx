@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send, Sparkles } from 'lucide-react';
+import { X, Send, Sparkles, MessageCircle } from 'lucide-react';
 import { getAssistantResponse } from '../services/geminiService';
+import { buildWhatsAppUrl } from '../config';
 
 const TourAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,15 +35,28 @@ const TourAssistant: React.FC = () => {
   return (
     <>
       {/* Floating Action Button - z-40 so it is below navbar/drawer */}
-      <div className="fixed bottom-8 right-8 z-[40]">
+      <div className="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[40]">
         {!isOpen && (
-          <button
-            onClick={() => setIsOpen(true)}
-            className="w-16 h-16 rounded-full bg-gradient-to-tr from-[var(--brand-teal)] to-[var(--brand-orange)] flex items-center justify-center shadow-2xl hover:scale-110 transition-transform ring-4 ring-white/5"
-            aria-label="Open AI Assistant"
-          >
-            <Sparkles className="text-[#001219] w-8 h-8" />
-          </button>
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[#071820]/95 p-2 shadow-2xl backdrop-blur-xl">
+            <a
+              href={buildWhatsAppUrl('Hi Action Divers & Adventures! I would like help planning a Belize tour.')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:scale-105"
+              aria-label="Chat with Action Divers on WhatsApp"
+              title="WhatsApp"
+            >
+              <MessageCircle className="h-5 w-5" fill="currentColor" strokeWidth={1.5} />
+            </a>
+            <button
+              onClick={() => setIsOpen(true)}
+              className="flex h-12 items-center gap-2 rounded-full bg-[var(--brand-aqua)] px-4 font-bold text-[#001219] transition-transform hover:scale-[1.03]"
+              aria-label="Open tour assistant"
+            >
+              <Sparkles className="h-5 w-5" />
+              <span className="hidden text-xs uppercase tracking-widest sm:inline">Need help?</span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -60,17 +74,17 @@ const TourAssistant: React.FC = () => {
             {/* Header */}
             <div className="p-6 flex justify-between items-center border-b border-white/5 bg-[#001219]">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-[#E9D8A6] flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-[#F8F4E8] flex items-center justify-center shadow-inner">
                   <Sparkles className="text-[#001219] w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold tracking-tight text-[#E9D8A6] font-bold text-lg">Tour Assistant</h3>
-                  <p className="text-[10px] text-[#E9D8A6]/60 uppercase tracking-[0.25em]">Tour Help</p>
+                  <h3 className="font-extrabold tracking-tight text-[#F8F4E8] font-bold text-lg">Tour Assistant</h3>
+                  <p className="text-[10px] text-[#F8F4E8]/60 uppercase tracking-[0.25em]">Tour Help</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)} 
-                className="p-3 rounded-full hover:bg-white/5 text-[#E9D8A6]/60 hover:text-[#E9D8A6] transition-colors"
+                className="p-3 rounded-full hover:bg-white/5 text-[#F8F4E8]/60 hover:text-[#F8F4E8] transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -83,8 +97,8 @@ const TourAssistant: React.FC = () => {
                   <div 
                     className={`max-w-[85%] p-5 rounded-3xl text-sm leading-relaxed ${
                       m.role === 'user' 
-                      ? 'bg-[#005F73] text-white rounded-tr-none shadow-xl' 
-                      : 'bg-white/5 text-[#E9D8A6]/90 rounded-tl-none border border-white/5'
+                      ? 'bg-[#11C7D9] text-white rounded-tr-none shadow-xl'
+                      : 'bg-white/5 text-[#F8F4E8]/90 rounded-tl-none border border-white/5'
                     }`}
                   >
                     {m.content}
@@ -93,7 +107,7 @@ const TourAssistant: React.FC = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/5 p-4 rounded-3xl rounded-tl-none border border-white/5 animate-pulse text-[#E9D8A6]/40 text-[10px] uppercase tracking-widest font-bold">
+                  <div className="bg-white/5 p-4 rounded-3xl rounded-tl-none border border-white/5 animate-pulse text-[#F8F4E8]/40 text-[10px] uppercase tracking-widest font-bold">
                     Checking tour options...
                   </div>
                 </div>
@@ -108,7 +122,7 @@ const TourAssistant: React.FC = () => {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Where should we take you?"
-                className="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm text-[#E9D8A6] placeholder-[#E9D8A6]/30 focus:outline-none focus:border-[#E9D8A6]/50 transition-colors"
+                className="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm text-[#F8F4E8] placeholder-[#F8F4E8]/30 focus:outline-none focus:border-[#F8F4E8]/50 transition-colors"
               />
               <button
                 onClick={handleSend}

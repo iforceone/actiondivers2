@@ -5,14 +5,14 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-1',
     src: '/images/gallery/12-29.png',
     alt: 'Action Divers Belize - 12 29',
-    category: 'diving',
+    category: 'snorkeling',
     title: '12 29'
   },
   {
     id: 'gallery-2',
     src: '/images/gallery/20221112_115550_Original-768x576.jpg',
     alt: 'Action Divers Belize - 20221112 115550 Original 768x576',
-    category: 'diving',
+    category: 'fishing',
     title: '20221112 115550 Original 768x576'
   },
   {
@@ -28,27 +28,6 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     alt: 'Action Divers Belize - BBQ Food 225x300',
     category: 'dining',
     title: 'BBQ Food 225x300'
-  },
-  {
-    id: 'gallery-5',
-    src: '/images/gallery/belize-jungle-1.jpg',
-    alt: 'Action Divers Belize - Belize Jungle 1',
-    category: 'diving',
-    title: 'Belize Jungle 1'
-  },
-  {
-    id: 'gallery-6',
-    src: '/images/gallery/belize-jungle-2.jpg',
-    alt: 'Action Divers Belize - Belize Jungle 2',
-    category: 'diving',
-    title: 'Belize Jungle 2'
-  },
-  {
-    id: 'gallery-7',
-    src: '/images/gallery/belize-jungle-3.jpg',
-    alt: 'Action Divers Belize - Belize Jungle 3',
-    category: 'diving',
-    title: 'Belize Jungle 3'
   },
   {
     id: 'gallery-8',
@@ -89,21 +68,21 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-13',
     src: '/images/gallery/Ceviche-226x300.jpg',
     alt: 'Action Divers Belize - Ceviche 226x300',
-    category: 'diving',
+    category: 'dining',
     title: 'Ceviche 226x300'
   },
   {
     id: 'gallery-14',
     src: '/images/gallery/Deep Sea meter.jpg',
     alt: 'Action Divers Belize - Deep Sea Meter',
-    category: 'diving',
+    category: 'snorkeling',
     title: 'Deep Sea Meter'
   },
   {
     id: 'gallery-15',
     src: '/images/gallery/Divers-Pointing-768x432.png',
     alt: 'Action Divers Belize - Divers Pointing 768x432',
-    category: 'diving',
+    category: 'mainland',
     title: 'Divers Pointing 768x432'
   },
   {
@@ -117,14 +96,14 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-17',
     src: '/images/gallery/Fish Caught (2).jpg',
     alt: 'Action Divers Belize - Fish Caught (2)',
-    category: 'fishing',
+    category: 'dining',
     title: 'Fish Caught (2)'
   },
   {
     id: 'gallery-18',
     src: '/images/gallery/Fish caught.jpg',
     alt: 'Action Divers Belize - Fish Caught',
-    category: 'fishing',
+    category: 'nature',
     title: 'Fish Caught'
   },
   {
@@ -152,7 +131,7 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-22',
     src: '/images/gallery/Guest-with-Lobster-224x300.jpg',
     alt: 'Action Divers Belize - Guest With Lobster 224x300',
-    category: 'fishing',
+    category: 'nature',
     title: 'Guest With Lobster 224x300'
   },
   {
@@ -166,7 +145,7 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-24',
     src: '/images/gallery/IMG_5824-e1673406815998-768x576.png',
     alt: 'Action Divers Belize - IMG 5824 E1673406815998 768x576',
-    category: 'diving',
+    category: 'nature',
     title: 'IMG 5824 E1673406815998 768x576'
   },
   {
@@ -215,7 +194,7 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-31',
     src: '/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg',
     alt: 'Action Divers Belize - Roberto With Student E1673390226440 768x542',
-    category: 'diving',
+    category: 'fishing',
     title: 'Roberto With Student E1673390226440 768x542'
   },
   {
@@ -229,7 +208,7 @@ export const GALLERY_IMAGES: GalleryImage[] = [
     id: 'gallery-33',
     src: '/images/gallery/Screenshot-96.png',
     alt: 'Action Divers Belize - Screenshot 96',
-    category: 'diving',
+    category: 'mainland',
     title: 'Screenshot 96'
   },
   {
@@ -487,8 +466,8 @@ export const GALLERY_IMAGES: GalleryImage[] = [
 ];
 
 export const IMAGES_PER_PAGE = 12;
-export const TOTAL_IMAGES = 69;
-export const TOTAL_PAGES = Math.ceil(69 / 12);
+export const TOTAL_IMAGES = GALLERY_IMAGES.length;
+export const TOTAL_PAGES = Math.ceil(TOTAL_IMAGES / IMAGES_PER_PAGE);
 
 // Missing function that Gallery component needs
 export const preloadImage = (src: string): Promise<void> => {

@@ -1,0 +1,25 @@
+name = "actiondivers-inquiry"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+workers_dev = true
+
+# Non-secret config. Edit these to taste.
+[vars]
+# Where inquiries are delivered. Point at a test inbox while testing, then switch to the live one.
+TO_EMAIL = "reservations@actiondiversbelize.com"
+# Verified sender (the domain must be verified in Resend). Name + address form is fine.
+FROM_EMAIL = "Action Divers & Adventures <reservations@actiondiversbelize.com>"
+# Comma-separated site origins allowed to POST to this Worker (no trailing slash).
+ALLOWED_ORIGINS = "https://actiondivers2.davebze.workers.dev,http://localhost:3000"
+
+# Rate limit: max 5 inquiries per client IP per 60s. `period` must be 10 or 60.
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 5
+  period = 60
+
+# RESEND_API_KEY is a SECRET — never put it here. Set it with:
+#   npx wrangler secret put RESEND_API_KEY

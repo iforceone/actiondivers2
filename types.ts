@@ -8,6 +8,10 @@ export interface Tour {
   subCategory?: string;
   isAvailable: boolean;
   image: string;
+  duration?: string;
+  departureTime?: string;
+  includes?: string[];
+  whatToBring?: string[];
   features?: string[];
   price: number;
   priceBreakdown?: {
@@ -42,4 +46,21 @@ export interface BlogPost {
 export interface User {
   username: string;
   isAuthenticated: boolean;
+}
+
+export type GalleryCategory =
+  | 'diving'
+  | 'snorkeling'
+  | 'fishing'
+  | 'boating'
+  | 'mainland'
+  | 'dining'
+  | 'nature';
+
+export interface GalleryImage {
+  id: string;
+  src: string;
+  alt: string;
+  category: GalleryCategory;
+  title: string;
 }

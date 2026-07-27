@@ -5,6 +5,7 @@ import { INITIAL_TOURS } from '../constants';
 import { Link } from 'react-router-dom';
 import TourSearch from '../components/TourSearch';
 import Reviews from '../components/Reviews';
+import RatingBadge from '../components/RatingBadge';
 import { BLOG_POSTS } from '../data/blogPosts';
 
 const Home: React.FC = () => {
@@ -46,6 +47,7 @@ const Home: React.FC = () => {
               Plan Your Trip
             </Link>
           </div>
+          <RatingBadge className="mt-8" />
           <p className="mt-6 text-sm font-semibold text-white/75">
             Tour desk located 5 miles north of San Pedro at La Perla Del Caribe.
           </p>
@@ -61,20 +63,20 @@ const Home: React.FC = () => {
       <section className="pb-24 bg-white/5">
         <div className="max-w-7xl mx-auto px-4">
           <div className="pt-20 pb-12 text-center">
-            <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Matching Tours</p>
-            <h2 className="text-5xl font-extrabold tracking-tight text-white">Choose Your <span className="text-[#48CAE4]">Adventure</span></h2>
+            <p className="text-[#11C7D9] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Matching Tours</p>
+            <h2 className="text-5xl font-extrabold tracking-tight text-white">Choose Your <span className="text-[#11C7D9]">Adventure</span></h2>
           </div>
           {filteredTours.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredTours.slice(0, 6).map(tour => (
-              <Link key={tour.id} to={`/tour/${tour.id}`} className="group relative h-[400px] overflow-hidden rounded-3xl block shadow-2xl border border-white/10 hover:border-[#48CAE4]/50 transition-colors">
+              <Link key={tour.id} to={`/tour/${tour.id}`} className="group relative h-[400px] overflow-hidden rounded-3xl block shadow-2xl border border-white/10 hover:border-[#11C7D9]/50 transition-colors">
                 <img src={tour.image} alt={`${tour.name} - ${tour.description}`} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219] via-[#001219]/40 to-transparent group-hover:via-[#001219]/60 transition-all"></div>
                 
                 <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                 <span className="inline-block bg-[var(--brand-orange)] text-white text-[10px] uppercase tracking-widest px-3 py-1 rounded-full mb-3 font-bold">{tour.category}</span>
                   <h3 className="text-3xl font-bold tracking-tight text-white mb-2">{tour.name}</h3>
-                  <div className="flex items-center text-[#48CAE4] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="flex items-center text-[#11C7D9] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                     <span className="text-sm font-bold tracking-widest uppercase mr-2">View Experience</span>
                     <ArrowRight className="w-4 h-4" />
                   </div>
@@ -85,7 +87,7 @@ const Home: React.FC = () => {
           ) : (
             <div className="mx-auto max-w-2xl rounded-[2rem] border border-white/10 bg-white/5 p-10 text-center">
               <h3 className="text-3xl font-extrabold tracking-tight text-white mb-4">No exact match yet</h3>
-              <p className="text-[#E9D8A6]/65 leading-relaxed mb-8">
+              <p className="text-[#F8F4E8]/65 leading-relaxed mb-8">
                 Try a broader search, raise the max price, or send us a note and we can help shape the right Belize day.
               </p>
               <Link to="/reservations" className="inline-flex justify-center items-center bg-[var(--brand-orange)] text-white px-8 py-4 rounded-full font-bold tracking-widest uppercase hover:bg-[var(--brand-orange-light)] transition-colors">
@@ -108,21 +110,21 @@ const Home: React.FC = () => {
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12">
           <div>
-            <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Belize Travel Guides</p>
+            <p className="text-[#11C7D9] text-[10px] font-bold uppercase tracking-[0.4em] mb-4">Belize Travel Guides</p>
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white">Plan the Right Adventure</h2>
           </div>
-          <Link to="/blog" className="inline-flex items-center text-[#E9D8A6]/60 hover:text-[#E9D8A6] text-xs font-bold uppercase tracking-[0.25em]">
+          <Link to="/blog" className="inline-flex items-center text-[#F8F4E8]/60 hover:text-[#F8F4E8] text-xs font-bold uppercase tracking-[0.25em]">
             View All Guides <ArrowRight className="ml-3 w-4 h-4" />
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
           {BLOG_POSTS.slice(0, 3).map((post) => (
-            <Link key={post.slug} to={`/blog/${post.slug}`} className="group glass rounded-3xl overflow-hidden border border-white/5 hover:border-[#48CAE4]/40 transition-colors">
+            <Link key={post.slug} to={`/blog/${post.slug}`} className="group glass rounded-3xl overflow-hidden border border-white/5 hover:border-[#11C7D9]/40 transition-colors">
               <div className="aspect-[4/3] overflow-hidden">
                 <img src={post.image} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               </div>
               <div className="p-7">
-                <p className="text-[#48CAE4] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">{post.date}</p>
+                <p className="text-[#11C7D9] text-[10px] font-bold uppercase tracking-[0.3em] mb-4">{post.date}</p>
                 <h3 className="text-2xl font-extrabold tracking-tight text-white mb-4 leading-tight">{post.title}</h3>
                 <p className="text-white/60 text-sm leading-relaxed">{post.excerpt}</p>
               </div>
@@ -135,21 +137,21 @@ const Home: React.FC = () => {
       <section className="py-24 px-4 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-3 gap-12 text-center">
           <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <Anchor className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <Anchor className="w-12 h-12 text-[#11C7D9] mx-auto mb-6" />
             <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Real Belize Experiences</h3>
             <p className="text-white/70 leading-relaxed font-medium">
               We focus on what matters: exploring the breathtaking beauty of the Belizean Caribbean with expert guides who know the waters.
             </p>
           </div>
           <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <Shield className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <Shield className="w-12 h-12 text-[#11C7D9] mx-auto mb-6" />
             <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Highly Personal Service</h3>
             <p className="text-white/70 leading-relaxed font-medium">
               Skip the crowded boats. We cater to small groups, ensuring your day on the water is flexible, safe, and tailored exactly to you.
             </p>
           </div>
           <div className="glass p-10 rounded-3xl transform transition-transform hover:-translate-y-2 border border-white/10 hover:border-white/20">
-            <BadgeDollarSign className="w-12 h-12 text-[#48CAE4] mx-auto mb-6" />
+            <BadgeDollarSign className="w-12 h-12 text-[#11C7D9] mx-auto mb-6" />
             <h3 className="text-2xl font-bold tracking-tight mb-4 text-white">Memorable Days on the Water</h3>
             <p className="text-white/70 leading-relaxed font-medium">
               From reeling in a big catch to drifting over vibrant reefs, we guarantee an adventure you'll talk about long after you return home.
