@@ -35,8 +35,8 @@ const Footer = () => (
         <h4 className="text-[#F8F4E8] font-bold uppercase tracking-widest text-[10px] mb-6">Contact</h4>
         <div className="space-y-4 text-xs tracking-widest text-[#F8F4E8]/60">
           <p>5 miles north of San Pedro at La Perla Del Caribe</p>
-          <p>011-501-671-2624</p>
-          <p>reservations@actiondiversbelize.com</p>
+          <p>{CONTACT.phoneDisplay}</p>
+          <p>{CONTACT.email}</p>
         </div>
       </div>
       <div>
@@ -419,7 +419,7 @@ const Reservations = () => {
             </div>
             <div className="h-10 w-px bg-white/5 hidden md:block"></div>
             <div className="space-y-1 text-center md:text-left">
-               <p className="text-xl font-extrabold tracking-tight text-[#F8F4E8]/80">reservations@actiondiversbelize.com</p>
+               <a href={`mailto:${CONTACT.email}`} className="text-xl font-extrabold tracking-tight text-[#F8F4E8]/80 hover:text-[#F8F4E8] transition-colors">{CONTACT.email}</a>
                <p className="text-[9px] uppercase tracking-widest text-[#11C7D9] font-bold">Email Reservations</p>
             </div>
           </div>
@@ -436,8 +436,8 @@ const App: React.FC = () => {
     name: 'Action Divers & Adventures',
     description: "Belize tour operator offering scuba diving, snorkeling, fishing, island adventures, cave tubing, Maya ruins, and mainland tours from San Pedro.",
     url: SITE_URL,
-    telephone: '011-501-671-2624',
-    email: 'reservations@actiondiversbelize.com',
+    telephone: CONTACT.phoneDisplay,
+    email: CONTACT.email,
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'San Pedro',

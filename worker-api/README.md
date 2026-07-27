@@ -51,7 +51,8 @@ Assistant returns its offline message.
 
 ## Config (wrangler.toml `[vars]`)
 - `TO_EMAIL` — where inquiries land. Use a test inbox while testing, then switch to live.
-- `FROM_EMAIL` — verified sender, e.g. `Action Divers & Adventures <reservations@actiondiversbelize.com>`.
+- `FROM_EMAIL` — verified sender, e.g. `Action Divers & Adventures <info@actiondiversbelize.com>`.
+  Use a mailbox that actually exists, so bounce notifications land somewhere.
 - `ALLOWED_ORIGINS` — comma-separated site origins allowed to POST (no trailing slash).
   Requests with any other `Origin` are rejected with 403, so this is a real access
   control, not just a CORS header. **Add your production origin here** or the live site

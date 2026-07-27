@@ -6,7 +6,9 @@ export const CONTACT = {
   phoneTel: '0115016712624',
   // wa.me uses the full international number with no +, spaces, or dashes.
   whatsappNumber: '5016712624',
-  email: 'reservations@actiondiversbelize.com',
+  // Must be a real mailbox — this is published in the footer, on the
+  // reservations page, and in JSON-LD that search engines surface.
+  email: 'info@actiondiversbelize.com',
 };
 
 // Base URL of the site API Worker (see /worker-api). After `wrangler deploy`,

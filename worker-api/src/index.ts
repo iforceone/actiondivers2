@@ -13,7 +13,7 @@
  *   RESEND_API_KEY    (secret)  — Resend API key
  *   GEMINI_API_KEY    (secret)  — Google Gemini API key
  *   TO_EMAIL          (var)     — where inquiries are delivered
- *   FROM_EMAIL        (var)     — verified sender, e.g. "Action Divers <reservations@actiondiversbelize.com>"
+ *   FROM_EMAIL        (var)     — verified sender, e.g. "Action Divers <info@actiondiversbelize.com>"
  *   ALLOWED_ORIGINS   (var)     — comma-separated site origins allowed to POST
  *   INQUIRY_LIMITER   (binding) — rate limit for /inquiry, keyed by client IP
  *   ASSISTANT_LIMITER (binding) — rate limit for /assistant, keyed by client IP
