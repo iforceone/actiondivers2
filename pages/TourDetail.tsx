@@ -2,13 +2,16 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { INITIAL_TOURS } from '../constants';
-import { Backpack, CheckCircle2, Clock, DollarSign, Info, MapPin, PackageCheck } from 'lucide-react';
+import { Backpack, Check, CheckCircle2, Clock, DollarSign, Info, MapPin, PackageCheck, ShoppingBag } from 'lucide-react';
 import SEO, { SITE_URL } from '../components/SEO';
 import { BLOG_POSTS } from '../data/blogPosts';
+import { useBooking } from '../contexts/BookingContext';
+import { catalogItemsForTour, formatUsd } from '../shared/bookingCatalog';
 
 const TourDetail: React.FC = () => {
   const { id } = useParams();
   const tour = INITIAL_TOURS.find(t => t.id === id);
+  const { catalog, addItem, hasItem } = useBooking();
 
   if (!tour) return (
     <div className="h-screen flex items-center justify-center bg-[#001219]">
@@ -23,6 +26,7 @@ const TourDetail: React.FC = () => {
   );
 
   const relatedPosts = BLOG_POSTS.filter((post) => post.relatedTours.includes(tour.id)).slice(0, 3);
+  const bookingOptions = catalogItemsForTour(tour.id, catalog);
   const tourStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
@@ -31,13 +35,22 @@ const TourDetail: React.FC = () => {
     image: `${SITE_URL}${tour.image}`,
     url: `${SITE_URL}/tour/${tour.id}`,
     touristType: ['Adventure travelers', 'Families', 'Belize visitors'],
-    offers: {
-      '@type': 'Offer',
-      price: tour.price,
-      priceCurrency: 'USD',
-      availability: tour.isAvailable ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
-      url: `${SITE_URL}/tour/${tour.id}`,
-    },
+    offers: tour.options?.length
+      ? tour.options.map((option) => ({
+          '@type': 'Offer',
+          name: option.name,
+          price: option.price,
+          priceCurrency: 'USD',
+          availability: tour.isAvailable ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+          url: `${SITE_URL}/tour/${tour.id}`,
+        }))
+      : {
+          '@type': 'Offer',
+          price: tour.price,
+          priceCurrency: 'USD',
+          availability: tour.isAvailable ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+          url: `${SITE_URL}/tour/${tour.id}`,
+        },
     provider: {
       '@type': 'TouristBusiness',
       name: 'Action Divers & Adventures',
@@ -71,11 +84,11 @@ const TourDetail: React.FC = () => {
         structuredData={[tourStructuredData, breadcrumbStructuredData]}
       />
       <div className="relative h-[60vh]">
-        <img src={tour.image} alt={tour.name} className="w-full h-full object-cover" />
+        <img src={tour.image} alt={tour.name} loading="eager" fetchPriority="high" decoding="async" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#001219] to-transparent"></div>
         <div className="absolute bottom-20 left-0 right-0 max-w-7xl mx-auto px-4 text-center md:text-left">
-          <span className="text-[#F8F4E8] uppercase tracking-[0.4em] text-xs block mb-4">{tour.category} Adventure</span>
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight text-[#F8F4E8]">{tour.name}</h1>
+          <span className="mb-4 block text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8]/85">{tour.subCategory || `${tour.category} Adventure`}</span>
+          <h1 className="text-5xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-6xl md:text-8xl text-balance">{tour.name}</h1>
         </div>
       </div>
 
@@ -88,6 +101,67 @@ const TourDetail: React.FC = () => {
                 {tour.longDescription}
               </p>
             </section>
+
+            {tour.options && tour.options.length > 0 && (
+              <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#06212a]">
+                <div className="border-b border-white/10 px-6 py-6 sm:px-8">
+                  <h2 className="text-2xl font-extrabold tracking-tight text-[#F8F4E8]">Available Options</h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/65">
+                    Published totals are shown in USD. Contact Action Divers to confirm availability and which option best fits your group.
+                  </p>
+                </div>
+                <div className="divide-y divide-white/10">
+                  {tour.options.map((option) => (
+                    <div key={option.name} className="flex flex-col gap-4 px-6 py-6 sm:flex-row sm:items-start sm:justify-between sm:px-8">
+                      <div className="max-w-2xl">
+                        <h3 className="text-lg font-bold text-[#F8F4E8]">{option.name}</h3>
+                        <p className="mt-2 leading-relaxed text-[#F8F4E8]/70">{option.description}</p>
+                        {option.note && <p className="mt-2 text-sm font-semibold text-[#11C7D9]">{option.note}</p>}
+                      </div>
+                      <div className="shrink-0 sm:text-right">
+                        <span className="block text-xs font-bold uppercase tracking-[0.12em] text-[#F8F4E8]/55">Published total</span>
+                        <span className="mt-1 block text-2xl font-extrabold text-[#F8F4E8]">${option.price.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {bookingOptions.length > 0 && (
+              <section id="booking-options" className="overflow-hidden rounded-2xl border border-white/10 bg-[#06212a]">
+                <div className="border-b border-white/10 px-6 py-6 sm:px-8">
+                  <h2 className="text-2xl font-extrabold tracking-tight text-[#F8F4E8]">Add to your trip</h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/65">
+                    Choose the option you want, then select its requested date in your reservation cart. Availability and final pricing are confirmed by staff.
+                  </p>
+                </div>
+                <div className="divide-y divide-white/10">
+                  {bookingOptions.map((option) => {
+                    const added = hasItem(option.id);
+                    return (
+                      <div key={option.id} className="flex flex-col gap-5 px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+                        <div>
+                          <h3 className="text-lg font-bold text-[#F8F4E8]">{option.name}</h3>
+                          <p className="mt-1 text-sm text-[#F8F4E8]/60">
+                            {formatUsd(option.priceCents)} · {option.pricingBasis === 'per_group' ? 'group rate' : 'per person'}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => addItem(option)}
+                          disabled={added}
+                          className="inline-flex min-h-12 items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:bg-white/10 disabled:text-[#F8F4E8]/65"
+                        >
+                          {added ? <Check className="mr-2 h-4 w-4" /> : <ShoppingBag className="mr-2 h-4 w-4" />}
+                          {added ? 'Added to trip' : 'Add to trip'}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
 
             {tour.priceBreakdown && (
               <section className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10">
@@ -216,12 +290,12 @@ const TourDetail: React.FC = () => {
                 </div>
               </div>
 
-              <Link 
-                to="/reservations" 
+              <a
+                href={bookingOptions.length ? '#booking-options' : '/reservations'}
                 className="block w-full text-center bg-[var(--brand-orange)] text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[var(--brand-orange-light)] transition-all shadow-xl"
               >
-                Inquire Now
-              </Link>
+                {bookingOptions.length ? 'Choose an Option' : 'Plan This Tour'}
+              </a>
             </div>
           </aside>
         </div>

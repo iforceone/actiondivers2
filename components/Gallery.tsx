@@ -154,7 +154,7 @@ const Gallery: React.FC = () => {
                     <span className="text-xs uppercase tracking-widest">Photo unavailable</span>
                   </span>
                 ) : (
-                  <img src={image.src} alt={image.alt} loading={index < 6 ? 'eager' : 'lazy'} decoding="async" className={`w-full object-cover transition duration-500 group-hover:scale-[1.03] ${viewMode === 'grid' ? 'h-full' : 'h-auto'} ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoadedImages((previous) => new Set(previous).add(image.src))} onError={() => setFailedImages((previous) => new Set(previous).add(image.src))} />
+                  <img src={image.src} alt={image.alt} loading={index < 4 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" className={`w-full object-cover transition duration-500 group-hover:scale-[1.03] ${viewMode === 'grid' ? 'h-full' : 'h-auto'} ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoadedImages((previous) => new Set(previous).add(image.src))} onError={() => setFailedImages((previous) => new Set(previous).add(image.src))} />
                 )}
                 {!failed && <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 via-black/55 to-transparent p-5 pt-16 transition-transform duration-300 group-hover:translate-y-0 group-focus-visible:translate-y-0"><span className="block font-bold text-white">{cleanTitle(image.title)}</span><span className="mt-1 block text-xs capitalize text-white/65">{categories.find((category) => category.value === image.category)?.label || image.category}</span></span>}
               </button>
@@ -176,7 +176,7 @@ const Gallery: React.FC = () => {
           <button type="button" onClick={(event) => { event.stopPropagation(); showPrevious(); }} className="absolute left-3 z-20 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 md:left-8" aria-label="Previous image"><ChevronLeft className="h-7 w-7" /></button>
           <button type="button" onClick={(event) => { event.stopPropagation(); showNext(); }} className="absolute right-3 z-20 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 md:right-8" aria-label="Next image"><ChevronRight className="h-7 w-7" /></button>
           <div className="flex max-h-[92vh] max-w-6xl flex-col items-center" onClick={(event) => event.stopPropagation()}>
-            <img src={selectedImage.src} alt={selectedImage.alt} className="max-h-[72vh] max-w-full rounded-xl object-contain" />
+            <img src={selectedImage.src} alt={selectedImage.alt} decoding="async" className="max-h-[72vh] max-w-full rounded-xl object-contain" />
             <div className="mt-5 text-center">
               <p className="text-xs uppercase tracking-[0.28em] text-[#11C7D9]">{selectedIndex + 1} / {filteredImages.length}</p>
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight">{cleanTitle(selectedImage.title)}</h2>

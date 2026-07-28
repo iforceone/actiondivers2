@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Home, Info, Anchor, Map, Calendar, BookOpen, Settings, Phone, Images } from 'lucide-react';
+import { Menu, X, ChevronDown, Home, Info, Anchor, Map, BookOpen, Phone, Images, ShoppingBag } from 'lucide-react';
+import { useBooking } from '../contexts/BookingContext';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,7 @@ const Navbar: React.FC = () => {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { items: cartItems } = useBooking();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,9 +66,11 @@ const Navbar: React.FC = () => {
         { name: 'ATM Caves', path: '/tour/atm-caves' },
       ]
     },
-    { name: 'Reservations', path: '/reservations', icon: <Calendar className="w-5 h-5" /> },
+    { name: 'Your Trip', path: '/reservations', icon: <ShoppingBag className="w-5 h-5" /> },
     { name: 'Travel Guides', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
   ];
+
+  if (location.pathname.startsWith('/admin')) return null;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001219] shadow-2xl border-b border-white/5' : 'bg-[#001219] md:bg-transparent border-b border-white/5 md:border-none'}`}>
@@ -78,12 +82,15 @@ const Navbar: React.FC = () => {
               <img
                 src="/images/brand/brand-logo-header-reverse-transparent.webp"
                 alt="Action Divers & Adventures"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="h-11 w-auto max-w-[210px] object-contain sm:h-12 lg:h-14 lg:max-w-[260px]"
               />
             </Link>
           </div>
 
-          <div className="hidden lg:flex items-center justify-end flex-1 gap-x-5 xl:gap-x-8 h-full lg:ml-12 lg:mt-1.5 xl:ml-20 xl:mt-0">
+          <div className="hidden h-full flex-1 items-center justify-end gap-x-3 lg:ml-8 lg:mt-1.5 lg:flex xl:ml-12 xl:mt-0 xl:gap-x-5">
             {navItems.map((item) => (
               <div 
                 key={item.name} 
@@ -97,7 +104,7 @@ const Navbar: React.FC = () => {
                     <div className="flex items-center h-full cursor-pointer group">
                       <Link 
                         to={item.path}
-                        className={`flex items-center text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none h-full whitespace-nowrap ${activeDropdown === item.name || location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
+                        className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name || location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}
                       >
                         {item.name}
                       </Link>
@@ -107,9 +114,12 @@ const Navbar: React.FC = () => {
                 ) : (
                   <Link 
                     to={item.path!} 
-                    className={`group relative flex items-center h-full text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none whitespace-nowrap ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
+                    className={`group relative flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}
                   >
                     {item.name}
+                    {item.path === '/reservations' && cartItems.length > 0 && (
+                      <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--brand-orange)] px-1.5 text-[11px] text-white">{cartItems.length}</span>
+                    )}
                   </Link>
                 )}
 
@@ -120,7 +130,7 @@ const Navbar: React.FC = () => {
                         <Link
                           key={sub.name}
                           to={sub.path}
-                          className="block px-6 py-3 text-[9px] font-bold tracking-[0.2em] text-[#8DDCE7]/60 hover:text-[var(--brand-aqua)] hover:bg-white/5 transition-all uppercase"
+                          className="block px-6 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#8DDCE7]/70 transition-colors hover:bg-white/5 hover:text-[var(--brand-aqua)]"
                         >
                           {sub.name}
                         </Link>
@@ -131,11 +141,6 @@ const Navbar: React.FC = () => {
               </div>
             ))}
             
-            <div className="h-full flex items-center ml-2 xl:ml-4">
-              <Link to="/admin" className="p-2 rounded-full hover:bg-white/5 transition-all group" title="Owner Portal">
-                <Settings className="w-5 h-5 text-[#8DDCE7]/40 group-hover:text-[var(--brand-aqua)]" />
-              </Link>
-            </div>
           </div>
 
           <div className="lg:hidden flex items-center">
@@ -188,7 +193,7 @@ const Navbar: React.FC = () => {
                           {/* Top-level link added to mobile expanded view */}
                           <Link
                             to={item.path!}
-                            className="flex items-center px-16 py-4 text-[11px] font-bold text-[var(--brand-ivory)] hover:text-white transition-colors uppercase tracking-widest bg-white/5"
+                            className="flex items-center px-16 py-4 text-sm font-bold text-[var(--brand-ivory)] hover:text-white transition-colors uppercase tracking-[0.1em] bg-white/5"
                           >
                             All {item.name}
                           </Link>
@@ -196,7 +201,7 @@ const Navbar: React.FC = () => {
                             <Link
                               key={sub.name}
                               to={sub.path}
-                              className="flex items-center px-16 py-4 text-[11px] font-bold text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] transition-colors uppercase tracking-widest"
+                              className="flex items-center px-16 py-4 text-sm font-bold text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)] transition-colors uppercase tracking-[0.1em]"
                             >
                               {sub.name}
                             </Link>
@@ -211,6 +216,9 @@ const Navbar: React.FC = () => {
                     >
                       <span className="text-[#8DDCE7]/40">{item.icon}</span>
                       <span className="text-lg font-bold tracking-tight">{item.name}</span>
+                      {item.path === '/reservations' && cartItems.length > 0 && (
+                        <span className="ml-auto inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--brand-orange)] px-2 text-xs font-bold text-white">{cartItems.length}</span>
+                      )}
                     </Link>
                   )}
                 </div>
@@ -219,7 +227,7 @@ const Navbar: React.FC = () => {
 
             <div className="p-8 border-t border-white/5 bg-[#030a0d]">
               <div className="mb-10">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#F8F4E8]/20 mb-4 font-bold">Inquiries</p>
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F8F4E8]/55">Inquiries</p>
                 <a href="tel:0115016712624" className="text-2xl font-extrabold tracking-tight text-[#F8F4E8] flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#11C7D9]/20 flex items-center justify-center">
                     <Phone className="w-4 h-4 text-[#F8F4E8]" />
@@ -228,18 +236,7 @@ const Navbar: React.FC = () => {
                 </a>
               </div>
 
-              <div className="flex items-center justify-between border-t border-white/5 pt-6">
-                <div className="flex items-center gap-2">
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#F8F4E8]/10 font-bold">Action Divers Belize</p>
-                  <Link 
-                    to="/admin" 
-                    className="p-1 text-[#F8F4E8]/10 hover:text-[#F8F4E8]/40 transition-colors"
-                    title="Access"
-                  >
-                    <Settings className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
+              <p className="border-t border-white/5 pt-6 text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8]/35">Action Divers Belize</p>
             </div>
           </div>
         </div>

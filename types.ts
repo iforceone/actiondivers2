@@ -13,6 +13,7 @@ export interface Tour {
   includes?: string[];
   whatToBring?: string[];
   features?: string[];
+  options?: TourOption[];
   price: number;
   priceBreakdown?: {
     base: number;
@@ -21,6 +22,13 @@ export interface Tour {
     tax?: number;
     note?: string;
   };
+}
+
+export interface TourOption {
+  name: string;
+  description: string;
+  price: number;
+  note?: string;
 }
 
 export interface BlogLog {

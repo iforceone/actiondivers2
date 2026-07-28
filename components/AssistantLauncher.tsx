@@ -30,14 +30,14 @@ const tooltip =
   'opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100';
 
 const AssistantLauncher: React.FC<AssistantLauncherProps> = ({ onOpen }) => (
-  <div className="fixed bottom-5 right-5 md:bottom-8 md:right-8 z-[40]">
-    <div className="flex items-center gap-2 rounded-full border border-white/10 bg-[#071820]/95 p-2 shadow-2xl backdrop-blur-xl">
+  <div className="fixed bottom-3 right-3 z-[40] sm:bottom-5 sm:right-5 md:bottom-8 md:right-8">
+    <div className="flex flex-col items-center gap-1 rounded-full border border-white/10 bg-[#071820]/95 p-1.5 shadow-lg backdrop-blur-xl sm:flex-row sm:gap-2 sm:p-2">
       <div className="group relative">
         <a
           href={buildWhatsAppUrl('Hi Action Divers & Adventures! I would like help planning a Belize tour.')}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:scale-105"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-12 sm:w-12"
           aria-label="Message a real person on WhatsApp"
         >
           <MessageCircle className="h-5 w-5" fill="currentColor" strokeWidth={1.5} />
@@ -50,11 +50,11 @@ const AssistantLauncher: React.FC<AssistantLauncherProps> = ({ onOpen }) => (
       <div className="group relative">
         <button
           onClick={onOpen}
-          className="flex h-12 items-center gap-2 rounded-full bg-[var(--brand-aqua)] px-4 font-bold text-[#001219] transition-transform hover:scale-[1.03]"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--brand-aqua)] font-bold text-[#001219] transition-transform hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-12 sm:w-12"
           aria-label="Open the tour assistant for instant AI answers"
         >
           <Sparkles className="h-5 w-5" />
-          <span className="hidden text-xs uppercase tracking-widest sm:inline">Need help?</span>
+          <span className="sr-only">Tour Assistant</span>
         </button>
         <span aria-hidden="true" className={tooltip}>
           Instant answers from our AI

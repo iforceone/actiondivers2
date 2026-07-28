@@ -41,6 +41,36 @@ export const INITIAL_TOURS: Tour[] = [
     ]
   },
   {
+    id: 'diving-courses',
+    name: 'Diving Courses & Certifications',
+    category: 'island',
+    subCategory: 'Scuba Courses',
+    price: 208.75,
+    description: 'Compare Action Divers training options, from refreshers and introductory courses to advanced certification.',
+    longDescription: 'Action Divers offers several ways to begin, continue, or return to scuba diving. Use this page to compare the courses currently offered, then contact the team with your experience level and travel dates so they can confirm the right course, prerequisites, schedule, and availability.',
+    isAvailable: true,
+    image: '/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg',
+    duration: 'Varies by course',
+    departureTime: 'Confirm when booking',
+    includes: ['Instruction based on the selected course', 'Gear rental and applicable park fees reflected in listed totals'],
+    whatToBring: ['Swimsuit and towel', 'Any existing certification records', 'Questions about your experience and goals'],
+    features: [
+      'Options for new, returning, and continuing divers',
+      'Two-day Open Water Referral option',
+      'Three-day Open Water Certification option',
+      'Advanced Open Water option'
+    ],
+    options: [
+      { name: 'Refresher', description: 'For divers looking to refresh their skills before returning to the water.', price: 208.75 },
+      { name: 'Resort Course', description: 'An introductory course option for visitors exploring scuba diving.', price: 211.88 },
+      { name: 'Scuba Discovery', description: 'A guided introduction to scuba diving for first-time participants.', price: 211.88 },
+      { name: 'Open Water Referral', description: 'A two-day referral option for completing eligible certification training.', price: 480.00, note: 'Listed as a two-day course.' },
+      { name: 'Scuba Diver', description: 'A certification-course option offered by Action Divers.', price: 436.88 },
+      { name: 'Open Water Certification', description: 'The listed three-day Open Water certification course.', price: 564.38, note: 'Listed as a three-day course.' },
+      { name: 'Advanced Open Water', description: 'Continuing training for divers ready to progress beyond Open Water.', price: 493.13 }
+    ]
+  },
+  {
     id: 'snorkeling',
     name: 'Snorkeling',
     category: 'island',
@@ -65,6 +95,105 @@ export const INITIAL_TOURS: Tour[] = [
       'Hol Chan & Shark-Ray Alley: Snorkel with turtles and spotted eagle rays.',
       'Mexico Rocks: Aquarium-like clarity and northern secluded spots.',
       'Bacalar Chico: Full-day adventure ($175) including park fee.'
+    ]
+  },
+  {
+    id: 'hol-chan-shark-ray-alley',
+    name: 'Hol Chan & Shark Ray Alley',
+    category: 'island',
+    subCategory: 'Reef Adventure',
+    price: 90.00,
+    description: 'Choose a snorkeling excursion or combo dive at one of Ambergris Caye’s best-known marine reserve areas.',
+    longDescription: 'Hol Chan Marine Reserve and Shark Ray Alley combine protected reef scenery with the chance to encounter Belizean marine life. Action Divers currently offers this destination as a snorkeling excursion and as a combo dive, giving both snorkelers and certified divers a way to experience the area.',
+    isAvailable: true,
+    image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
+    duration: 'Confirm for your selected option',
+    departureTime: 'Confirm when booking',
+    includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
+    features: [
+      'Snorkeling and diving options',
+      'Protected coral reef environment',
+      'Shark Ray Alley experience',
+      'Departures from the Action Divers tour desk'
+    ],
+    options: [
+      { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A guided snorkeling excursion through Hol Chan and Shark Ray Alley.', price: 90.00 },
+      { name: 'Hol Chan Combo Dive', description: 'The dive option for certified guests who want to experience Hol Chan below the surface.', price: 133.13 }
+    ]
+  },
+  {
+    id: 'mexico-rocks',
+    name: 'Mexico Rocks',
+    category: 'island',
+    subCategory: 'Reef Adventure',
+    price: 75.00,
+    description: 'Explore the Mexico Rocks reef area north of the Action Divers shop by snorkel or scuba.',
+    longDescription: 'Mexico Rocks is located north of the Action Divers shop and is offered for both snorkeling and diving. Choose the experience that matches your comfort and certification level, then confirm current conditions, timing, and availability with the team.',
+    isAvailable: true,
+    image: '/images/gallery/School-Fish.png',
+    duration: 'Confirm for your selected option',
+    departureTime: 'Confirm when booking',
+    includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
+    features: [
+      'Snorkeling and single-dive options',
+      'Reef location north of the shop',
+      'A clear choice for mixed-interest groups',
+      'Pricing shown by activity'
+    ],
+    options: [
+      { name: 'Mexico Rocks Snorkeling', description: 'A guided snorkeling visit to the Mexico Rocks reef area.', price: 75.00 },
+      { name: 'Single Dive: Mexico Rocks', description: 'A single guided dive for certified guests.', price: 116.25 }
+    ]
+  },
+  {
+    id: 'caye-caulker-manatee',
+    name: 'Caye Caulker & Manatee Adventure',
+    category: 'island',
+    subCategory: 'Full-Day Island Tour',
+    price: 175.00,
+    description: 'Compare two Caye Caulker itineraries, including the manatee and tarpon-feeding option or a sailing day.',
+    longDescription: 'Action Divers lists two ways to build a Caye Caulker day into your trip. One itinerary combines Hol Chan, Caye Caulker, manatee viewing, and tarpon feeding. The sailing option combines Hol Chan, Shark Ray Alley, and Caye Caulker. Ask the team to confirm the current itinerary and availability for your dates.',
+    isAvailable: true,
+    image: '/images/gallery/Three-of-a-Kind-boat-1.png',
+    duration: 'Full-day options',
+    departureTime: 'Confirm when booking',
+    includes: ['Guided island itinerary', 'Gear and park fees reflected where applicable'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Money for lunch and personal purchases'],
+    features: [
+      'Two Caye Caulker itinerary choices',
+      'Hol Chan included in both listed options',
+      'Manatee and tarpon-feeding itinerary',
+      'Sailing itinerary with Shark Ray Alley'
+    ],
+    options: [
+      { name: 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', description: 'The listed combination itinerary joining reef and island stops.', price: 175.00 },
+      { name: 'Sailing: Hol Chan, Shark Ray Alley & Caye Caulker', description: 'A sailing-based alternative for the Caye Caulker day.', price: 175.00, note: 'Lunch is not included.' }
+    ]
+  },
+  {
+    id: 'bacalar-chico',
+    name: 'Bacalar Chico',
+    category: 'island',
+    subCategory: 'Full-Day Reef Adventure',
+    price: 175.00,
+    description: 'A full-day snorkeling adventure to Bacalar Chico with gear and park fee included in the listed total.',
+    longDescription: 'Bacalar Chico is offered as a full-day snorkeling adventure from Ambergris Caye. The published total includes snorkeling gear and the park fee. Contact Action Divers with your preferred date and group size to confirm the day’s route, departure time, and availability.',
+    isAvailable: true,
+    image: '/images/gallery/WhatsApp_Image_2026-03-08_at_9.57.19_AM.jpeg',
+    duration: 'Full day',
+    departureTime: 'Confirm when booking',
+    includes: ['Snorkeling gear', 'Park fee', 'Local guide and boat transport'],
+    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Hat or sun shirt', 'Reusable water bottle'],
+    features: [
+      'Full-day snorkeling itinerary',
+      'Bacalar Chico destination',
+      'Snorkeling gear included',
+      'Park fee included'
+    ],
+    options: [
+      { name: 'Bacalar Chico Full-Day Adventure', description: 'The published Bacalar Chico snorkeling itinerary with gear and park fee included.', price: 175.00 }
     ]
   },
   {

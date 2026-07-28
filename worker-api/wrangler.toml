@@ -16,6 +16,28 @@ TO_EMAIL = "info@actiondiversbelize.com"
 FROM_EMAIL = "Action Divers & Adventures <info@actiondiversbelize.com>"
 # Comma-separated site origins allowed to POST to this Worker (no trailing slash).
 ALLOWED_ORIGINS = "https://actiondivers2.davebze.workers.dev,http://localhost:3000"
+PAYMENT_ENVIRONMENT = "sandbox"
+PAYMENT_SITE_ORIGIN = "https://actiondivers2.davebze.workers.dev"
+# Launch gates. Keep both false until D1, Cloudflare Access, approved staff,
+# email delivery, and the Belize Bank sandbox flow have all been verified.
+RESERVATIONS_V2_ENABLED = "false"
+STAFF_PORTAL_ENABLED = "false"
+PAYMENTS_ENABLED = "false"
+# Non-secret Cloudflare Access configuration. Fill these only after creating the
+# path-protected Access application for the site and API Worker.
+ACCESS_TEAM_DOMAIN = ""
+ACCESS_AUD = ""
+OWNER_EMAILS = ""
+
+# Create payment storage before deploying these routes:
+#   npx wrangler d1 create actiondivers-payments
+# Then paste the returned non-secret database ID and uncomment this block.
+# [[d1_databases]]
+# binding = "PAYMENTS_DB"
+# database_name = "actiondivers-payments"
+# database_id = "REPLACE_WITH_D1_DATABASE_ID"
+# preview_database_id = "REPLACE_WITH_PREVIEW_D1_DATABASE_ID"
+# migrations_dir = "migrations"
 
 # Rate limits are per client IP. `period` must be 10 or 60; each block needs its
 # own namespace_id. Requires wrangler 4 — v3 ignores these silently.
@@ -38,6 +60,17 @@ namespace_id = "1002"
   limit = 12
   period = 60
 
+# Guest payment detail, start, and refresh requests.
+[[ratelimits]]
+name = "PAYMENT_LIMITER"
+namespace_id = "1003"
+
+  [ratelimits.simple]
+  limit = 10
+  period = 60
+
 # RESEND_API_KEY and GEMINI_API_KEY are SECRETS — never put them here. Set with:
 #   npx wrangler secret put RESEND_API_KEY
 #   npx wrangler secret put GEMINI_API_KEY
+#   npx wrangler secret put BELIZE_BANK_USERNAME
+#   npx wrangler secret put BELIZE_BANK_PASSWORD

@@ -14,6 +14,9 @@ const IslandAdventures: React.FC = () => {
         <img 
           src="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" 
           alt="Belizean Barrier Reef" 
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
@@ -49,6 +52,8 @@ const IslandAdventures: React.FC = () => {
                 <img 
                   src={tour.image} 
                   alt={tour.name} 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219]/40 to-transparent"></div>

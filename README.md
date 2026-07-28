@@ -129,7 +129,7 @@ deciding you want that migration.
 ```bash
 cd worker-api
 npx wrangler whoami        # confirm davebze@gmail.com first
-npx wrangler deploy
+npm run deploy
 ```
 
 Deploys take a few seconds to propagate. If you deploy and immediately test, you may hit
@@ -144,7 +144,7 @@ The `workers.dev` URL is hardcoded in **seven** places. Miss the first one and b
 chatbot and the reservations form return `403` on the new domain with no visible cause.
 
 1. **`worker-api/wrangler.toml`** → `ALLOWED_ORIGINS` — add the new origin (comma
-   separated, no trailing slash), then **`npx wrangler deploy`**. The Worker rejects any
+   separated, no trailing slash), then **`npm run deploy` from `worker-api/`**. The Worker rejects any
    other `Origin` with 403 server-side; this is real access control, not just a CORS
    header, so it will not "just work" until you do this.
 2. **`components/SEO.tsx`** → `SITE_URL` — drives canonical URLs and JSON-LD across all

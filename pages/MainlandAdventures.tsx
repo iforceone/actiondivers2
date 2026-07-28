@@ -12,8 +12,11 @@ const MainlandAdventures: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-[62vh] min-h-[520px] max-h-[720px] flex items-center justify-center overflow-hidden">
         <img 
-          src="/images/gallery/IMG_5824-e1673406815998-768x576.png" 
-          alt="Belizean Jungle" 
+          src="/images/gallery/web-maya-ruin.jpg"
+          alt="Maya temple rising above the Belize rainforest"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
@@ -49,6 +52,8 @@ const MainlandAdventures: React.FC = () => {
                 <img 
                   src={tour.image} 
                   alt={tour.name} 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219]/40 to-transparent"></div>
@@ -59,7 +64,7 @@ const MainlandAdventures: React.FC = () => {
             <div className="w-full lg:w-1/2 space-y-8">
               <div className="inline-flex items-center space-x-3 text-[#11C7D9]">
                 <Map className="w-4 h-4" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em]">Mainland Discovery</span>
+                <span className="text-xs font-bold uppercase tracking-[0.14em]">Mainland Discovery</span>
               </div>
               <h3 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#F8F4E8]">{tour.name}</h3>
               <p className="text-lg text-[#F8F4E8]/70 leading-relaxed font-light">
@@ -67,11 +72,11 @@ const MainlandAdventures: React.FC = () => {
               </p>
               <div className="grid grid-cols-2 gap-6 pt-4">
                 <div className="glass p-6 rounded-2xl border border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Duration</p>
+                  <p className="mb-2 text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">Duration</p>
                   <p className="text-[#F8F4E8] font-medium">Full Day Tour</p>
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
-                  <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Departures</p>
+                  <p className="mb-2 text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">Departures</p>
                   <p className="text-[#F8F4E8] font-medium">Daily from 6:00 AM</p>
                 </div>
               </div>
@@ -109,7 +114,7 @@ const MainlandAdventures: React.FC = () => {
             <div className="h-px w-12 bg-white/10 self-center hidden sm:block"></div>
             <div className="flex items-center justify-center space-x-3 text-[#F8F4E8]/40">
               <Compass className="w-5 h-5" />
-              <span className="text-xs font-bold uppercase tracking-widest">Licensed Local Guides</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Local Guides</span>
             </div>
           </div>
         </div>
