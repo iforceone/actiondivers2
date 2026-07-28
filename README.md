@@ -111,6 +111,18 @@ through the dashboard, where the account is visible.
 `npm run build` then `npx wrangler deploy`. Takes about 90 seconds. Watch it under
 Workers & Pages → `actiondivers2` → Deployments.
 
+**Pushes to any other branch also build.** Non-production branches run
+`npx wrangler versions upload` instead of `wrangler deploy` — it uploads a preview
+version without touching production. These builds show up in the same build history, so
+a red build there does **not** mean the live site is broken; check which branch the
+build came from before panicking.
+
+Both commands read `wrangler.jsonc` in the repo root. Keep it committed. Cloudflare's
+`cloudflare/workers-autoconfig` bot periodically opens a branch offering to generate its
+own config — it also switches the build to `@cloudflare/vite-plugin` and rewrites the
+npm scripts, which is a much larger change than it appears. Don't merge it without
+deciding you want that migration.
+
 **The Worker does not.** It has no Git integration. After changing anything in
 `worker-api/`:
 
@@ -182,6 +194,7 @@ priority 0 that would hijack all inbound mail away from Google Workspace.
 
 ```
 App.tsx                    routing, footer, reservations page/form
+wrangler.jsonc             site Worker config (assets-only, points at dist/)
 config.ts                  contact details, Worker URL, review counts
 constants.tsx              tour data and pricing
 types.ts                   shared types

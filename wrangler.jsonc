@@ -1,0 +1,24 @@
+// Cloudflare config for the SITE Worker (actiondivers2).
+// The API Worker has its own config in worker-api/wrangler.toml.
+//
+// This exists so builds are deterministic. Without it, `wrangler deploy` falls
+// back to interactive auto-detection that guesses these values at build time,
+// while `wrangler versions upload` — what Cloudflare runs for non-production
+// branch builds — has no such fallback and fails with "Missing entry-point to
+// Worker script or to assets directory".
+//
+// Assets-only: there is no Worker script, just the Vite build in dist/.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "actiondivers2",
+  "compatibility_date": "2026-06-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./dist",
+    // Client-side routing: unknown paths serve index.html instead of 404ing.
+    "not_found_handling": "single-page-application"
+  }
+}
