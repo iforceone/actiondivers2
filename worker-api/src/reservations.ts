@@ -1,4 +1,4 @@
-import { DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem } from '../../shared/bookingCatalog';
+import { DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, withDefaultParticipantLimits } from '../../shared/bookingCatalog';
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { calculateDiscount, DiscountInput, paymentIsAvailable } from './reservationRules';
@@ -126,6 +126,7 @@ function validCatalog(value: unknown): value is BookingCatalog {
       (item.category === 'Island' || item.category === 'Mainland') &&
       Number.isInteger(item.priceCents) && item.priceCents! >= 0 && item.priceCents! <= 10_000_000 &&
       (item.pricingBasis === 'per_person' || item.pricingBasis === 'per_group') &&
+      (item.maxParticipants === undefined || (Number.isInteger(item.maxParticipants) && item.maxParticipants! >= 1 && item.maxParticipants! <= 80)) &&
       typeof item.active === 'boolean' && Number.isInteger(item.sortOrder);
   });
 }
@@ -138,7 +139,7 @@ async function publishedCatalog(env: ReservationEnv): Promise<BookingCatalog> {
   if (row) {
     try {
       const payload = JSON.parse(row.payload_json) as BookingCatalog;
-      if (validCatalog(payload)) return { ...payload, version: row.version, publishedAt: row.published_at };
+      if (validCatalog(payload)) return withDefaultParticipantLimits({ ...payload, version: row.version, publishedAt: row.published_at });
     } catch {
       // Fall through to the checked-in catalog if a stored revision is corrupt.
     }
@@ -256,6 +257,9 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
     }
     if (!Number.isInteger(itemAdults) || !Number.isInteger(itemChildren) || itemAdults < 0 || itemChildren < 0 || itemAdults > adults || itemChildren > children || itemAdults + itemChildren < 1) {
       return json({ ok: false, error: 'Every selected tour needs at least one participant within the overall party size.' }, 422);
+    }
+    if (catalogItem.maxParticipants && itemAdults + itemChildren > catalogItem.maxParticipants) {
+      return json({ ok: false, error: `${catalogItem.name} allows a maximum of ${catalogItem.maxParticipants} guests.` }, 422);
     }
     normalizedItems.push({ catalog: catalogItem, requestedDate, adults: itemAdults, children: itemChildren });
   }
@@ -543,9 +547,20 @@ async function updateReservation(request: Request, env: ReservationEnv, staff: S
     requestedItems.push({ id: itemId, requestedDate, adults: itemAdults, children: itemChildren });
   }
   if (requestedItems.length) {
-    const stored = await db.prepare('SELECT id FROM reservation_items WHERE reservation_id = ?').bind(id).all<{ id: string }>();
+    const stored = await db.prepare('SELECT id, catalog_item_id FROM reservation_items WHERE reservation_id = ?').bind(id).all<{ id: string; catalog_item_id: string }>();
     const allowedIds = new Set(stored.results.map((item) => item.id));
     if (requestedItems.some((item) => !allowedIds.has(item.id))) return json({ ok: false, error: 'A reservation item is invalid.' }, 422);
+    const catalog = await publishedCatalog(env);
+    const capacityByCatalogId = new Map(catalog.items.map((item) => [item.id, item.maxParticipants]));
+    const catalogIdByItemId = new Map(stored.results.map((item) => [item.id, item.catalog_item_id]));
+    const overCapacity = requestedItems.find((item) => {
+      const capacity = capacityByCatalogId.get(catalogIdByItemId.get(item.id) ?? '');
+      return capacity !== undefined && item.adults + item.children > capacity;
+    });
+    if (overCapacity) {
+      const capacity = capacityByCatalogId.get(catalogIdByItemId.get(overCapacity.id) ?? '');
+      return json({ ok: false, error: `This tour allows a maximum of ${capacity} guests.` }, 422);
+    }
   }
   const timestamp = nowIso();
   await db.batch([

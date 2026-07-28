@@ -8,6 +8,7 @@ export interface BookingCatalogItem {
   description: string;
   priceCents: number;
   pricingBasis: PricingBasis;
+  maxParticipants?: number;
   active: boolean;
   sortOrder: number;
 }
@@ -27,7 +28,8 @@ const item = (
   sortOrder: number,
   pricingBasis: PricingBasis = 'per_person',
   description = '',
-): BookingCatalogItem => ({ id, tourId, category, name, description, priceCents, pricingBasis, active: true, sortOrder });
+  maxParticipants?: number,
+): BookingCatalogItem => ({ id, tourId, category, name, description, priceCents, pricingBasis, maxParticipants, active: true, sortOrder });
 
 export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
   version: 1,
@@ -49,19 +51,30 @@ export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
     item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'Caye Caulker, Manatee & Tarpon Feeding', 17500, 140),
     item('snorkel-sailing', 'caye-caulker-manatee', 'Island', 'Sailing: Hol Chan & Caye Caulker', 17500, 150),
     item('snorkel-bacalar', 'bacalar-chico', 'Island', 'Bacalar Chico Full-Day Adventure', 17500, 160),
-    item('fish-reef-half', 'fishing', 'Island', 'Reef Fishing (Half Day)', 30938, 170, 'per_group'),
-    item('fish-reef-full', 'fishing', 'Island', 'Reef Fishing (Full Day)', 56250, 180, 'per_group'),
-    item('fish-deep-half', 'fishing', 'Island', 'Deep Sea Fishing (Half Day)', 90000, 190, 'per_group'),
-    item('fish-deep-full', 'fishing', 'Island', 'Deep Sea Fishing (Full Day)', 180000, 200, 'per_group'),
-    item('fish-flat-half', 'fishing', 'Island', 'Flat Fishing (Half Day)', 39375, 210, 'per_group'),
-    item('fish-flat-full', 'fishing', 'Island', 'Flat Fishing (Full Day)', 60000, 220, 'per_group'),
-    item('bbq-full', 'beach-bbq', 'Island', 'Beach Bar-B-Q (1–4 people)', 56250, 230, 'per_group'),
+    item('fish-reef-half', 'fishing', 'Island', 'Reef Fishing (Half Day)', 30938, 170, 'per_group', '', 4),
+    item('fish-reef-full', 'fishing', 'Island', 'Reef Fishing (Full Day)', 56250, 180, 'per_group', '', 4),
+    item('fish-deep-half', 'fishing', 'Island', 'Deep Sea Fishing (Half Day)', 90000, 190, 'per_group', '', 4),
+    item('fish-deep-full', 'fishing', 'Island', 'Deep Sea Fishing (Full Day)', 180000, 200, 'per_group', '', 4),
+    item('fish-flat-half', 'fishing', 'Island', 'Flat Fishing (Half Day)', 39375, 210, 'per_group', '', 2),
+    item('fish-flat-full', 'fishing', 'Island', 'Flat Fishing (Full Day)', 60000, 220, 'per_group', '', 2),
+    item('bbq-full', 'beach-bbq', 'Island', 'Beach Bar-B-Q (1–4 people)', 56250, 230, 'per_group', '', 4),
     item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'Altun Ha & Cave Tubing', 33750, 240),
     item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'Xunantunich & Cave Tubing', 33750, 250),
     item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'Cave Tubing & Zip-lining', 33750, 260),
     item('main-lamanai', 'lamanai', 'Mainland', 'Lamanai Temple Tour', 28125, 270),
     item('main-atm', 'atm-caves', 'Mainland', 'ATM Caves Expedition', 45000, 280),
   ],
+};
+
+export const withDefaultParticipantLimits = (catalog: BookingCatalog): BookingCatalog => {
+  const defaultLimits = new Map(DEFAULT_BOOKING_CATALOG.items.map((item) => [item.id, item.maxParticipants]));
+  return {
+    ...catalog,
+    items: catalog.items.map((item) => ({
+      ...item,
+      maxParticipants: item.maxParticipants ?? defaultLimits.get(item.id),
+    })),
+  };
 };
 
 export const catalogItemsForTour = (tourId: string, catalog = DEFAULT_BOOKING_CATALOG) =>

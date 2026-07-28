@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { API } from '../config';
-import { BookingCatalog, BookingCatalogItem, DEFAULT_BOOKING_CATALOG } from '../shared/bookingCatalog';
+import { BookingCatalog, BookingCatalogItem, DEFAULT_BOOKING_CATALOG, withDefaultParticipantLimits } from '../shared/bookingCatalog';
 
 export interface CartItem {
   catalogItemId: string;
@@ -8,6 +8,7 @@ export interface CartItem {
   name: string;
   priceCents: number;
   pricingBasis: 'per_person' | 'per_group';
+  maxParticipants?: number;
   requestedDate: string;
   participantAdults: number;
   participantChildren: number;
@@ -27,7 +28,6 @@ interface BookingContextValue {
   removeItem: (catalogItemId: string) => void;
   setRequestedDate: (catalogItemId: string, requestedDate: string) => void;
   setParticipants: (catalogItemId: string, adults: number, children: number) => void;
-  setAllRequestedDates: (requestedDate: string) => void;
   setAllParticipants: (adults: number, children: number) => void;
   clearCart: () => void;
   hasItem: (catalogItemId: string) => boolean;
@@ -41,7 +41,7 @@ const validStoredItem = (value: unknown): value is CartItem => {
   const item = value as Partial<CartItem>;
   return typeof item.catalogItemId === 'string' && typeof item.tourId === 'string' && typeof item.name === 'string' &&
     Number.isInteger(item.priceCents) && (item.pricingBasis === 'per_person' || item.pricingBasis === 'per_group') &&
-    typeof item.requestedDate === 'string' && Number.isInteger(item.participantAdults) && Number.isInteger(item.participantChildren);
+    typeof item.requestedDate === 'string' && (item.maxParticipants === undefined || (Number.isInteger(item.maxParticipants) && item.maxParticipants > 0)) && Number.isInteger(item.participantAdults) && Number.isInteger(item.participantChildren);
 };
 
 export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,7 +52,8 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') as { schemaVersion?: number; items?: Array<Partial<CartItem>> } | null;
       if (!Array.isArray(stored?.items)) return [];
-      return stored.items.map((item) => ({ ...item, participantAdults: Number.isInteger(item.participantAdults) ? item.participantAdults : 1, participantChildren: Number.isInteger(item.participantChildren) ? item.participantChildren : 0 })).filter(validStoredItem).slice(0, 12);
+      const defaultLimits = new Map(DEFAULT_BOOKING_CATALOG.items.map((item) => [item.id, item.maxParticipants]));
+      return stored.items.map((item) => ({ ...item, maxParticipants: item.maxParticipants ?? defaultLimits.get(item.catalogItemId ?? ''), participantAdults: Number.isInteger(item.participantAdults) ? item.participantAdults : 1, participantChildren: Number.isInteger(item.participantChildren) ? item.participantChildren : 0 })).filter(validStoredItem).slice(0, 12);
     } catch {
       return [];
     }
@@ -69,11 +70,12 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const body = await response.json() as { ok?: boolean; catalog?: BookingCatalog };
         if (!response.ok || !body.catalog?.items) throw new Error('Catalog unavailable');
         if (active) {
-          setCatalog(body.catalog);
+          const liveCatalog = withDefaultParticipantLimits(body.catalog);
+          setCatalog(liveCatalog);
           setCatalogOnline(true);
           setItems((current) => current.map((cartItem) => {
-            const fresh = body.catalog!.items.find((candidate) => candidate.id === cartItem.catalogItemId && candidate.active);
-            return fresh ? { ...cartItem, name: fresh.name, priceCents: fresh.priceCents, pricingBasis: fresh.pricingBasis } : cartItem;
+            const fresh = liveCatalog.items.find((candidate) => candidate.id === cartItem.catalogItemId && candidate.active);
+            return fresh ? { ...cartItem, name: fresh.name, priceCents: fresh.priceCents, pricingBasis: fresh.pricingBasis, maxParticipants: fresh.maxParticipants } : cartItem;
           }));
         }
       })
@@ -87,23 +89,32 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     catalogLoading,
     catalogOnline,
     items,
-    addItem: (catalogItem, participants = { adults: 1, children: 0 }) => setItems((current) => current.some((item) => item.catalogItemId === catalogItem.id)
-      ? current
-      : [...current, {
+    addItem: (catalogItem, participants = { adults: 1, children: 0 }) => setItems((current) => {
+      if (current.some((item) => item.catalogItemId === catalogItem.id)) return current;
+      const participantLimit = catalogItem.maxParticipants ?? 80;
+      const participantAdults = Math.min(Math.max(0, Math.round(participants.adults)), participantLimit);
+      const participantChildren = Math.min(Math.max(0, Math.round(participants.children)), Math.max(0, participantLimit - participantAdults));
+      return [...current, {
           catalogItemId: catalogItem.id,
           tourId: catalogItem.tourId,
           name: catalogItem.name,
           priceCents: catalogItem.priceCents,
           pricingBasis: catalogItem.pricingBasis,
+          maxParticipants: catalogItem.maxParticipants,
           requestedDate: '',
-          participantAdults: Math.max(0, Math.min(40, Math.round(participants.adults))),
-          participantChildren: Math.max(0, Math.min(40, Math.round(participants.children))),
-        }].slice(0, 12)),
+          participantAdults,
+          participantChildren,
+        }].slice(0, 12);
+    }),
     removeItem: (catalogItemId) => setItems((current) => current.filter((item) => item.catalogItemId !== catalogItemId)),
     setRequestedDate: (catalogItemId, requestedDate) => setItems((current) => current.map((item) => item.catalogItemId === catalogItemId ? { ...item, requestedDate } : item)),
     setParticipants: (catalogItemId, participantAdults, participantChildren) => setItems((current) => current.map((item) => item.catalogItemId === catalogItemId ? { ...item, participantAdults, participantChildren } : item)),
-    setAllRequestedDates: (requestedDate) => setItems((current) => current.map((item) => ({ ...item, requestedDate }))),
-    setAllParticipants: (participantAdults, participantChildren) => setItems((current) => current.map((item) => ({ ...item, participantAdults, participantChildren }))),
+    setAllParticipants: (adults, children) => setItems((current) => current.map((item) => {
+      const participantLimit = item.maxParticipants ?? 80;
+      const participantAdults = Math.min(Math.max(0, adults), participantLimit);
+      const participantChildren = Math.min(Math.max(0, children), Math.max(0, participantLimit - participantAdults));
+      return { ...item, participantAdults, participantChildren };
+    })),
     clearCart: () => setItems([]),
     hasItem: (catalogItemId) => items.some((item) => item.catalogItemId === catalogItemId),
   }), [catalog, catalogLoading, catalogOnline, items]);

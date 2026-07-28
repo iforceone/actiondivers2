@@ -17,9 +17,8 @@ interface SubmissionResult {
 const today = new Date().toISOString().slice(0, 10);
 
 const Reservations: React.FC = () => {
-  const { catalog, items, addItem, removeItem, setRequestedDate, setParticipants, setAllRequestedDates, setAllParticipants, clearCart, catalogOnline } = useBooking();
+  const { catalog, items, addItem, removeItem, setRequestedDate, setParticipants, setAllParticipants, clearCart, catalogOnline } = useBooking();
   const [selectedCatalogId, setSelectedCatalogId] = useState('');
-  const [sharedDate, setSharedDate] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,7 +33,7 @@ const Reservations: React.FC = () => {
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const estimate = useMemo(() => items.reduce((sum, item) => sum + item.priceCents * (item.pricingBasis === 'per_person' ? item.participantAdults + item.participantChildren : 1), 0), [items]);
   const datesComplete = items.every((item) => item.requestedDate);
-  const participantsComplete = items.every((item) => item.participantAdults >= 0 && item.participantChildren >= 0 && item.participantAdults + item.participantChildren > 0 && item.participantAdults <= adults && item.participantChildren <= children);
+  const participantsComplete = items.every((item) => item.participantAdults >= 0 && item.participantChildren >= 0 && item.participantAdults + item.participantChildren > 0 && item.participantAdults <= adults && item.participantChildren <= children && (!item.maxParticipants || item.participantAdults + item.participantChildren <= item.maxParticipants));
   const availableCatalogItems = useMemo(() => catalog.items.filter((item) => item.active && !items.some((cartItem) => cartItem.catalogItemId === item.id)).sort((a, b) => a.sortOrder - b.sortOrder), [catalog.items, items]);
   const addSelectedExperience = () => {
     const selected = availableCatalogItems.find((item) => item.id === selectedCatalogId);
@@ -123,6 +122,14 @@ const Reservations: React.FC = () => {
 
       <form onSubmit={submit} className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-10">
+            <section className="border-b border-white/10 pb-9">
+              <h2 className="text-2xl font-extrabold text-[#F8F4E8]">How many people are traveling?</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/60">Enter everyone in the group first. You can choose which adults and children join each tour afterward.</p>
+              <div className="mt-6 grid max-w-lg grid-cols-2 gap-4">
+                <label className="text-sm font-semibold text-[#F8F4E8]/75">Total adults<input required type="number" min={1} max={40} value={adults} onChange={(event) => setAdults(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
+                <label className="text-sm font-semibold text-[#F8F4E8]/75">Total children<input type="number" min={0} max={40} value={children} onChange={(event) => setChildren(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
+              </div>
+            </section>
             <section>
               <div className="flex items-end justify-between gap-4 border-b border-white/10 pb-5">
                 <div>
@@ -138,16 +145,15 @@ const Reservations: React.FC = () => {
                     <option value="">Select a tour or activity</option>
                     {(['Island', 'Mainland'] as const).map((category) => {
                       const choices = availableCatalogItems.filter((item) => item.category === category);
-                      return choices.length ? <optgroup key={category} label={`${category} adventures`}>{choices.map((item) => <option key={item.id} value={item.id}>{item.name} — {formatUsd(item.priceCents)}</option>)}</optgroup> : null;
+                      return choices.length ? <optgroup key={category} label={`${category} adventures`}>{choices.map((item) => <option key={item.id} value={item.id}>{item.name} — {formatUsd(item.priceCents)}{item.maxParticipants ? ` · max ${item.maxParticipants} guests` : ''}</option>)}</optgroup> : null;
                     })}
                   </select>
                 </label>
                 <button type="button" onClick={addSelectedExperience} disabled={!selectedCatalogId} className="inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-xl bg-[#11C7D9] px-5 font-bold text-[#001219] transition-colors hover:bg-[#42D6E3] disabled:cursor-not-allowed disabled:opacity-40"><Plus className="mr-2 h-5 w-5" /> Add experience</button>
               </div>
-              <div className="grid gap-5 border-b border-white/10 py-5 lg:grid-cols-[minmax(180px,1fr)_310px_250px] lg:items-end">
-                <div><h3 className="text-sm font-bold text-[#F8F4E8]">Quick fill</h3><p className="mt-1 max-w-sm text-sm leading-relaxed text-[#F8F4E8]/55">Apply common details, then adjust individual tours if needed.</p></div>
-                <div><label htmlFor="shared-tour-date" className="text-sm font-semibold text-[#F8F4E8]/75">Same date for every tour</label><div className="mt-2 flex"><input id="shared-tour-date" type="date" min={today} value={sharedDate} onChange={(event) => setSharedDate(event.target.value)} className="min-h-11 min-w-0 flex-1 rounded-l-lg border border-r-0 border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" /><button type="button" onClick={() => setAllRequestedDates(sharedDate)} disabled={!items.length || !sharedDate} className="min-h-11 shrink-0 rounded-r-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] transition-colors hover:bg-[#124852] disabled:cursor-not-allowed disabled:opacity-40">Set all dates</button></div></div>
-                <div><p className="text-sm font-semibold text-[#F8F4E8]/75">Same guests for every tour</p><button type="button" onClick={() => setAllParticipants(adults, children)} disabled={!items.length} className="mt-2 min-h-11 w-full rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] transition-colors hover:bg-[#124852] disabled:cursor-not-allowed disabled:opacity-40">Apply {adults} adult{adults === 1 ? '' : 's'} + {children} child{children === 1 ? '' : 'ren'}</button></div>
+              <div className="flex flex-col gap-4 border-b border-white/10 py-5 sm:flex-row sm:items-center sm:justify-between">
+                <div><h3 className="text-sm font-bold text-[#F8F4E8]">Tour participation</h3><p className="mt-1 text-sm leading-relaxed text-[#F8F4E8]/55">Start every tour with the full group, then adjust exceptions below.</p></div>
+                <button type="button" onClick={() => setAllParticipants(adults, children)} disabled={!items.length} className="min-h-11 shrink-0 rounded-lg bg-[#0d3943] px-5 text-sm font-bold text-[#D9EEF1] transition-colors hover:bg-[#124852] disabled:cursor-not-allowed disabled:opacity-40">Apply total party to all tours</button>
               </div>
               {items.length === 0 && <div className="border-b border-white/10 py-9 text-center"><h3 className="text-lg font-bold text-[#F8F4E8]">Start with any experience above.</h3><p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-[#F8F4E8]/60">You can add island and mainland activities here without opening their individual pages.</p></div>}
               <div className="divide-y divide-white/10">
@@ -155,13 +161,13 @@ const Reservations: React.FC = () => {
                   <div key={item.catalogItemId} className="grid gap-5 py-6 sm:grid-cols-[minmax(0,1fr)_180px_170px_44px] sm:items-end">
                     <div>
                       <h3 className="font-bold text-[#F8F4E8]">{item.name}</h3>
-                      <p className="mt-2 text-sm text-[#F8F4E8]/60">{formatUsd(item.priceCents)} · {item.pricingBasis === 'per_group' ? 'group rate' : 'per person'} estimate</p>
+                      <p className="mt-2 text-sm text-[#F8F4E8]/60">{formatUsd(item.priceCents)} · {item.pricingBasis === 'per_group' ? 'group rate' : 'per person'} estimate{item.maxParticipants ? ` · maximum ${item.maxParticipants} guests` : ''}</p>
                     </div>
                     <label className="block text-sm font-semibold text-[#F8F4E8]/75">
                       Requested date
                       <input type="date" min={today} required value={item.requestedDate} onChange={(event) => setRequestedDate(item.catalogItemId, event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-4 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" />
                     </label>
-                    <fieldset><legend className="text-sm font-semibold text-[#F8F4E8]/75">Who is joining?</legend><div className="mt-2 grid grid-cols-2 gap-2"><label className="text-xs text-[#F8F4E8]/60">Adults<input aria-label={`${item.name} adults`} type="number" min={0} max={adults} value={item.participantAdults} onChange={(event) => setParticipants(item.catalogItemId, Math.max(0, Number(event.target.value)), item.participantChildren)} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label><label className="text-xs text-[#F8F4E8]/60">Children<input aria-label={`${item.name} children`} type="number" min={0} max={children} value={item.participantChildren} onChange={(event) => setParticipants(item.catalogItemId, item.participantAdults, Math.max(0, Number(event.target.value)))} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label></div></fieldset>
+                    <fieldset><legend className="text-sm font-semibold text-[#F8F4E8]/75">Who is joining?</legend><div className="mt-2 grid grid-cols-2 gap-2"><label className="text-xs text-[#F8F4E8]/60">Adults<input aria-label={`${item.name} adults`} type="number" min={0} max={Math.min(adults, Math.max(0, (item.maxParticipants ?? 80) - item.participantChildren))} value={item.participantAdults} onChange={(event) => setParticipants(item.catalogItemId, Math.min(Math.max(0, Number(event.target.value)), adults, Math.max(0, (item.maxParticipants ?? 80) - item.participantChildren)), item.participantChildren)} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label><label className="text-xs text-[#F8F4E8]/60">Children<input aria-label={`${item.name} children`} type="number" min={0} max={Math.min(children, Math.max(0, (item.maxParticipants ?? 80) - item.participantAdults))} value={item.participantChildren} onChange={(event) => setParticipants(item.catalogItemId, item.participantAdults, Math.min(Math.max(0, Number(event.target.value)), children, Math.max(0, (item.maxParticipants ?? 80) - item.participantAdults)))} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label></div></fieldset>
                     <button type="button" onClick={() => removeItem(item.catalogItemId)} className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#F8F4E8]/55 transition-colors hover:bg-red-500/10 hover:text-red-300" aria-label={`Remove ${item.name}`}><Trash2 className="h-5 w-5" /></button>
                   </div>
                 ))}
@@ -170,14 +176,12 @@ const Reservations: React.FC = () => {
 
             <section className="border-t border-white/10 pt-9">
               <h2 className="text-2xl font-extrabold text-[#F8F4E8]">Guest and trip details</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#F8F4E8]/60">Enter the total number of people in the group, even if some guests will skip certain tours.</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#F8F4E8]/60">Tell us who to contact and anything staff should know when reviewing the request.</p>
               <div className="mt-7 grid gap-5 sm:grid-cols-2">
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Full name<input required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Phone (optional)<input type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Hotel or villa<input autoComplete="off" value={accommodation} onChange={(event) => setAccommodation(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
-                <label className="text-sm font-semibold text-[#F8F4E8]/75">Total adults<input required type="number" min={1} max={40} value={adults} onChange={(event) => setAdults(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
-                <label className="text-sm font-semibold text-[#F8F4E8]/75">Total children<input type="number" min={0} max={40} value={children} onChange={(event) => setChildren(Number(event.target.value))} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75 sm:col-span-2">Diving experience<select value={divingExperience} onChange={(event) => setDivingExperience(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]"><option value="">Not applicable / select one</option><option>First time / not certified</option><option>Certified beginner</option><option>Experienced certified diver</option><option>Training or refresher needed</option></select></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75 sm:col-span-2">Anything else we should know?<textarea rows={5} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full resize-y rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
               </div>
