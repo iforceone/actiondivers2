@@ -290,7 +290,7 @@ const Admin: React.FC = () => {
           <div><p className="text-sm font-bold text-[#11C7D9]">Action Divers operations</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Reservations</h1></div>
           <div className="text-sm text-[#F8F4E8]/60"><span className="font-bold text-[#F8F4E8]">{session.name}</span><span className="ml-2 rounded-full bg-white/8 px-3 py-1 text-xs">{session.role}</span></div>
         </header>
-        {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Local preview</strong> · Fictional data · Actions are simulated</span><span className="text-[#F8F4E8]/55">Cloudflare Access appears before this dashboard in production.</span></div>}
+        {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Demo preview</strong> · Fictional data · Actions are simulated</span><span className="text-[#F8F4E8]/55">Cloudflare Access appears before this dashboard in production.</span></div>}
 
         <nav className="flex gap-1 overflow-x-auto border-b border-white/10 py-3" aria-label="Staff sections">
           {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Daily Roster'], ['catalog', DollarSign, 'Catalog'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (
