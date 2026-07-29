@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, DollarSign, Download, FileText, ListChecks, Loader2, Pencil, Plus, Printer, RefreshCw, Save, Search, Send, SlidersHorizontal, Trash2, Users } from 'lucide-react';
 import { API } from '../config';
 import { BookingCatalog, BookingCatalogItem, DEFAULT_BOOKING_CATALOG, formatUsd } from '../shared/bookingCatalog';
+import { isAdminPreviewEnabled } from '../utils/adminPreview';
 
 type StaffRole = 'owner' | 'staff';
 type DashboardTab = 'reservations' | 'roster' | 'catalog' | 'templates' | 'staff';
@@ -24,7 +25,7 @@ interface MessageTemplate { id: string; name: string; subject: string; body: str
 interface RosterRow { reservation_item_id: string; tour_name: string; requested_date: string; adults: number; children: number; reservation_id: string; reference: string; status: string; customer_name: string; customer_email: string; customer_phone: string | null; accommodation: string | null; diving_experience: string | null; customer_notes: string | null; internal_notes: string | null }
 
 const STATUS_LABELS: Record<string, string> = { new: 'New', reviewing: 'Reviewing', needs_contact: 'Needs contact', quoted: 'Update sent', awaiting_payment: 'Awaiting payment', paid: 'Paid', cancelled: 'Cancelled', completed: 'Completed' };
-const ADMIN_PREVIEW = import.meta.env.DEV && window.location.pathname === '/admin/preview';
+const ADMIN_PREVIEW = isAdminPreviewEnabled() && window.location.pathname === '/admin/preview';
 const PREVIEW_RESERVATIONS: ReservationSummary[] = [
   { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', customer_name: 'Maya Thompson', customer_email: 'maya@example.com', adults: 2, children: 1, estimated_total_cents: 48125, current_quote_version: null, version: 3, created_at: '2026-07-28T14:10:00.000Z', updated_at: '2026-07-28T15:05:00.000Z' },
   { id: 'preview-2', reference: 'AD-REEF82', status: 'awaiting_payment', customer_name: 'Daniel Ruiz', customer_email: 'daniel@example.com', adults: 2, children: 0, estimated_total_cents: 28876, current_quote_version: 1, version: 5, created_at: '2026-07-27T16:30:00.000Z', updated_at: '2026-07-28T13:42:00.000Z' },

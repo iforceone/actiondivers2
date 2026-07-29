@@ -22,9 +22,11 @@ import SEO, { SITE_URL } from './components/SEO';
 import { INITIAL_TOURS } from './constants';
 import { BLOG_POSTS } from './data/blogPosts';
 import { CONTACT, API, buildWhatsAppUrl } from './config';
+import { isAdminPreviewEnabled } from './utils/adminPreview';
 
 const STAFF_PORTAL_BUILD_ENABLED = import.meta.env.DEV || import.meta.env.VITE_STAFF_PORTAL_ENABLED === 'true';
-const Admin = STAFF_PORTAL_BUILD_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
+const ADMIN_PREVIEW_ENABLED = isAdminPreviewEnabled();
+const Admin = STAFF_PORTAL_BUILD_ENABLED || ADMIN_PREVIEW_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
 
 const Footer = () => (
   <footer className="border-t border-white/5 bg-[#001219] px-4 py-12 md:py-16">
@@ -541,14 +543,10 @@ const App: React.FC = () => {
             <Route path="/reservation/:token" element={<CustomerPortal />} />
             <Route path="/pay/:token" element={<PaymentPage />} />
             <Route path="/payment/return" element={<PaymentReturnPage />} />
-            {STAFF_PORTAL_BUILD_ENABLED && Admin ? (
-              <>
-                <Route path="/admin" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />
-                {import.meta.env.DEV && <Route path="/admin/preview" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />}
-              </>
-            ) : (
-              <Route path="/admin" element={<Navigate to="/" replace />} />
-            )}
+            {STAFF_PORTAL_BUILD_ENABLED && Admin
+              ? <Route path="/admin" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />
+              : <Route path="/admin" element={<Navigate to="/" replace />} />}
+            {ADMIN_PREVIEW_ENABLED && Admin && <Route path="/admin/preview" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
