@@ -7,6 +7,19 @@ test('catalog identifiers and prices are safe server inputs', () => {
   const ids = new Set(DEFAULT_BOOKING_CATALOG.items.map((item) => item.id));
   assert.equal(ids.size, DEFAULT_BOOKING_CATALOG.items.length);
   assert.ok(DEFAULT_BOOKING_CATALOG.items.every((item) => Number.isInteger(item.priceCents) && item.priceCents >= 0));
+  assert.ok(DEFAULT_BOOKING_CATALOG.items.every((item) => item.noticeDays >= 7));
+});
+
+test('course schedules and the PADI Scuba Diver name hydrate older catalogs', () => {
+  const current = DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-scubadiver');
+  const hydrated = withDefaultBookingPolicies({
+    version: 99,
+    publishedAt: null,
+    items: [{ ...current, name: 'Scuba Diver', description: '' }],
+  }).items[0];
+  assert.equal(hydrated.name, 'PADI Scuba Diver');
+  assert.match(hydrated.description, /additional morning/i);
+  assert.match(DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-referral').description, /9:00 AM to 12:00 PM/i);
 });
 
 test('per-person estimates enforce the minimum paid quantity', () => {

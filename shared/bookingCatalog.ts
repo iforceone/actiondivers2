@@ -74,19 +74,19 @@ const item = (
 });
 
 export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
-  version: 3,
+  version: 4,
   publishedAt: null,
   items: [
     item('dive-single', 'scuba-diving', 'Island', 'recreational_dive', 'Single Tank Dive (Mexico Rocks)', 11625, 10, { minimumPaidParticipants: 2 }),
     item('dive-two', 'scuba-diving', 'Island', 'recreational_dive', 'Two Tank Dive', 14438, 20, { minimumPaidParticipants: 2 }),
     item('dive-holchan', 'hol-chan-shark-ray-alley', 'Island', 'recreational_dive', 'Hol Chan Combo Dive', 13313, 30, { minimumPaidParticipants: 2 }),
     item('dive-night', 'scuba-diving', 'Island', 'recreational_dive', 'Night Dive (Love Tunnel)', 15563, 40, { minimumPaidParticipants: 2 }),
-    item('course-refresher', 'courses', 'Course', 'course', 'Refresher', 20875, 50),
-    item('course-discover', 'courses', 'Course', 'course', 'Discover Scuba Diving', 21188, 60),
-    item('course-referral', 'courses', 'Course', 'course', 'Open Water Referral', 48000, 70),
-    item('course-scubadiver', 'courses', 'Course', 'course', 'Scuba Diver', 43688, 80),
-    item('course-owcert', 'courses', 'Course', 'course', 'Open Water Certification', 56438, 90),
-    item('course-advanced', 'courses', 'Course', 'course', 'Advanced Open Water', 49313, 100),
+    item('course-refresher', 'courses', 'Course', 'course', 'Refresher', 20875, 50, { description: 'A morning refresher for certified divers returning after time away. Guests may then complete a recreational dive that afternoon.' }),
+    item('course-discover', 'courses', 'Course', 'course', 'Discover Scuba Diving', 21188, 60, { description: 'One beginner session, scheduled in the morning or afternoon. Staff confirms the exact starting time.' }),
+    item('course-referral', 'courses', 'Course', 'course', 'Open Water Referral', 48000, 70, { description: 'Two training days from 9:00 AM to 12:00 PM each day. Staff must review referral documents.' }),
+    item('course-scubadiver', 'courses', 'Course', 'course', 'PADI Scuba Diver', 43688, 80, { description: 'A beginner session plus one additional morning of training.' }),
+    item('course-owcert', 'courses', 'Course', 'course', 'Open Water Certification', 56438, 90, { description: 'Approximately three mornings of training when starting from scratch.' }),
+    item('course-advanced', 'courses', 'Course', 'course', 'Advanced Open Water', 49313, 100, { description: 'Continuing training for divers ready to progress beyond Open Water; staff confirms the schedule.' }),
     item('snorkel-hol', 'hol-chan-shark-ray-alley', 'Island', 'snorkeling', 'Hol Chan & Shark Ray Alley Snorkeling', 9000, 120, { minimumPaidParticipants: 4, maxParticipants: 12 }),
     item('snorkel-mex', 'mexico-rocks', 'Island', 'snorkeling', 'Mexico Rocks Snorkeling', 7500, 130, { minimumPaidParticipants: 4, maxParticipants: 12 }),
     item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', 17500, 140, { minimumPaidParticipants: 4, maxParticipants: 12 }),
@@ -126,7 +126,7 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
         catalogItem.pricingBasis === 'per_group' &&
         catalogItem.minimumPaidParticipants === undefined &&
         catalogItem.maxParticipants === 4;
-      const merged = hasObsoleteBarbecuePricing ? {
+      const mergedBase = hasObsoleteBarbecuePricing ? {
         ...policy,
         ...catalogItem,
         priceCents: policy.priceCents,
@@ -134,6 +134,11 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
         minimumPaidParticipants: policy.minimumPaidParticipants,
         maxParticipants: policy.maxParticipants,
       } : { ...policy, ...catalogItem };
+      const merged = {
+        ...mergedBase,
+        description: catalogItem.description || policy.description,
+        name: catalogItem.id === 'course-scubadiver' && catalogItem.name === 'Scuba Diver' ? policy.name : mergedBase.name,
+      };
       return legacyCatalog ? {
         ...merged,
         tourId: policy.tourId,

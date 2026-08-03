@@ -111,7 +111,7 @@ const Reservations: React.FC = () => {
       <header className="max-w-3xl">
         <p className="text-sm font-bold text-[#11C7D9]">Reservation request</p>
         <h1 className="mt-4 text-5xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-7xl">Build your Belize trip.</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F8F4E8]/70">Choose dates for each experience. This is a request—not an instant booking. Staff confirms availability and sends the final quote before payment.</p>
+        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F8F4E8]/70">Choose dates at least seven days in advance for each experience. This is a request—not an instant booking. Staff confirms availability and sends the final quote before payment.</p>
       </header>
 
       {!catalogOnline && (

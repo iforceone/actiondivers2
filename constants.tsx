@@ -17,11 +17,11 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'island',
     price: 116.25,
     description: 'Guided reef and night dives for certified divers who have dived within the previous year.',
-    longDescription: 'Explore dive sites around Ambergris Caye on single-tank, two-tank, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. New divers should choose Discover Scuba Diving, while certified divers returning after a longer break should request a Refresher through the Courses page.',
+    longDescription: 'Explore dive sites around Ambergris Caye on single-tank, two-tank, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. A certified diver returning after more than one year should complete a Refresher in the morning and may then join a recreational dive that afternoon. New divers should choose Discover Scuba Diving through the Courses page.',
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
     duration: 'Single, two-tank, and night-dive options',
-    departureTime: 'Daily from 9:00 AM',
+    departureTime: 'Confirm when booking',
     includes: ['Professional local dive guide', 'Boat transport to the dive site'],
     whatToBring: ['Certification card if certified', 'Swimsuit and towel', 'Reef-safe sunscreen'],
     priceBreakdown: {
@@ -32,9 +32,9 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Single Dive Mexico Rocks: $116.25. Hol Chan Combo: $133.13. Two dives: $144.38. Night dive: $155.63.'
     },
     features: [
-      'Daily Departures: Diving excursions start at 9:00 AM.',
-      'Two Tank Dives: Available from 9:00 AM to 12:00 PM (noon).',
-      'Certification required; a Refresher is available through the Courses page when needed.',
+      'Regular recreational dive departure times are confirmed for each booking.',
+      'A morning Refresher may be followed by a recreational dive that afternoon.',
+      'Certification required; divers inactive for over one year should complete a Refresher first.',
       'The Love Tunnel: Perfect for underwater weddings and spotting Spotted Drums.',
       'Angel Flats: Home to Queen, Blue, and Gray Angel Fish among magnificent canyons.',
       'The Amigos Wreck: 40ft cargo ship sitting in 70ft of water with big grouper and nurse sharks.'
@@ -50,7 +50,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Male-Snorkeler-OK-Sign.png', // REAL Action Divers Belize image - SNORKELING
     duration: '2–3 hour and full-day options',
-    departureTime: 'Daily from 9:00 AM',
+    departureTime: 'Varies by selected tour',
     includes: ['Snorkeling gear', 'Marine park fee', 'Local guide'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Reusable water bottle'],
     priceBreakdown: {
@@ -61,7 +61,7 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Includes Park Fees. Hol Chan/Shark Ray: $90. Mexico Rocks: $75. Hol Chan/Caye Caulker/Manatee: $175. Sailing (Caye Caulker): $175. Lunch is not included on Caye Caulker tours.'
     },
     features: [
-      'Daily Departures: Snorkeling excursions start at 9:00 AM.',
+      'Departure time depends on the selected snorkeling itinerary.',
       'Hol Chan & Shark-Ray Alley: Snorkel with turtles and spotted eagle rays.',
       'Mexico Rocks: Aquarium-like clarity and northern secluded spots.',
       'Bacalar Chico: Full-day adventure ($175) including park fee.'
@@ -78,7 +78,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
     duration: '3 hours for snorkeling',
-    departureTime: 'Daily from 9:00 AM',
+    departureTime: 'Confirm when booking',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -103,7 +103,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/School-Fish.png',
     duration: '2–3 hours for snorkeling',
-    departureTime: 'Daily from 9:00 AM',
+    departureTime: 'Confirm when booking',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -124,11 +124,11 @@ export const INITIAL_TOURS: Tour[] = [
     subCategory: 'Full-Day Island Tour',
     price: 175.00,
     description: 'Compare two Caye Caulker itineraries, including the manatee and tarpon-feeding option or a sailing day.',
-    longDescription: 'Action Divers lists two ways to build a Caye Caulker day into your trip. One itinerary combines Hol Chan, Caye Caulker, manatee viewing, and tarpon feeding. The sailing option combines Hol Chan, Shark Ray Alley, and Caye Caulker. Both run from 9:00 AM to 3:00 PM. Lunch is not included on any Caye Caulker tour, so guests purchase their own lunch.',
+    longDescription: 'Action Divers lists two ways to build a Caye Caulker day into your trip. The Hol Chan, Shark Ray Alley, Caye Caulker, manatee, and tarpon itinerary runs from 9:00 AM to 3:00 PM. The sailing option runs approximately 7:30 AM to 3:00 PM. Lunch is not included on any Caye Caulker tour, so guests purchase their own lunch.',
     isAvailable: true,
     image: '/images/gallery/Three-of-a-Kind-boat-1.png',
-    duration: '9:00 AM–3:00 PM',
-    departureTime: '9:00 AM',
+    duration: 'Full day; schedule varies by option',
+    departureTime: '7:30 AM sailing / 9:00 AM tour',
     includes: ['Guided island itinerary', 'Gear and park fees reflected where applicable'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Money for lunch and personal purchases'],
     features: [
@@ -139,7 +139,7 @@ export const INITIAL_TOURS: Tour[] = [
     ],
     options: [
       { name: 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', description: 'A 9:00 AM–3:00 PM combination itinerary joining reef and island stops.', price: 175.00, note: 'Lunch is not included; guests purchase their own lunch.' },
-      { name: 'Sailing: Hol Chan, Shark Ray Alley & Caye Caulker', description: 'A sailing-based alternative for the Caye Caulker day.', price: 175.00, note: 'Lunch is not included.' }
+      { name: 'Sailing: Hol Chan, Shark Ray Alley & Caye Caulker', description: 'A sailing-based alternative running approximately 7:30 AM–3:00 PM.', price: 175.00, note: 'Lunch is not included; guests purchase their own lunch.' }
     ]
   },
   {
@@ -177,7 +177,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/fishing-hero-highres.jpg', // HIGH-RES REAL Action Divers Belize image
     duration: 'Half-day and full-day options',
-    departureTime: 'Daily from 9:00 AM',
+    departureTime: 'Varies by selected option',
     includes: ['Water and sodas', 'Tackle and bait', 'Local fishing guide'],
     whatToBring: ['Hat and sunglasses', 'Reef-safe sunscreen', 'Light long-sleeve shirt'],
     priceBreakdown: {
@@ -186,9 +186,10 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Reef Fishing (1-4 people): Half Day $309.38 | Full Day $562.50. Deep Sea (1-4 people): Half Day $900.00 | Full Day $1800.00. Flat Fishing (1-2 people): Half Day $393.75 | Full Day $600.00. Beach Bar-B-Q: $175 per person, minimum 4.'
     },
     features: [
-      'Daily Departures: Fishing excursions start at 9:00 AM.',
+      'Exact departure times depend on the selected fishing option.',
       'Half Day Reef Fishing: 9:00 AM to 1:00 PM.',
       'Full Day Reef Fishing: 9:00 AM to 3:00 PM.',
+      'Fishing and Beach Bar-B-Q Tour: 9:00 AM to 3:00 PM.',
       'Deep-Sea Fishing ($900.00+)',
       'Flat Fishing ($393.75+)',
       'Beach Bar-B-Q: $175 per person with a 4-person minimum'
@@ -268,18 +269,19 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'mainland',
     price: 281.25,
     description: 'Journey to the "Submerged Crocodile" archaeological site in the Orange Walk District.',
-    longDescription: 'Lamanai "Submerged Crocodile", is the third largest archaeological site in Belize. Located in the Orange Walk District and surrounded by the majestic rainforest, Lamanai’s location on the New River allowed for easy trade of goods which impacted their long occupation of the site. On your journey you will be fascinated by all the birds and wild life you encounter.',
+    longDescription: 'Lamanai "Submerged Crocodile" is an archaeological site in the Orange Walk District surrounded by rainforest. The full-day trip leaves on the 6:00 AM water taxi. Mainland travel to Tower Hill takes approximately 45 minutes to a little over one hour, followed by another hour or more by boat along the New River. Additional time is needed for the archaeological tour, temple climbing, meals, and return travel. Guests should leave the Lamanai area by approximately 3:00 PM; exact return-water-taxi details are confirmed before the trip.',
     isAvailable: true,
     image: '/images/gallery/web-lamani.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Early morning; confirm when booking',
+    departureTime: '6:00 AM water taxi',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Comfortable walking shoes', 'Hat and sunscreen', 'Insect repellent'],
     priceBreakdown: {
       base: 250.00,
       tax: 31.25,
       note: 'Includes Park Fee and Lunch.'
-    }
+    },
+    features: ['6:00 AM water taxi departure', '45–60+ minutes by mainland vehicle to Tower Hill', 'One hour or more along the New River', 'Leave the Lamanai area by approximately 3:00 PM']
   },
   {
     id: 'atm-caves',
@@ -287,17 +289,17 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'mainland',
     price: 450.00,
     description: 'Actun Tunichil Muknal - a legendary Maya archaeological cave site.',
-    longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 7:00 AM water taxi.',
+    longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 6:00 AM water taxi.',
     isAvailable: true,
     image: '/images/gallery/cave-exploration-real.jpg', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: '7:00 AM water taxi',
+    departureTime: '6:00 AM water taxi',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Closed-toe water shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 400.00,
       tax: 50.00,
-      note: 'Includes Park Fee and Lunch. Leaves the island on the 7:00 AM water taxi.'
+      note: 'Includes Park Fee and Lunch. Leaves the island on the 6:00 AM water taxi.'
     }
   }
 ];
