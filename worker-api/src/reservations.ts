@@ -1,7 +1,7 @@
-import { DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, withDefaultParticipantLimits } from '../../shared/bookingCatalog';
+import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
-import { calculateDiscount, DiscountInput, paymentIsAvailable } from './reservationRules';
+import { paymentIsAvailable } from './reservationRules';
 
 type Json = (body: unknown, status: number) => Response;
 
@@ -19,6 +19,7 @@ interface ReservationRow {
   id: string;
   reference: string;
   status: string;
+  request_kind: 'tour' | 'course' | 'transfer';
   customer_name: string;
   customer_email: string;
   customer_phone: string | null;
@@ -57,6 +58,7 @@ interface ReservationSummaryRow {
   id: string;
   reference: string;
   status: string;
+  request_kind: 'tour' | 'course' | 'transfer';
   customer_name: string;
   customer_email: string;
   adults: number;
@@ -71,13 +73,6 @@ interface ReservationSummaryRow {
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-function belizeDate(yearOffset = 0): string {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Belize', year: 'numeric', month: '2-digit', day: '2-digit',
-  }).formatToParts(new Date());
-  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? '';
-  return `${Number(value('year')) + yearOffset}-${value('month')}-${value('day')}`;
-}
 const TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 const RESERVATION_STATUSES = new Set(['new', 'reviewing', 'needs_contact', 'quoted', 'awaiting_payment', 'paid', 'cancelled', 'completed']);
 const text = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : '';
@@ -123,10 +118,16 @@ function validCatalog(value: unknown): value is BookingCatalog {
     if (!item.id || ids.has(item.id)) return false;
     ids.add(item.id);
     return typeof item.tourId === 'string' && typeof item.name === 'string' && item.name.trim().length > 0 &&
-      (item.category === 'Island' || item.category === 'Mainland') &&
+      (item.category === 'Island' || item.category === 'Mainland' || item.category === 'Course' || item.category === 'Transfer') &&
+      ['recreational_dive', 'course', 'snorkeling', 'fishing', 'mainland', 'transfer'].includes(item.serviceKind ?? '') &&
       Number.isInteger(item.priceCents) && item.priceCents! >= 0 && item.priceCents! <= 10_000_000 &&
-      (item.pricingBasis === 'per_person' || item.pricingBasis === 'per_group') &&
+      (item.pricingBasis === 'per_person' || item.pricingBasis === 'per_group' || item.pricingBasis === 'tiered_transfer') &&
+      Number.isInteger(item.noticeDays) && item.noticeDays! >= 7 && item.noticeDays! <= 365 &&
+      (item.minimumPaidParticipants === undefined || (Number.isInteger(item.minimumPaidParticipants) && item.minimumPaidParticipants! >= 1 && item.minimumPaidParticipants! <= 80)) &&
       (item.maxParticipants === undefined || (Number.isInteger(item.maxParticipants) && item.maxParticipants! >= 1 && item.maxParticipants! <= 80)) &&
+      (item.minimumPaidParticipants === undefined || item.maxParticipants === undefined || item.minimumPaidParticipants <= item.maxParticipants) &&
+      (item.confirmationMode === 'request_only' || item.confirmationMode === 'instant') &&
+      (item.priceStatus === 'current' || item.priceStatus === 'proposed') &&
       typeof item.active === 'boolean' && Number.isInteger(item.sortOrder);
   });
 }
@@ -139,7 +140,7 @@ async function publishedCatalog(env: ReservationEnv): Promise<BookingCatalog> {
   if (row) {
     try {
       const payload = JSON.parse(row.payload_json) as BookingCatalog;
-      if (validCatalog(payload)) return withDefaultParticipantLimits({ ...payload, version: row.version, publishedAt: row.published_at });
+      if (validCatalog(withDefaultBookingPolicies(payload))) return withDefaultBookingPolicies({ ...payload, version: row.version, publishedAt: row.published_at });
     } catch {
       // Fall through to the checked-in catalog if a stored revision is corrupt.
     }
@@ -158,6 +159,7 @@ const reservationDto = (row: ReservationRow) => ({
   id: row.id,
   reference: row.reference,
   status: row.status,
+  requestKind: row.request_kind,
   customer: { name: row.customer_name, email: row.customer_email, phone: row.customer_phone },
   party: { adults: row.adults, children: row.children },
   accommodation: row.accommodation,
@@ -245,15 +247,30 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
   if (submittedItems.length < 1 || submittedItems.length > 12) return json({ ok: false, error: 'Choose between 1 and 12 tours.' }, 422);
   const catalog = await publishedCatalog(env);
   const catalogById = new Map(catalog.items.filter((item) => item.active).map((item) => [item.id, item]));
-  const normalizedItems: Array<{ catalog: BookingCatalogItem; requestedDate: string; adults: number; children: number }> = [];
+  const normalizedItems: Array<{ catalog: BookingCatalogItem; requestedDate: string; adults: number; children: number; details: BookingItemDetails }> = [];
   for (const candidate of submittedItems) {
     const submitted = candidate as Record<string, unknown>;
     const catalogItem = catalogById.get(text(submitted.catalogItemId, 80));
     const requestedDate = text(submitted.requestedDate, 10);
     const itemAdults = Number(submitted.adults);
     const itemChildren = Number(submitted.children ?? 0);
-    if (!catalogItem || !DATE_RE.test(requestedDate) || requestedDate < belizeDate() || requestedDate > belizeDate(2)) {
-      return json({ ok: false, error: 'Every selected tour needs a valid date within the next two years.' }, 422);
+    const rawDetails = submitted.details && typeof submitted.details === 'object' ? submitted.details as BookingItemDetails : {};
+    const details: BookingItemDetails = {
+      certificationLevel: text(rawDetails.certificationLevel, 100) || undefined,
+      lastDiveDate: text(rawDetails.lastDiveDate, 10) || undefined,
+      referralDocuments: typeof rawDetails.referralDocuments === 'boolean' ? rawDetails.referralDocuments : undefined,
+      transferTrip: rawDetails.transferTrip === 'round_trip' ? 'round_trip' : rawDetails.transferTrip === 'one_way' ? 'one_way' : undefined,
+      arrivalTime: text(rawDetails.arrivalTime, 10) || undefined,
+      flightNumber: text(rawDetails.flightNumber, 80) || undefined,
+      returnDate: text(rawDetails.returnDate, 10) || undefined,
+      returnTime: text(rawDetails.returnTime, 10) || undefined,
+      returnFlightNumber: text(rawDetails.returnFlightNumber, 80) || undefined,
+      luggage: text(rawDetails.luggage, 300) || undefined,
+      destination: text(rawDetails.destination, 200) || undefined,
+      specialRequirements: text(rawDetails.specialRequirements, 500) || undefined,
+    };
+    if (!catalogItem || !DATE_RE.test(requestedDate) || requestedDate < belizeDateAfter(catalogItem.noticeDays) || requestedDate > belizeDateAfter(730)) {
+      return json({ ok: false, error: 'Every selected service needs a valid date at least seven days away and within the next two years.' }, 422);
     }
     if (!Number.isInteger(itemAdults) || !Number.isInteger(itemChildren) || itemAdults < 0 || itemChildren < 0 || itemAdults > adults || itemChildren > children || itemAdults + itemChildren < 1) {
       return json({ ok: false, error: 'Every selected tour needs at least one participant within the overall party size.' }, 422);
@@ -261,26 +278,38 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
     if (catalogItem.maxParticipants && itemAdults + itemChildren > catalogItem.maxParticipants) {
       return json({ ok: false, error: `${catalogItem.name} allows a maximum of ${catalogItem.maxParticipants} guests.` }, 422);
     }
-    normalizedItems.push({ catalog: catalogItem, requestedDate, adults: itemAdults, children: itemChildren });
+    if (catalogItem.serviceKind === 'recreational_dive') {
+      if (!text(details.certificationLevel, 100) || !DATE_RE.test(text(details.lastDiveDate, 10))) return json({ ok: false, error: 'Recreational dives require certification and a valid last-dive date.' }, 422);
+      if (text(details.lastDiveDate, 10) < belizeDateAfter(-365)) return json({ ok: false, error: 'Guests whose last dive was more than one year ago should request a Refresher course.' }, 422);
+    }
+    if (catalogItem.id === 'course-referral' && typeof details.referralDocuments !== 'boolean') return json({ ok: false, error: 'Please confirm your referral-document status.' }, 422);
+    if (catalogItem.serviceKind === 'transfer') {
+      if ((details.transferTrip !== 'one_way' && details.transferTrip !== 'round_trip') || !text(details.arrivalTime, 10) || !text(details.destination, 200)) return json({ ok: false, error: 'Transfer direction, time, and destination are required.' }, 422);
+      if (details.transferTrip === 'round_trip' && (!DATE_RE.test(text(details.returnDate, 10)) || !text(details.returnTime, 10))) return json({ ok: false, error: 'Round-trip transfers require a return date and time.' }, 422);
+    }
+    normalizedItems.push({ catalog: catalogItem, requestedDate, adults: itemAdults, children: itemChildren, details });
   }
+  const requestKinds = new Set(normalizedItems.map((item) => item.catalog.category === 'Course' ? 'course' : item.catalog.category === 'Transfer' ? 'transfer' : 'tour'));
+  if (requestKinds.size !== 1) return json({ ok: false, error: 'Tour, course, and transfer requests must be submitted separately.' }, 422);
+  const requestKind = [...requestKinds][0];
   const timestamp = nowIso();
   const id = crypto.randomUUID();
   const reference = reservationReference();
   const portalToken = randomToken();
   const portalUrl = `${siteOrigin(env)}/reservation/${portalToken}`;
-  const estimatedTotalCents = normalizedItems.reduce((total, item) => total + item.catalog.priceCents * (item.catalog.pricingBasis === 'per_person' ? item.adults + item.children : 1), 0);
+  const estimatedTotalCents = normalizedItems.reduce((total, item) => total + estimateBookingItemCents(item.catalog, item.adults + item.children, item.details), 0);
   const portalExpiresAt = new Date(Date.now() + 180 * 86_400_000).toISOString();
   const responseBody = { ok: true, reference, portalUrl, emailStatus: 'pending' };
   const statements = [
     db.prepare(`INSERT INTO reservations
-      (id, reference, customer_name, customer_email, customer_phone, adults, children, accommodation,
+      (id, reference, request_kind, customer_name, customer_email, customer_phone, adults, children, accommodation,
        diving_experience, customer_notes, estimated_total_cents, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(id, reference, name, email, phone || null, adults, children, text(body.accommodation, 160) || null, text(body.divingExperience, 160) || null, text(body.notes, 2000) || null, estimatedTotalCents, timestamp, timestamp),
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(id, reference, requestKind, name, email, phone || null, adults, children, text(body.accommodation, 160) || null, text(body.divingExperience, 160) || null, text(body.notes, 2000) || null, estimatedTotalCents, timestamp, timestamp),
     ...normalizedItems.map((entry, index) => db.prepare(`INSERT INTO reservation_items
-      (id, reservation_id, catalog_item_id, tour_id, name_snapshot, requested_date, price_snapshot_cents, pricing_basis, adults, children, sort_order, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(crypto.randomUUID(), id, entry.catalog.id, entry.catalog.tourId, entry.catalog.name, entry.requestedDate, entry.catalog.priceCents, entry.catalog.pricingBasis, entry.adults, entry.children, index, timestamp)),
+      (id, reservation_id, catalog_item_id, tour_id, name_snapshot, requested_date, price_snapshot_cents, pricing_basis, adults, children, details_json, sort_order, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(crypto.randomUUID(), id, entry.catalog.id, entry.catalog.tourId, entry.catalog.name, entry.requestedDate, entry.catalog.priceCents, entry.catalog.pricingBasis, entry.adults, entry.children, JSON.stringify(entry.details), index, timestamp)),
     db.prepare(`INSERT INTO customer_access_tokens
       (id, reservation_id, token_hash, active, expires_at, created_at) VALUES (?, ?, ?, 1, ?, ?)`)
       .bind(crypto.randomUUID(), id, await tokenHash(portalToken), portalExpiresAt, timestamp),
@@ -317,19 +346,16 @@ async function reservationDetail(db: D1Database, id: string) {
     db.prepare('SELECT recipient, template_key, status, created_at FROM email_delivery_events WHERE reservation_id = ? ORDER BY created_at DESC LIMIT 20').bind(id).all(),
   ]);
   let quoteItems: unknown[] = [];
-  let discount: unknown = null;
   let payment: unknown = null;
   if (quote) {
-    const [quoteItemRows, discountRow, paymentRow] = await Promise.all([
+    const [quoteItemRows, paymentRow] = await Promise.all([
       db.prepare('SELECT * FROM quote_items WHERE quote_id = ? ORDER BY sort_order').bind(quote.id).all(),
-      db.prepare('SELECT * FROM discounts WHERE quote_id = ?').bind(quote.id).first(),
       db.prepare('SELECT status, paid_at, expires_at, last_error_code FROM payment_intents WHERE quote_id = ? ORDER BY created_at DESC LIMIT 1').bind(quote.id).first(),
     ]);
     quoteItems = quoteItemRows.results;
-    discount = discountRow;
     payment = paymentRow;
   }
-  return { reservation: reservationDto(reservation), items: items.results, quote, quoteItems, discount, payment, events: events.results, deliveries: deliveries.results };
+  return { reservation: reservationDto(reservation), items: items.results, quote, quoteItems, payment, events: events.results, deliveries: deliveries.results };
 }
 
 async function portalDetails(env: ReservationEnv, token: string, json: Json): Promise<Response> {
@@ -345,11 +371,10 @@ async function portalDetails(env: ReservationEnv, token: string, json: Json): Pr
     ? await db.prepare('SELECT * FROM quote_versions WHERE id = ?').bind(access.quote_id).first<QuoteRow>()
     : null;
   const quoteItems = quote ? (await db.prepare('SELECT * FROM quote_items WHERE quote_id = ? ORDER BY sort_order').bind(quote.id).all()).results : [];
-  const discount = quote ? await db.prepare('SELECT discount_type, value, amount_cents, reason FROM discounts WHERE quote_id = ?').bind(quote.id).first() : null;
   const payment = quote ? await db.prepare('SELECT status, paid_at, expires_at, merchant_order_number AS receipt_reference FROM payment_intents WHERE quote_id = ? ORDER BY created_at DESC LIMIT 1').bind(quote.id).first<{ status: string; paid_at: string | null; expires_at: string; receipt_reference: string }>() : null;
   const paymentAvailable = detail.reservation.status === 'awaiting_payment'
     && paymentIsAvailable(quote?.status ?? null, payment?.status ?? null, payment?.expires_at ?? null);
-  return json({ ok: true, reservation: detail.reservation, items: detail.items, quote, quoteItems, discount, payment, paymentAvailable }, 200);
+  return json({ ok: true, reservation: detail.reservation, items: detail.items, quote, quoteItems, payment, paymentAvailable }, 200);
 }
 
 function parseQuote(body: Record<string, unknown>) {
@@ -378,16 +403,8 @@ function parseQuote(body: Record<string, unknown>) {
     };
   });
   const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
-  const submittedDiscount = (body.discount ?? {}) as Record<string, unknown>;
-  const discountType = submittedDiscount.type === 'percentage' || submittedDiscount.type === 'fixed' ? submittedDiscount.type : 'none';
-  const reason = text(submittedDiscount.reason, 300);
-  const discountInput: DiscountInput = discountType === 'percentage'
-    ? { type: 'percentage', percent: Number(submittedDiscount.percent), reason }
-    : discountType === 'fixed'
-      ? { type: 'fixed', amountCents: Number(submittedDiscount.amountCents), reason }
-      : { type: 'none' };
-  const calculated = calculateDiscount(subtotalCents, discountInput);
-  return { items, subtotalCents, discountType: calculated.type, discountValue: calculated.value, discountCents: calculated.amountCents, discountReason: calculated.reason, totalCents: subtotalCents - calculated.amountCents, customerMessage: text(body.customerMessage, 2000) || null };
+  if ('discount' in body) throw new Error('Discount input is no longer supported. Edit quote-line quantities or prices instead.');
+  return { items, subtotalCents, totalCents: subtotalCents, customerMessage: text(body.customerMessage, 2000) || null };
 }
 
 async function saveQuoteDraft(request: Request, env: ReservationEnv, staff: StaffIdentity, reservationId: string, json: Json) {
@@ -407,11 +424,11 @@ async function saveQuoteDraft(request: Request, env: ReservationEnv, staff: Staf
   const quoteVersion = existingDraft?.version ?? ((await db.prepare('SELECT COALESCE(MAX(version), 0) AS max_version FROM quote_versions WHERE reservation_id = ?').bind(reservationId).first<{ max_version: number }>())?.max_version ?? 0) + 1;
   const statements = existingDraft
     ? [db.prepare(`UPDATE quote_versions SET customer_message = ?, subtotal_cents = ?, discount_cents = ?, total_cents = ?, updated_at = ?, created_by = ? WHERE id = ? AND status = 'draft'`)
-        .bind(parsed.customerMessage, parsed.subtotalCents, parsed.discountCents, parsed.totalCents, timestamp, staff.email, quoteId)]
+        .bind(parsed.customerMessage, parsed.subtotalCents, 0, parsed.totalCents, timestamp, staff.email, quoteId)]
     : [db.prepare(`INSERT INTO quote_versions
         (id, reservation_id, version, status, customer_message, subtotal_cents, discount_cents, total_cents, created_by, created_at, updated_at)
        VALUES (?, ?, ?, 'draft', ?, ?, ?, ?, ?, ?, ?)`)
-        .bind(quoteId, reservationId, quoteVersion, parsed.customerMessage, parsed.subtotalCents, parsed.discountCents, parsed.totalCents, staff.email, timestamp, timestamp)];
+        .bind(quoteId, reservationId, quoteVersion, parsed.customerMessage, parsed.subtotalCents, 0, parsed.totalCents, staff.email, timestamp, timestamp)];
   statements.push(
     db.prepare('DELETE FROM quote_items WHERE quote_id = ?').bind(quoteId),
     db.prepare('DELETE FROM discounts WHERE quote_id = ?').bind(quoteId),
@@ -419,13 +436,10 @@ async function saveQuoteDraft(request: Request, env: ReservationEnv, staff: Staf
       (id, quote_id, reservation_item_id, catalog_item_id, label, service_date, quantity, unit_price_cents, line_total_cents, notes, sort_order)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
       .bind(item.id, quoteId, item.reservationItemId, item.catalogItemId, item.label, item.serviceDate, item.quantity, item.unitPriceCents, item.lineTotalCents, item.notes, item.sortOrder)),
-    db.prepare(`INSERT INTO discounts (id, quote_id, discount_type, value, amount_cents, reason, created_by, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(crypto.randomUUID(), quoteId, parsed.discountType, parsed.discountValue, parsed.discountCents, parsed.discountReason, staff.email, timestamp),
     db.prepare('UPDATE reservations SET status = ?, customer_message = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ?')
       .bind(reservation.status === 'new' ? 'reviewing' : reservation.status, parsed.customerMessage, timestamp, reservationId, expectedVersion),
     db.prepare('INSERT INTO reservation_events (reservation_id, actor, event_type, detail_json, created_at) VALUES (?, ?, ?, ?, ?)')
-      .bind(reservationId, staff.email, 'quote_draft_saved', JSON.stringify({ quoteVersion, subtotalCents: parsed.subtotalCents, discountCents: parsed.discountCents }), timestamp),
+      .bind(reservationId, staff.email, 'quote_draft_saved', JSON.stringify({ quoteVersion, subtotalCents: parsed.subtotalCents }), timestamp),
   );
   await db.batch(statements);
   return json({ ok: true, detail: await reservationDetail(db, reservationId) }, 200);
@@ -464,6 +478,24 @@ async function sendQuote(request: Request, env: ReservationEnv, staff: StaffIden
   try { body = await request.json() as Record<string, unknown>; } catch { /* Empty bodies are valid. */ }
   const validForDays = Math.min(Math.max(Number(body.validForDays ?? 7) || 7, 1), 30);
   if (payable && quote.total_cents <= 0) return json({ ok: false, error: 'The finalized quote total must be greater than zero.' }, 422);
+  if (payable) {
+    const catalog = await publishedCatalog(env);
+    const mainlandIds = new Set(catalog.items.filter((item) => item.category === 'Mainland').map((item) => item.id));
+    const reservationItems = await db.prepare('SELECT catalog_item_id, requested_date FROM reservation_items WHERE reservation_id = ?').bind(reservationId).all<{ catalog_item_id: string; requested_date: string }>();
+    const mainlandItems = reservationItems.results.filter((candidate) => mainlandIds.has(candidate.catalog_item_id));
+    const servicesByDate = new Map<string, Set<string>>();
+    mainlandItems.forEach((item) => servicesByDate.set(item.requested_date, (servicesByDate.get(item.requested_date) ?? new Set()).add(item.catalog_item_id)));
+    const internalConflict = [...servicesByDate].find(([, serviceIds]) => serviceIds.size > 1);
+    if (internalConflict) return json({ ok: false, error: `This reservation contains conflicting mainland tours on ${internalConflict[0]}. Move one tour to another date before sending for payment.` }, 409);
+    for (const item of mainlandItems) {
+      const conflict = await db.prepare(`SELECT ri.name_snapshot, r.reference FROM reservation_items ri
+        JOIN reservations r ON r.id = ri.reservation_id
+        WHERE ri.requested_date = ? AND ri.catalog_item_id <> ? AND ri.catalog_item_id IN (${[...mainlandIds].map(() => '?').join(',')})
+          AND r.id <> ? AND r.status IN ('awaiting_payment', 'paid', 'completed') LIMIT 1`)
+        .bind(item.requested_date, item.catalog_item_id, ...mainlandIds, reservationId).first<{ name_snapshot: string; reference: string }>();
+      if (conflict) return json({ ok: false, error: `A different mainland tour is already committed on ${item.requested_date} (${conflict.reference}). Matching tours may be combined; conflicting tours cannot be sent for payment.` }, 409);
+    }
+  }
   const timestamp = nowIso();
   const portal = await rotatePortalToken(db, reservationId, quote.id, timestamp);
   const portalUrl = `${siteOrigin(env)}/reservation/${portal.token}`;
@@ -538,8 +570,8 @@ async function updateReservation(request: Request, env: ReservationEnv, staff: S
     const requestedDate = text(item.requestedDate, 10);
     const itemAdults = Number(item.adults);
     const itemChildren = Number(item.children ?? 0);
-    if (!itemId || !DATE_RE.test(requestedDate) || requestedDate < belizeDate() || requestedDate > belizeDate(2)) {
-      return json({ ok: false, error: 'Requested dates must be valid and within the next two years.' }, 422);
+    if (!itemId || !DATE_RE.test(requestedDate) || requestedDate < belizeDateAfter(7) || requestedDate > belizeDateAfter(730)) {
+      return json({ ok: false, error: 'Requested dates must be at least seven days away and within the next two years.' }, 422);
     }
     if (!Number.isInteger(itemAdults) || !Number.isInteger(itemChildren) || itemAdults < 0 || itemChildren < 0 || itemAdults > adults || itemChildren > children || itemAdults + itemChildren < 1) {
       return json({ ok: false, error: 'Every tour needs at least one participant within the overall party size.' }, 422);
@@ -609,7 +641,7 @@ async function adminCatalog(request: Request, env: ReservationEnv, staff: StaffI
   if (request.method === 'GET' && !action) {
     const published = await publishedCatalog(env);
     const draftRow = await db.prepare("SELECT payload_json, version FROM catalog_revisions WHERE status = 'draft' LIMIT 1").first<{ payload_json: string; version: number }>();
-    return json({ ok: true, published, draft: draftRow ? { ...JSON.parse(draftRow.payload_json), version: draftRow.version } : null }, 200);
+    return json({ ok: true, published, draft: draftRow ? withDefaultBookingPolicies({ ...JSON.parse(draftRow.payload_json), version: draftRow.version }) : null }, 200);
   }
   if (request.method === 'PUT' && !action) {
     let body: unknown;
@@ -763,6 +795,7 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
     const db = database(env);
     const url = new URL(request.url);
     const status = text(url.searchParams.get('status'), 40);
+    const kind = text(url.searchParams.get('kind'), 20);
     const query = text(url.searchParams.get('q'), 100);
     const dateFrom = text(url.searchParams.get('dateFrom'), 10);
     const dateTo = text(url.searchParams.get('dateTo'), 10);
@@ -774,6 +807,7 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
     const conditions: string[] = [];
     const values: unknown[] = [];
     if (status && RESERVATION_STATUSES.has(status)) { conditions.push('status = ?'); values.push(status); }
+    if (kind === 'tour' || kind === 'course' || kind === 'transfer') { conditions.push('request_kind = ?'); values.push(kind); }
     if (query) { conditions.push('(reference LIKE ? OR customer_name LIKE ? OR customer_email LIKE ?)'); const like = `%${query}%`; values.push(like, like, like); }
     const dateConditions = ['ri.reservation_id = reservations.id'];
     if (dateFrom && DATE_RE.test(dateFrom)) { dateConditions.push('ri.requested_date >= ?'); values.push(dateFrom); }
@@ -785,7 +819,7 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
       conditions.push('(updated_at < ? OR (updated_at = ? AND id < ?))');
       values.push(cursorParts[0], cursorParts[0], cursorParts[1]);
     }
-    const sql = `SELECT id, reference, status, customer_name, customer_email, adults, children, estimated_total_cents, current_quote_version, version, created_at, updated_at FROM reservations ${conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''} ORDER BY updated_at DESC, id DESC LIMIT 51`;
+    const sql = `SELECT id, reference, status, request_kind, customer_name, customer_email, adults, children, estimated_total_cents, current_quote_version, version, created_at, updated_at FROM reservations ${conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''} ORDER BY updated_at DESC, id DESC LIMIT 51`;
     const rows = await db.prepare(sql).bind(...values).all<ReservationSummaryRow>();
     const page = rows.results.slice(0, 50);
     const last = page[page.length - 1];

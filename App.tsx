@@ -10,6 +10,9 @@ import TourDetail from './pages/TourDetail';
 import About from './pages/About';
 import MainlandAdventures from './pages/MainlandAdventures';
 import IslandAdventures from './pages/IslandAdventures';
+import Courses from './pages/Courses';
+import TransfersCharters from './pages/TransfersCharters';
+import ServiceRequest from './pages/ServiceRequest';
 import VoyageChronicles from './pages/VoyageChronicles';
 import BlogPostPage from './pages/BlogPost';
 import Gallery from './pages/Gallery';
@@ -96,7 +99,7 @@ const ConditionalFooter = () => {
 
 const ContextualTourAssistant = () => {
   const { pathname } = useLocation();
-  if (pathname.startsWith('/pay/') || pathname === '/reservations' || pathname.startsWith('/reservation/') || pathname === '/payment/return' || pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/pay/') || pathname === '/reservations' || pathname.startsWith('/courses/request') || pathname.startsWith('/transfers-charters/request') || pathname.startsWith('/reservation/') || pathname === '/payment/return' || pathname.startsWith('/admin')) return null;
   return <TourAssistant />;
 };
 
@@ -116,7 +119,6 @@ const RESERVATION_OPTIONS: Record<string, BookingOption[]> = {
   ],
   "Courses & Certifications": [
     { id: "course-refresher", name: "Refresher", price: 208.75, category: "Island" },
-    { id: "course-resort", name: "Resort Course", price: 211.88, category: "Island" },
     { id: "course-discover", name: "Discover Scuba (Scuba Discovery)", price: 211.88, category: "Island" },
     { id: "course-referral", name: "Open Water Referral (2 Days)", price: 480.00, category: "Island" },
     { id: "course-scubadiver", name: "Scuba Diver", price: 436.88, category: "Island" },
@@ -536,6 +538,12 @@ const App: React.FC = () => {
             <Route path="/gallery" element={<><SEO title="Belize Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours." path="/gallery" image="/images/gallery/Turtle.png" /><Gallery /></>} />
             <Route path="/island-adventures" element={<><SEO title="Island Tours from San Pedro, Belize" description="Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures." path="/island-adventures" image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" /><IslandAdventures /></>} />
             <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours & Maya Ruins" description="Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/request" element={<ServiceRequest mode="course" />} />
+            <Route path="/transfers-charters" element={<TransfersCharters />} />
+            <Route path="/transfers-charters/request" element={<ServiceRequest mode="transfer" />} />
+            <Route path="/tour/diving-courses" element={<Navigate to="/courses" replace />} />
+            <Route path="/tour/beach-bbq" element={<Navigate to="/tour/fishing" replace />} />
             <Route path="/tour/:id" element={<TourDetail />} />
             <Route path="/blog" element={<VoyageChronicles />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />

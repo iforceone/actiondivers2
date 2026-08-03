@@ -16,8 +16,8 @@ export const INITIAL_TOURS: Tour[] = [
     name: 'Scuba Diving',
     category: 'island',
     price: 116.25,
-    description: 'Guided dives for all skill levels, from Mexico Rocks to the barrier reef.',
-    longDescription: 'Are you involved in the world of SCUBA diving, or are you interested in trying it out? Action Divers and Adventures offers Discover Scuba classes, full certification classes, refreshers, and reef diving. Belize has the second-largest barrier reef in the world and the island of Ambergris Caye offers easy access to a wide variety of spectacular dive sites. A short 5 – 10 minute boat ride, takes you to an array of dive sites. We offer one, two, or three-tank dives including night dives.',
+    description: 'Guided reef and night dives for certified divers who have dived within the previous year.',
+    longDescription: 'Explore dive sites around Ambergris Caye on single-tank, two-tank, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. New divers should choose Discover Scuba Diving, while certified divers returning after a longer break should request a Refresher through the Courses page.',
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
     duration: 'Single, two-tank, and night-dive options',
@@ -34,40 +34,10 @@ export const INITIAL_TOURS: Tour[] = [
     features: [
       'Daily Departures: Diving excursions start at 9:00 AM.',
       'Two Tank Dives: Available from 9:00 AM to 12:00 PM (noon).',
-      'Certification and Classes: Discover SCUBA ($211.88), Open Water Certification ($564.38).',
+      'Certification required; a Refresher is available through the Courses page when needed.',
       'The Love Tunnel: Perfect for underwater weddings and spotting Spotted Drums.',
       'Angel Flats: Home to Queen, Blue, and Gray Angel Fish among magnificent canyons.',
       'The Amigos Wreck: 40ft cargo ship sitting in 70ft of water with big grouper and nurse sharks.'
-    ]
-  },
-  {
-    id: 'diving-courses',
-    name: 'Diving Courses & Certifications',
-    category: 'island',
-    subCategory: 'Scuba Courses',
-    price: 208.75,
-    description: 'Compare Action Divers training options, from refreshers and introductory courses to advanced certification.',
-    longDescription: 'Action Divers offers several ways to begin, continue, or return to scuba diving. Use this page to compare the courses currently offered, then contact the team with your experience level and travel dates so they can confirm the right course, prerequisites, schedule, and availability.',
-    isAvailable: true,
-    image: '/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg',
-    duration: 'Varies by course',
-    departureTime: 'Confirm when booking',
-    includes: ['Instruction based on the selected course', 'Gear rental and applicable park fees reflected in listed totals'],
-    whatToBring: ['Swimsuit and towel', 'Any existing certification records', 'Questions about your experience and goals'],
-    features: [
-      'Options for new, returning, and continuing divers',
-      'Two-day Open Water Referral option',
-      'Three-day Open Water Certification option',
-      'Advanced Open Water option'
-    ],
-    options: [
-      { name: 'Refresher', description: 'For divers looking to refresh their skills before returning to the water.', price: 208.75 },
-      { name: 'Resort Course', description: 'An introductory course option for visitors exploring scuba diving.', price: 211.88 },
-      { name: 'Scuba Discovery', description: 'A guided introduction to scuba diving for first-time participants.', price: 211.88 },
-      { name: 'Open Water Referral', description: 'A two-day referral option for completing eligible certification training.', price: 480.00, note: 'Listed as a two-day course.' },
-      { name: 'Scuba Diver', description: 'A certification-course option offered by Action Divers.', price: 436.88 },
-      { name: 'Open Water Certification', description: 'The listed three-day Open Water certification course.', price: 564.38, note: 'Listed as a three-day course.' },
-      { name: 'Advanced Open Water', description: 'Continuing training for divers ready to progress beyond Open Water.', price: 493.13 }
     ]
   },
   {
@@ -197,31 +167,12 @@ export const INITIAL_TOURS: Tour[] = [
     ]
   },
   {
-    id: 'beach-bbq',
-    name: 'Beach Bar-B-Q',
-    category: 'island',
-    price: 562.50,
-    description: 'A fun-filled day of reef fishing, snorkeling, and a fresh beach-prepared BBQ.',
-    longDescription: 'Enjoy a fun-filled day of reef fishing & snorkeling. Start your morning off by trolling & fishing along the barrier reef, keeping the fish for your lunch. During the trip, you will stop to snorkel and hunt for conchs and lobsters (depending on the season). Once you are back on the boat, we will bring you to the beach to enjoy some fresh ceviche and a delicious tour guide prepared BBQ.',
-    isAvailable: true,
-    image: '/images/gallery/beach-bbq-belize.webp', // HIGH-RES REAL Action Divers Belize image
-    duration: 'Full day',
-    departureTime: 'Confirm when booking',
-    includes: ['Fresh beach BBQ', 'Water and sodas', 'Fishing and snorkeling gear'],
-    whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Hat or sun shirt'],
-    priceBreakdown: {
-      base: 500.00,
-      tax: 62.50,
-      note: 'Total for groups of 1-4 people. Includes BBQ, gear, and drinks.'
-    }
-  },
-  {
     id: 'fishing',
-    name: 'Fishing',
+    name: 'Fishing & Beach Bar-B-Q',
     category: 'island',
     price: 309.38,
-    description: 'Excellent reef and deep sea fishing adventures in the Belizean Barrier Reef.',
-    longDescription: 'Fishing off Ambergris Caye is a great adventure! Ambergris Caye is located less than a mile away from the Barrier Reef where excellent reef and deep sea fishing occurs. Enjoy a calm day for bottom fishing & trolling for snappers, barracudas, and jacks. We also offer half-day and full-day fishing trips outside of the reef.',
+    description: 'Reef, deep sea, and flat fishing options, plus a full-day Beach Bar-B-Q experience.',
+    longDescription: 'Choose reef, deep sea, or flat fishing in half-day and full-day formats, or request the Beach Bar-B-Q option for a full day combining fishing, snorkeling, and a prepared meal. The barbecue location may vary with weather, water conditions, and the group’s accommodation setup; staff will confirm the final arrangement.',
     isAvailable: true,
     image: '/images/gallery/fishing-hero-highres.jpg', // HIGH-RES REAL Action Divers Belize image
     duration: 'Half-day and full-day options',
@@ -238,7 +189,17 @@ export const INITIAL_TOURS: Tour[] = [
       'Half Day Reef Fishing: 9:00 AM to 1:00 PM.',
       'Full Day Reef Fishing: 9:00 AM to 3:00 PM.',
       'Deep-Sea Fishing ($900.00+)',
-      'Flat Fishing ($393.75+)'
+      'Flat Fishing ($393.75+)',
+      'Beach Bar-B-Q full-day option for groups of 1–4'
+    ],
+    options: [
+      { name: 'Reef Fishing — Half Day', description: 'Group rate for 1–4 guests.', price: 309.38 },
+      { name: 'Reef Fishing — Full Day', description: 'Group rate for 1–4 guests.', price: 562.50 },
+      { name: 'Deep Sea Fishing — Half Day', description: 'Group rate for 1–4 guests.', price: 900.00 },
+      { name: 'Deep Sea Fishing — Full Day', description: 'Group rate for 1–4 guests.', price: 1800.00 },
+      { name: 'Flat Fishing — Half Day', description: 'Group rate for 1–2 guests.', price: 393.75 },
+      { name: 'Flat Fishing — Full Day', description: 'Group rate for 1–2 guests.', price: 600.00 },
+      { name: 'Beach Bar-B-Q', description: 'A full-day fishing, snorkeling, and barbecue option. Location is confirmed based on conditions and accommodation setup.', price: 562.50 }
     ]
   },
   {

@@ -77,7 +77,7 @@ const IslandAdventures: React.FC = () => {
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
                   <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Departures</p>
-                  <p className="text-[#F8F4E8] font-medium">Daily from 9:00 AM</p>
+                  <p className="text-[#F8F4E8] font-medium">Confirmed by tour</p>
                 </div>
               </div>
               <div className="pt-8 flex items-center space-x-8">

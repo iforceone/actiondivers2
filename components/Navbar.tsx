@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Home, Info, Anchor, Map, BookOpen, Phone, Images, ShoppingBag } from 'lucide-react';
+import { Menu, X, ChevronDown, Info, Anchor, BookOpen, Phone, Images, ShoppingBag, GraduationCap, Ship } from 'lucide-react';
 import { useBooking } from '../contexts/BookingContext';
 
 const Navbar: React.FC = () => {
@@ -40,34 +40,20 @@ const Navbar: React.FC = () => {
   }, [location]);
 
   const navItems = [
-    { name: 'Home', path: '/', icon: <Home className="w-5 h-5" /> },
-    { name: 'About Us', path: '/about', icon: <Info className="w-5 h-5" /> },
-    { name: 'Gallery', path: '/gallery', icon: <Images className="w-5 h-5" /> },
     { 
-      name: 'Island Adventures', 
-      path: '/island-adventures',
+      name: 'Adventures',
       icon: <Anchor className="w-5 h-5" />,
       items: [
-        { name: 'Scuba Diving', path: '/tour/scuba-diving' },
-        { name: 'Snorkeling', path: '/tour/snorkeling' },
-        { name: 'Beach Bar-B-Q', path: '/tour/beach-bbq' },
-        { name: 'Fishing', path: '/tour/fishing' },
+        { name: 'Island Adventures', path: '/island-adventures' },
+        { name: 'Mainland Adventures', path: '/mainland-adventures' },
       ]
     },
-    { 
-      name: 'Mainland Adventures', 
-      path: '/mainland-adventures',
-      icon: <Map className="w-5 h-5" />,
-      items: [
-        { name: 'Altun Ha & Cave Tubing', path: '/tour/altun-ha-cave-tubing' },
-        { name: 'Xunantunich & Cave Tubing', path: '/tour/xunantunich-cave-tubing' },
-        { name: 'Cave Tubing / Zip-lining', path: '/tour/cave-tubing-ziplining' },
-        { name: 'Lamanai', path: '/tour/lamanai' },
-        { name: 'ATM Caves', path: '/tour/atm-caves' },
-      ]
-    },
-    { name: 'Your Trip', path: '/reservations', icon: <ShoppingBag className="w-5 h-5" /> },
+    { name: 'Courses', path: '/courses', icon: <GraduationCap className="w-5 h-5" /> },
+    { name: 'Transfers', mobileName: 'Transfers & Charters', path: '/transfers-charters', icon: <Ship className="w-5 h-5" /> },
+    { name: 'Gallery', path: '/gallery', icon: <Images className="w-5 h-5" /> },
+    { name: 'About Us', path: '/about', icon: <Info className="w-5 h-5" /> },
     { name: 'Travel Guides', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
+    { name: 'Plan a Trip', path: '/reservations', icon: <ShoppingBag className="w-5 h-5" />, primary: true },
   ];
 
   if (location.pathname.startsWith('/admin')) return null;
@@ -90,7 +76,7 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          <div className="hidden h-full flex-1 items-center justify-end gap-x-3 lg:ml-8 lg:mt-1.5 lg:flex xl:ml-12 xl:mt-0 xl:gap-x-5">
+          <div className="hidden h-full flex-1 items-center justify-end gap-x-2 lg:ml-6 lg:flex 2xl:ml-10 2xl:gap-x-4">
             {navItems.map((item) => (
               <div 
                 key={item.name} 
@@ -100,23 +86,20 @@ const Navbar: React.FC = () => {
               >
                 {item.items ? (
                   <div className="flex items-center h-full">
-                    {/* Replaced Link with a non-navigational parent to prevent hash collision errors */}
                     <div className="flex items-center h-full cursor-pointer group">
-                      <Link 
-                        to={item.path}
-                        className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name || location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}
-                      >
+                      <button type="button" aria-expanded={activeDropdown === item.name} className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}>
                         {item.name}
-                      </Link>
+                      </button>
                       <ChevronDown className={`ml-1 w-3 h-3 text-[#8DDCE7]/45 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-[var(--brand-aqua)]' : ''}`} />
                     </div>
                   </div>
                 ) : (
                   <Link 
                     to={item.path!} 
-                    className={`group relative flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}
+                    title={item.path === '/blog' ? 'Travel Guides' : undefined}
+                    className={`group relative flex items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${item.primary ? 'min-h-11 rounded-full bg-[var(--brand-orange)] px-5 text-white hover:bg-[var(--brand-orange-light)]' : `h-full ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}`}
                   >
-                    {item.name}
+                    {item.path === '/blog' ? <><BookOpen className="h-4 w-4 2xl:hidden" aria-hidden="true" /><span className="sr-only 2xl:not-sr-only">Travel Guides</span></> : item.name}
                     {item.path === '/reservations' && cartItems.length > 0 && (
                       <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--brand-orange)] px-1.5 text-[11px] text-white">{cartItems.length}</span>
                     )}
@@ -190,13 +173,6 @@ const Navbar: React.FC = () => {
                       
                       {mobileExpanded === item.name && (
                         <div className="bg-black/40 py-2 border-y border-white/5">
-                          {/* Top-level link added to mobile expanded view */}
-                          <Link
-                            to={item.path!}
-                            className="flex items-center px-16 py-4 text-sm font-bold text-[var(--brand-ivory)] hover:text-white transition-colors uppercase tracking-[0.1em] bg-white/5"
-                          >
-                            All {item.name}
-                          </Link>
                           {item.items.map((sub) => (
                             <Link
                               key={sub.name}
@@ -215,7 +191,7 @@ const Navbar: React.FC = () => {
                       className={`flex items-center px-7 py-5 gap-5 transition-colors ${location.pathname === item.path ? 'text-[var(--brand-ivory)] bg-white/5' : 'text-[#8DDCE7]/80'}`}
                     >
                       <span className="text-[#8DDCE7]/40">{item.icon}</span>
-                      <span className="text-lg font-bold tracking-tight">{item.name}</span>
+                      <span className="text-lg font-bold tracking-tight">{item.mobileName ?? item.name}</span>
                       {item.path === '/reservations' && cartItems.length > 0 && (
                         <span className="ml-auto inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--brand-orange)] px-2 text-xs font-bold text-white">{cartItems.length}</span>
                       )}

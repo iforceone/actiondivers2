@@ -11,6 +11,7 @@ interface PortalResponse {
   reservation?: {
     reference: string;
     status: string;
+    requestKind: 'tour' | 'course' | 'transfer';
     customer: { name: string; email: string; phone: string | null };
     party: { adults: number; children: number };
     accommodation: string | null;
@@ -22,7 +23,6 @@ interface PortalResponse {
   items?: Array<{ id: string; name_snapshot: string; requested_date: string; adults: number; children: number }>;
   quote?: { status: string; customer_message: string | null; subtotal_cents: number; discount_cents: number; total_cents: number; expires_at: string | null } | null;
   quoteItems?: Array<{ id: string; label: string; service_date: string | null; quantity: number; unit_price_cents: number; line_total_cents: number; notes: string | null }>;
-  discount?: { discount_type: string; amount_cents: number; reason: string | null } | null;
   payment?: { status: string; paid_at: string | null; expires_at: string; receipt_reference?: string } | null;
   paymentAvailable?: boolean;
   redirectUrl?: string;
@@ -84,6 +84,7 @@ const CustomerPortal: React.FC = () => {
   );
 
   const { reservation, quote, quoteItems = [], payment } = data;
+  const requestLabel = reservation.requestKind === 'course' ? 'course request' : reservation.requestKind === 'transfer' ? 'transfer request' : 'trip request';
   const paid = payment?.status === 'paid' || reservation.status === 'paid';
   return (
     <div className="min-h-screen bg-[#001219] px-4 pb-24 pt-32 sm:px-6 lg:pt-40">
@@ -92,7 +93,7 @@ const CustomerPortal: React.FC = () => {
         <header className="flex flex-col gap-7 border-b border-white/10 pb-9 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-bold text-[#11C7D9]">{reservation.reference}</p>
-            <h1 className="mt-3 text-4xl font-extrabold tracking-[-0.03em] text-[#F8F4E8] sm:text-6xl">Your reservation</h1>
+            <h1 className="mt-3 text-4xl font-extrabold tracking-[-0.03em] text-[#F8F4E8] sm:text-6xl">Your {requestLabel}</h1>
             <p className="mt-4 text-lg text-[#F8F4E8]/68">Prepared for {reservation.customer.name}</p>
           </div>
           <div className={`inline-flex w-fit items-center rounded-full px-4 py-2 text-sm font-bold ${paid ? 'bg-emerald-400/15 text-emerald-200' : 'bg-[#11C7D9]/12 text-[#8fe8f1]'}`}>
@@ -105,7 +106,7 @@ const CustomerPortal: React.FC = () => {
             {quote?.customer_message && <section className="rounded-xl bg-[#0a2a34] p-6"><h2 className="font-bold text-[#F8F4E8]">Message from Action Divers</h2><p className="mt-3 whitespace-pre-line leading-relaxed text-[#F8F4E8]/72">{quote.customer_message}</p></section>}
 
             <section>
-              <h2 className="text-2xl font-extrabold text-[#F8F4E8]">Trip details</h2>
+              <h2 className="text-2xl font-extrabold text-[#F8F4E8]">{reservation.requestKind === 'course' ? 'Course details' : reservation.requestKind === 'transfer' ? 'Transfer details' : 'Trip details'}</h2>
               <div className="mt-5 divide-y divide-white/10 border-y border-white/10">
                 {(quoteItems.length ? quoteItems : (data.items || []).map((item) => ({ id: item.id, label: item.name_snapshot, service_date: item.requested_date, quantity: item.adults + item.children, unit_price_cents: 0, line_total_cents: 0, notes: `${item.adults} adults · ${item.children} children` }))).map((item) => (
                   <div key={item.id} className="flex flex-col gap-3 py-5 sm:flex-row sm:items-start sm:justify-between">
@@ -134,7 +135,6 @@ const CustomerPortal: React.FC = () => {
                   <div className="flex items-center gap-2 text-sm font-bold text-[#11C7D9]"><LockKeyhole className="h-4 w-4" /> Final quote</div>
                   <div className="mt-6 space-y-3 border-y border-white/10 py-5 text-sm">
                     <div className="flex justify-between text-[#F8F4E8]/60"><span>Subtotal</span><span>{formatUsd(quote.subtotal_cents)}</span></div>
-                    {quote.discount_cents > 0 && <div className="flex justify-between text-emerald-300"><span>Discount</span><span>−{formatUsd(quote.discount_cents)}</span></div>}
                     <div className="flex justify-between pt-2 text-lg font-extrabold text-[#F8F4E8]"><span>Total USD</span><span>{formatUsd(quote.total_cents)}</span></div>
                   </div>
                   {quote.expires_at && !paid && <p className="mt-4 text-sm text-[#F8F4E8]/55">Payment available through {formatDate(quote.expires_at)}.</p>}

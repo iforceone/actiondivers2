@@ -103,6 +103,8 @@ const routes = [
   { path: '/gallery', title: 'Belize Adventure Photo Gallery', description: 'Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours.', image: '/images/gallery/Turtle.png' },
   { path: '/island-adventures', title: 'Island Tours from San Pedro, Belize', description: 'Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures.', image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png' },
   { path: '/mainland-adventures', title: 'Belize Mainland Tours & Maya Ruins', description: 'Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures.', image: '/images/gallery/web-maya-ruin.jpg' },
+  { path: '/courses', title: 'Scuba Courses in Ambergris Caye, Belize', description: 'Compare Action Divers scuba courses, including Refresher, Discover Scuba Diving, Open Water options, Scuba Diver, and Advanced Open Water.', image: '/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg' },
+  { path: '/transfers-charters', title: 'Belize Boat Transfers & Private Charters', description: 'Request an Action Divers boat transfer between Belize International Airport and San Pedro, with proposed pricing confirmed by staff.', image: '/images/gallery/Three-of-a-Kind-boat-1.png' },
   { path: '/reservations', title: 'Plan Your Belize Tours', description: 'Send Action Divers & Adventures a custom inquiry for Belize scuba diving, snorkeling, fishing, island tours, cave tubing, Maya ruins, and mainland tours.' },
   {
     path: '/blog',

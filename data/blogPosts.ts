@@ -58,7 +58,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: 'Action Divers & Adventures',
     image: '/images/gallery/web-maya-ruin.jpg',
     tags: ['Belize Tours', 'Island Adventures', 'Mainland Adventures'],
-    relatedTours: ['beach-bbq', 'altun-ha-cave-tubing', 'xunantunich-cave-tubing'],
+    relatedTours: ['fishing', 'altun-ha-cave-tubing', 'xunantunich-cave-tubing'],
     body: [
       'A Belize vacation can be shaped around the reef, the mainland, or both. Island tours keep you close to Ambergris Caye with snorkeling, scuba diving, fishing, beach barbecues, and time on the Caribbean Sea.',
       'Mainland tours take you into a different Belize. Maya temples, cave tubing, zip-lining, rainforest roads, and river journeys make these days feel more like full-day adventures. They usually start earlier and run longer, but the payoff is a deeper look at the country beyond the coast.',
@@ -74,7 +74,7 @@ export const BLOG_POSTS: BlogPost[] = [
     author: 'Action Divers & Adventures',
     image: '/images/gallery/Snorkelers-reaching-hand-out-768x432.png',
     tags: ['Family Travel', 'San Pedro', 'Belize Activities'],
-    relatedTours: ['snorkeling', 'beach-bbq', 'fishing'],
+    relatedTours: ['snorkeling', 'fishing'],
     body: [
       'San Pedro is a strong base for family-friendly Belize adventures because many tours begin close to town and can be adjusted for comfort, weather, and experience level.',
       'Snorkeling is often the easiest first choice. Hol Chan and Mexico Rocks both offer memorable reef experiences, and a good guide can help newer swimmers feel more confident in the water. Families with younger children should ask about conditions, flotation, and the best site for the day.',

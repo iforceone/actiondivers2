@@ -1,20 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, DollarSign, Download, FileText, ListChecks, Loader2, Pencil, Plus, Printer, RefreshCw, Save, Search, Send, SlidersHorizontal, Trash2, Users } from 'lucide-react';
 import { API } from '../config';
-import { BookingCatalog, BookingCatalogItem, DEFAULT_BOOKING_CATALOG, formatUsd } from '../shared/bookingCatalog';
+import { BookingCatalog, BookingCatalogItem, BookingItemDetails, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
 import { isAdminPreviewEnabled } from '../utils/adminPreview';
 
 type StaffRole = 'owner' | 'staff';
 type DashboardTab = 'reservations' | 'roster' | 'catalog' | 'templates' | 'staff';
 
 interface Session { email: string; name: string; role: StaffRole }
-interface ReservationSummary { id: string; reference: string; status: string; customer_name: string; customer_email: string; adults: number; children: number; estimated_total_cents: number; current_quote_version: number | null; version: number; created_at: string; updated_at: string }
+interface ReservationSummary { id: string; reference: string; status: string; request_kind: 'tour' | 'course' | 'transfer'; customer_name: string; customer_email: string; adults: number; children: number; estimated_total_cents: number; current_quote_version: number | null; version: number; created_at: string; updated_at: string }
 interface ReservationDetail {
-  reservation: { id: string; reference: string; status: string; customer: { name: string; email: string; phone: string | null }; party: { adults: number; children: number }; accommodation: string | null; divingExperience: string | null; customerNotes: string | null; internalNotes: string | null; customerMessage: string | null; estimatedTotalCents: number; version: number; createdAt: string; updatedAt: string };
-  items: Array<{ id: string; catalog_item_id: string | null; name_snapshot: string; requested_date: string; price_snapshot_cents: number; pricing_basis: 'per_person' | 'per_group'; adults: number; children: number }>;
+  reservation: { id: string; reference: string; status: string; requestKind: 'tour' | 'course' | 'transfer'; customer: { name: string; email: string; phone: string | null }; party: { adults: number; children: number }; accommodation: string | null; divingExperience: string | null; customerNotes: string | null; internalNotes: string | null; customerMessage: string | null; estimatedTotalCents: number; version: number; createdAt: string; updatedAt: string };
+  items: Array<{ id: string; catalog_item_id: string | null; name_snapshot: string; requested_date: string; price_snapshot_cents: number; pricing_basis: BookingCatalogItem['pricingBasis']; adults: number; children: number; details_json?: string }>;
   quote: { id: string; status: string; version: number; customer_message: string | null; subtotal_cents: number; discount_cents: number; total_cents: number; expires_at: string | null } | null;
   quoteItems: Array<{ id: string; reservation_item_id: string | null; catalog_item_id: string | null; label: string; service_date: string | null; quantity: number; unit_price_cents: number; notes: string | null }>;
-  discount: { discount_type: 'none' | 'percentage' | 'fixed'; value: number; amount_cents: number; reason: string | null } | null;
   payment: { status: string; paid_at: string | null; expires_at: string; last_error_code: string | null } | null;
   events: Array<{ actor: string; event_type: string; detail_json: string | null; created_at: string }>;
   deliveries: Array<{ recipient: string; template_key: string; status: string; created_at: string }>;
@@ -27,23 +26,22 @@ interface RosterRow { reservation_item_id: string; tour_name: string; requested_
 const STATUS_LABELS: Record<string, string> = { new: 'New', reviewing: 'Reviewing', needs_contact: 'Needs contact', quoted: 'Update sent', awaiting_payment: 'Awaiting payment', paid: 'Paid', cancelled: 'Cancelled', completed: 'Completed' };
 const ADMIN_PREVIEW = isAdminPreviewEnabled() && window.location.pathname === '/admin/preview';
 const PREVIEW_RESERVATIONS: ReservationSummary[] = [
-  { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', customer_name: 'Maya Thompson', customer_email: 'maya@example.com', adults: 2, children: 1, estimated_total_cents: 48125, current_quote_version: null, version: 3, created_at: '2026-07-28T14:10:00.000Z', updated_at: '2026-07-28T15:05:00.000Z' },
-  { id: 'preview-2', reference: 'AD-REEF82', status: 'awaiting_payment', customer_name: 'Daniel Ruiz', customer_email: 'daniel@example.com', adults: 2, children: 0, estimated_total_cents: 28876, current_quote_version: 1, version: 5, created_at: '2026-07-27T16:30:00.000Z', updated_at: '2026-07-28T13:42:00.000Z' },
-  { id: 'preview-3', reference: 'AD-CAVE19', status: 'needs_contact', customer_name: 'Priya Shah', customer_email: 'priya@example.com', adults: 4, children: 0, estimated_total_cents: 33750, current_quote_version: null, version: 2, created_at: '2026-07-26T18:15:00.000Z', updated_at: '2026-07-28T11:20:00.000Z' },
-  { id: 'preview-4', reference: 'AD-PAID73', status: 'paid', customer_name: 'Noah Williams', customer_email: 'noah@example.com', adults: 2, children: 0, estimated_total_cents: 17500, current_quote_version: 1, version: 6, created_at: '2026-07-24T09:00:00.000Z', updated_at: '2026-07-27T20:12:00.000Z' },
+  { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', request_kind: 'tour', customer_name: 'Maya Thompson', customer_email: 'maya@example.com', adults: 2, children: 1, estimated_total_cents: 48125, current_quote_version: null, version: 3, created_at: '2026-07-28T14:10:00.000Z', updated_at: '2026-07-28T15:05:00.000Z' },
+  { id: 'preview-2', reference: 'AD-REEF82', status: 'awaiting_payment', request_kind: 'course', customer_name: 'Daniel Ruiz', customer_email: 'daniel@example.com', adults: 2, children: 0, estimated_total_cents: 28876, current_quote_version: 1, version: 5, created_at: '2026-07-27T16:30:00.000Z', updated_at: '2026-07-28T13:42:00.000Z' },
+  { id: 'preview-3', reference: 'AD-CAVE19', status: 'needs_contact', request_kind: 'transfer', customer_name: 'Priya Shah', customer_email: 'priya@example.com', adults: 4, children: 0, estimated_total_cents: 33750, current_quote_version: null, version: 2, created_at: '2026-07-26T18:15:00.000Z', updated_at: '2026-07-28T11:20:00.000Z' },
+  { id: 'preview-4', reference: 'AD-PAID73', status: 'paid', request_kind: 'tour', customer_name: 'Noah Williams', customer_email: 'noah@example.com', adults: 2, children: 0, estimated_total_cents: 17500, current_quote_version: 1, version: 6, created_at: '2026-07-24T09:00:00.000Z', updated_at: '2026-07-27T20:12:00.000Z' },
 ];
 const PREVIEW_DETAIL: ReservationDetail = {
-  reservation: { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', customer: { name: 'Maya Thompson', email: 'maya@example.com', phone: '+1 305 555 0148' }, party: { adults: 2, children: 1 }, accommodation: 'A hotel north of San Pedro', divingExperience: 'Certified beginner', customerNotes: 'We would prefer morning departures and need child-friendly snorkeling guidance.', internalNotes: 'Confirm the child snorkel equipment before sending.', customerMessage: null, estimatedTotalCents: 48125, version: 3, createdAt: '2026-07-28T14:10:00.000Z', updatedAt: '2026-07-28T15:05:00.000Z' },
+  reservation: { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', requestKind: 'tour', customer: { name: 'Maya Thompson', email: 'maya@example.com', phone: '+1 305 555 0148' }, party: { adults: 2, children: 1 }, accommodation: 'A hotel north of San Pedro', divingExperience: 'Certified beginner', customerNotes: 'We would prefer morning departures and need child-friendly snorkeling guidance.', internalNotes: 'Confirm the child snorkel equipment before sending.', customerMessage: null, estimatedTotalCents: 48125, version: 3, createdAt: '2026-07-28T14:10:00.000Z', updatedAt: '2026-07-28T15:05:00.000Z' },
   items: [
-    { id: 'preview-item-1', catalog_item_id: 'snorkel-hol', name_snapshot: 'Hol Chan & Shark Ray Alley Snorkeling', requested_date: '2026-09-12', price_snapshot_cents: 9000, pricing_basis: 'per_person', adults: 2, children: 1 },
-    { id: 'preview-item-2', catalog_item_id: 'main-altun', name_snapshot: 'Altun Ha & Cave Tubing', requested_date: '2026-09-14', price_snapshot_cents: 33750, pricing_basis: 'per_person', adults: 2, children: 0 },
+    { id: 'preview-item-1', catalog_item_id: 'snorkel-hol', name_snapshot: 'Hol Chan & Shark Ray Alley Snorkeling', requested_date: '2026-09-12', price_snapshot_cents: 9000, pricing_basis: 'per_person', adults: 2, children: 1, details_json: '{}' },
+    { id: 'preview-item-2', catalog_item_id: 'main-altun', name_snapshot: 'Altun Ha & Cave Tubing', requested_date: '2026-09-14', price_snapshot_cents: 33750, pricing_basis: 'per_person', adults: 2, children: 0, details_json: '{}' },
   ],
-  quote: { id: 'preview-quote-1', status: 'draft', version: 1, customer_message: 'We can accommodate both requested experiences. Please review the proposed dates and details below.', subtotal_cents: 51750, discount_cents: 3625, total_cents: 48125, expires_at: null },
+  quote: { id: 'preview-quote-1', status: 'draft', version: 1, customer_message: 'We can accommodate both requested experiences. Please review the proposed dates and details below.', subtotal_cents: 51750, discount_cents: 0, total_cents: 51750, expires_at: null },
   quoteItems: [
     { id: 'preview-line-1', reservation_item_id: 'preview-item-1', catalog_item_id: 'snorkel-hol', label: 'Hol Chan & Shark Ray Alley Snorkeling', service_date: '2026-09-12', quantity: 2, unit_price_cents: 9000, notes: 'Morning departure' },
     { id: 'preview-line-2', reservation_item_id: 'preview-item-2', catalog_item_id: 'main-altun', label: 'Altun Ha & Cave Tubing', service_date: '2026-09-14', quantity: 1, unit_price_cents: 33750, notes: 'Mainland transfer included in quoted rate' },
   ],
-  discount: { discount_type: 'fixed', value: 3625, amount_cents: 3625, reason: 'Combined-trip courtesy adjustment' },
   payment: null,
   events: [
     { actor: 'maya@example.com', event_type: 'reservation_created', detail_json: null, created_at: '2026-07-28T14:10:00.000Z' },
@@ -85,6 +83,7 @@ const Admin: React.FC = () => {
   const [detail, setDetail] = useState<ReservationDetail | null>(null);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [kindFilter, setKindFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [tourFilter, setTourFilter] = useState('');
@@ -100,9 +99,6 @@ const Admin: React.FC = () => {
   const [internalNotes, setInternalNotes] = useState('');
   const [customerMessage, setCustomerMessage] = useState('');
   const [quoteLines, setQuoteLines] = useState<QuoteLine[]>([]);
-  const [discountType, setDiscountType] = useState<'none' | 'percentage' | 'fixed'>('none');
-  const [discountValue, setDiscountValue] = useState('');
-  const [discountReason, setDiscountReason] = useState('');
   const [validForDays, setValidForDays] = useState(7);
   const [catalogItemToAdd, setCatalogItemToAdd] = useState('');
   const [working, setWorking] = useState('');
@@ -110,13 +106,15 @@ const Admin: React.FC = () => {
   const loadList = async (status = statusFilter, cursor = '', append = false, clear = false) => {
     if (ADMIN_PREVIEW) {
       const normalizedQuery = clear ? '' : query.trim().toLowerCase();
-      setReservations(PREVIEW_RESERVATIONS.filter((reservation) => (!status || reservation.status === status) && (!normalizedQuery || `${reservation.reference} ${reservation.customer_name} ${reservation.customer_email}`.toLowerCase().includes(normalizedQuery))));
+      const activeKind = clear ? '' : kindFilter;
+      setReservations(PREVIEW_RESERVATIONS.filter((reservation) => (!status || reservation.status === status) && (!activeKind || reservation.request_kind === activeKind) && (!normalizedQuery || `${reservation.reference} ${reservation.customer_name} ${reservation.customer_email}`.toLowerCase().includes(normalizedQuery))));
       setNextCursor(null);
       return;
     }
     const parameters = new URLSearchParams();
     if (!clear && query.trim()) parameters.set('q', query.trim());
     if (status) parameters.set('status', status);
+    if (!clear && kindFilter) parameters.set('kind', kindFilter);
     if (!clear && dateFrom) parameters.set('dateFrom', dateFrom);
     if (!clear && dateTo) parameters.set('dateTo', dateTo);
     if (!clear && tourFilter) parameters.set('tour', tourFilter);
@@ -148,11 +146,16 @@ const Admin: React.FC = () => {
     setCustomerMessage(next.quote?.customer_message || next.reservation.customerMessage || '');
     const lines = next.quoteItems.length
       ? next.quoteItems.map((item) => ({ key: item.id, reservationItemId: item.reservation_item_id, catalogItemId: item.catalog_item_id, label: item.label, serviceDate: item.service_date || '', quantity: item.quantity, unitPrice: (item.unit_price_cents / 100).toFixed(2), notes: item.notes || '' }))
-      : next.items.map((item) => ({ key: crypto.randomUUID(), reservationItemId: item.id, catalogItemId: item.catalog_item_id, label: item.name_snapshot, serviceDate: item.requested_date, quantity: item.pricing_basis === 'per_person' ? item.adults + item.children : 1, unitPrice: (item.price_snapshot_cents / 100).toFixed(2), notes: '' }));
+      : next.items.map((item) => {
+        const policy = [...(catalog?.items ?? []), ...DEFAULT_BOOKING_CATALOG.items].find((candidate) => candidate.id === item.catalog_item_id);
+        const guests = item.adults + item.children;
+        const quantity = item.pricing_basis === 'per_person' ? Math.max(guests, policy?.minimumPaidParticipants ?? 1) : 1;
+        let details: BookingItemDetails = {};
+        try { details = item.details_json ? JSON.parse(item.details_json) as BookingItemDetails : {}; } catch { /* Preserve an editable quote even if legacy details are malformed. */ }
+        const unitPriceCents = policy?.pricingBasis === 'tiered_transfer' ? estimateBookingItemCents(policy, guests, details) : item.price_snapshot_cents;
+        return { key: crypto.randomUUID(), reservationItemId: item.id, catalogItemId: item.catalog_item_id, label: item.name_snapshot, serviceDate: item.requested_date, quantity, unitPrice: (unitPriceCents / 100).toFixed(2), notes: quantity > guests ? `Minimum paid participants: ${quantity}` : '' };
+      });
     setQuoteLines(lines);
-    setDiscountType(next.discount?.discount_type || 'none');
-    setDiscountValue(next.discount ? (next.discount.discount_type === 'percentage' ? (next.discount.value / 100).toFixed(2).replace(/\.00$/, '') : (next.discount.amount_cents / 100).toFixed(2)) : '');
-    setDiscountReason(next.discount?.reason || '');
   };
 
   useEffect(() => {
@@ -199,7 +202,6 @@ const Admin: React.FC = () => {
   const quotePayload = () => ({
     customerMessage,
     items: quoteLines.map((line) => ({ reservationItemId: line.reservationItemId, catalogItemId: line.catalogItemId, label: line.label, serviceDate: line.serviceDate || null, quantity: line.quantity, unitPriceCents: Math.round(Number(line.unitPrice) * 100), notes: line.notes })),
-    discount: discountType === 'percentage' ? { type: discountType, percent: Number(discountValue), reason: discountReason } : discountType === 'fixed' ? { type: discountType, amountCents: Math.round(Number(discountValue) * 100), reason: discountReason } : { type: 'none' },
   });
 
   const saveQuote = () => detail && run('quote', async () => {
@@ -272,13 +274,8 @@ const Admin: React.FC = () => {
   });
 
   const quoteSubtotal = useMemo(() => quoteLines.reduce((sum, line) => sum + Math.max(0, line.quantity * Math.round(Number(line.unitPrice || 0) * 100)), 0), [quoteLines]);
-  const quoteDiscount = useMemo(() => {
-    if (discountType === 'percentage') return Math.min(quoteSubtotal, Math.max(0, Math.round(quoteSubtotal * (Number(discountValue) || 0) / 100)));
-    if (discountType === 'fixed') return Math.min(quoteSubtotal, Math.max(0, Math.round((Number(discountValue) || 0) * 100)));
-    return 0;
-  }, [discountType, discountValue, quoteSubtotal]);
-  const quoteTotal = quoteSubtotal - quoteDiscount;
-  const activeFilterCount = [statusFilter, tourFilter, dateFrom, dateTo].filter(Boolean).length;
+  const quoteTotal = quoteSubtotal;
+  const activeFilterCount = [statusFilter, kindFilter, tourFilter, dateFrom, dateTo].filter(Boolean).length;
 
   if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#001219] text-[#F8F4E8]"><Loader2 className="mr-3 h-6 w-6 animate-spin text-[#11C7D9]" /> Verifying staff access…</div>;
   if (!session) return <div className="flex min-h-screen items-center justify-center bg-[#001219] px-6 text-center"><div className="max-w-lg"><AlertCircle className="mx-auto h-10 w-10 text-[var(--brand-orange)]" /><h1 className="mt-5 text-3xl font-extrabold text-[#F8F4E8]">Staff access unavailable</h1><p className="mt-4 leading-relaxed text-[#F8F4E8]/68">{error || 'Sign in through the approved Cloudflare Access application, then reload this page.'}</p><button onClick={() => window.location.reload()} className="mt-7 rounded-full bg-[var(--brand-orange)] px-6 py-3 font-bold text-white">Try again</button></div></div>;
@@ -308,18 +305,19 @@ const Admin: React.FC = () => {
               <button onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="reservation-filters" className="mt-3 flex min-h-10 w-full items-center justify-between rounded-lg bg-[#0a3039] px-4 text-sm font-bold text-[#D9EEF1] transition-colors hover:bg-[#10404a]"><span className="inline-flex items-center"><SlidersHorizontal className="mr-2 h-4 w-4" /> Filters{activeFilterCount > 0 && <span className="ml-2 rounded-full bg-[#11C7D9] px-2 py-0.5 text-xs text-[#001219]">{activeFilterCount}</span>}</span><ChevronDown className={`h-4 w-4 transition-transform duration-200 ${filtersOpen ? 'rotate-180' : ''}`} /></button>
               <AnimatedDisclosure open={filtersOpen} id="reservation-filters"><div className="pt-3"><div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
                 <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} aria-label="Reservation status" className="w-full rounded-lg bg-[#03181e] p-3 text-sm text-[#F8F4E8] outline-none focus:ring-2 focus:ring-[#11C7D9]/55"><option value="">All statuses</option>{Object.entries(STATUS_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
-                <select value={tourFilter} onChange={(event) => setTourFilter(event.target.value)} aria-label="Tour filter" className="w-full rounded-lg bg-[#03181e] p-3 text-sm text-[#F8F4E8] outline-none focus:ring-2 focus:ring-[#11C7D9]/55"><option value="">All tours</option>{[...(catalog?.items ?? [])].filter((item) => item.active).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
+                <select value={kindFilter} onChange={(event) => setKindFilter(event.target.value)} aria-label="Request type" className="w-full rounded-lg bg-[#03181e] p-3 text-sm text-[#F8F4E8] outline-none focus:ring-2 focus:ring-[#11C7D9]/55"><option value="">All request types</option><option value="tour">Tour requests</option><option value="course">Course requests</option><option value="transfer">Transfer requests</option></select>
+                <select value={tourFilter} onChange={(event) => setTourFilter(event.target.value)} aria-label="Service filter" className="w-full rounded-lg bg-[#03181e] p-3 text-sm text-[#F8F4E8] outline-none focus:ring-2 focus:ring-[#11C7D9]/55"><option value="">All services</option>{[...(catalog?.items ?? [])].filter((item) => item.active).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <label className="text-xs font-semibold text-[#B7D2D7]"><CalendarDays className="mr-1 inline h-3.5 w-3.5" />From<input type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} className="mt-2 w-full rounded-lg bg-[#03181e] px-3 py-2.5 text-sm text-[#F8F4E8] [color-scheme:dark] outline-none focus:ring-2 focus:ring-[#11C7D9]/55" /></label>
                 <label className="text-xs font-semibold text-[#B7D2D7]">Through<input type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} className="mt-2 w-full rounded-lg bg-[#03181e] px-3 py-2.5 text-sm text-[#F8F4E8] [color-scheme:dark] outline-none focus:ring-2 focus:ring-[#11C7D9]/55" /></label>
               </div>
-              <div className="mt-4 flex gap-2"><button onClick={() => loadList()} className="min-h-10 flex-1 rounded-lg bg-[#11C7D9] px-4 text-sm font-bold text-[#001219] hover:bg-[#43d4e0]">Apply filters</button><button onClick={() => { setQuery(''); setStatusFilter(''); setTourFilter(''); setDateFrom(''); setDateTo(''); void loadList('', '', false, true); }} className="min-h-10 rounded-lg bg-[#0a3039] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#10404a]">Clear</button></div></div></AnimatedDisclosure>
+              <div className="mt-4 flex gap-2"><button onClick={() => loadList()} className="min-h-10 flex-1 rounded-lg bg-[#11C7D9] px-4 text-sm font-bold text-[#001219] hover:bg-[#43d4e0]">Apply filters</button><button onClick={() => { setQuery(''); setStatusFilter(''); setKindFilter(''); setTourFilter(''); setDateFrom(''); setDateTo(''); void loadList('', '', false, true); }} className="min-h-10 rounded-lg bg-[#0a3039] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#10404a]">Clear</button></div></div></AnimatedDisclosure>
               <div className="mt-5 divide-y divide-white/10 border-y border-white/10">
                 {reservations.length === 0 ? <p className="py-10 text-center text-sm text-[#F8F4E8]/50">No reservations match this view.</p> : reservations.map((reservation) => (
                   <button key={reservation.id} onClick={() => loadDetail(reservation.id)} className={`flex w-full items-center gap-4 px-2 py-4 text-left transition-colors ${selectedId === reservation.id ? 'bg-[#0b343d] text-white' : 'text-[#D9EEF1] hover:bg-[#092d35] hover:text-white'}`}>
                     <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${reservation.status === 'paid' ? 'bg-emerald-400' : reservation.status === 'needs_contact' ? 'bg-amber-300' : 'bg-[#11C7D9]'}`} />
-                    <span className="min-w-0 flex-1"><span className="block truncate font-bold">{reservation.customer_name}</span><span className="mt-1 block text-xs text-[#F8F4E8]/45">{reservation.reference} · {STATUS_LABELS[reservation.status]}</span></span><ChevronRight className="h-4 w-4 shrink-0" />
+                    <span className="min-w-0 flex-1"><span className="block truncate font-bold">{reservation.customer_name}</span><span className="mt-1 block text-xs text-[#F8F4E8]/45">{reservation.reference} · {reservation.request_kind[0].toUpperCase() + reservation.request_kind.slice(1)} · {STATUS_LABELS[reservation.status]}</span></span><ChevronRight className="h-4 w-4 shrink-0" />
                   </button>
                 ))}
               </div>
@@ -329,7 +327,7 @@ const Admin: React.FC = () => {
             <main className="min-w-0">
               {!detail ? <div className="flex min-h-[420px] items-center justify-center border-y border-white/10 text-center text-[#F8F4E8]/48">Select a reservation to review it.</div> : (
                 <div className="space-y-9">
-                  <section className="flex flex-col gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-sm font-bold text-[#11C7D9]">{detail.reservation.reference}</p><h2 className="mt-2 text-3xl font-extrabold">{detail.reservation.customer.name}</h2><p className="mt-2 text-sm text-[#F8F4E8]/58">{detail.reservation.customer.email} · {detail.reservation.party.adults} adults, {detail.reservation.party.children} children</p></div><span className="w-fit rounded-full bg-white/8 px-4 py-2 text-sm font-bold">{STATUS_LABELS[detail.reservation.status]}</span></section>
+                  <section className="flex flex-col gap-5 border-b border-white/10 pb-7 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-sm font-bold text-[#11C7D9]">{detail.reservation.reference} · {detail.reservation.requestKind[0].toUpperCase() + detail.reservation.requestKind.slice(1)} request</p><h2 className="mt-2 text-3xl font-extrabold">{detail.reservation.customer.name}</h2><p className="mt-2 text-sm text-[#F8F4E8]/58">{detail.reservation.customer.email} · {detail.reservation.party.adults} adults, {detail.reservation.party.children} children</p></div><span className="w-fit rounded-full bg-white/8 px-4 py-2 text-sm font-bold">{STATUS_LABELS[detail.reservation.status]}</span></section>
 
                   <section className="border-b border-white/10 pb-8">
                     <div className="flex items-center justify-between gap-4"><h3 className="text-xl font-extrabold">Guest and request</h3><button onClick={() => setReservationEditing((editing) => !editing)} aria-expanded={reservationEditing} aria-controls="reservation-editor" className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Pencil className="mr-2 h-4 w-4" /> {reservationEditing ? 'Close editor' : 'Edit details'}</button></div>
@@ -359,7 +357,7 @@ const Admin: React.FC = () => {
 
                   <section className="border-t border-white/10 pt-8">
                     <div className="flex items-start justify-between gap-4"><div><h3 className="text-2xl font-extrabold">Quote draft</h3><p className="mt-1 text-sm text-[#F8F4E8]/55">Finalized quotes are immutable. Later changes create a new version.</p></div><button onClick={() => setQuoteEditing((editing) => !editing)} aria-expanded={quoteEditing} aria-controls="quote-editor" className="inline-flex min-h-10 shrink-0 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Pencil className="mr-2 h-4 w-4" /> {quoteEditing ? 'Close editor' : 'Edit quote'}</button></div>
-                    {!quoteEditing && <div className="mt-5"><div className="divide-y divide-white/10 border-y border-white/10">{quoteLines.map((line) => <div key={line.key} className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_140px_90px] sm:items-center"><div><p className="font-bold">{line.label}</p><p className="mt-1 text-xs text-[#F8F4E8]/48">{line.serviceDate || 'Date not set'} · Qty {line.quantity}</p></div><span className="text-sm text-[#B7D2D7]">{formatUsd(Math.round((Number(line.unitPrice) || 0) * 100))} each</span><span className="font-bold sm:text-right">{formatUsd(Math.round((Number(line.unitPrice) || 0) * 100) * line.quantity)}</span></div>)}</div><dl className="ml-auto mt-5 max-w-xs space-y-2 text-sm"><div className="flex justify-between gap-8 text-[#F8F4E8]/65"><dt>Subtotal</dt><dd>{formatUsd(quoteSubtotal)}</dd></div><div className="flex justify-between gap-8 text-emerald-300"><dt>Discount</dt><dd>-{formatUsd(quoteDiscount)}</dd></div><div className="flex justify-between gap-8 border-t border-white/10 pt-2 text-lg font-extrabold"><dt>Draft total</dt><dd>{formatUsd(quoteTotal)}</dd></div></dl></div>}
+                    {!quoteEditing && <div className="mt-5"><div className="divide-y divide-white/10 border-y border-white/10">{quoteLines.map((line) => <div key={line.key} className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_140px_90px] sm:items-center"><div><p className="font-bold">{line.label}</p><p className="mt-1 text-xs text-[#F8F4E8]/48">{line.serviceDate || 'Date not set'} · Qty {line.quantity}</p></div><span className="text-sm text-[#B7D2D7]">{formatUsd(Math.round((Number(line.unitPrice) || 0) * 100))} each</span><span className="font-bold sm:text-right">{formatUsd(Math.round((Number(line.unitPrice) || 0) * 100) * line.quantity)}</span></div>)}</div><dl className="ml-auto mt-5 max-w-xs space-y-2 text-sm"><div className="flex justify-between gap-8 border-t border-white/10 pt-2 text-lg font-extrabold"><dt>Draft total</dt><dd>{formatUsd(quoteTotal)}</dd></div></dl></div>}
                     <AnimatedDisclosure open={quoteEditing} id="quote-editor"><div className="pt-5"><div className="flex flex-col gap-3 rounded-xl bg-[#06242c] p-4 sm:flex-row sm:items-end">
                       <label className={`${labelClass} min-w-0 flex-1`}>Add another tour or custom item<select value={catalogItemToAdd} onChange={(event) => setCatalogItemToAdd(event.target.value)} className={fieldClass}><option value="">Custom item / no catalog selection</option>{[...(catalog?.items ?? [])].filter((item) => item.active).sort((a, b) => a.sortOrder - b.sortOrder).map((item) => <option key={item.id} value={item.id}>{item.name} — {formatUsd(item.priceCents)}</option>)}</select></label>
                       <button onClick={addQuoteLine} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#0d3943] px-5 text-sm font-bold text-[#D9EEF1] transition-colors hover:bg-[#124852]"><Plus className="mr-2 h-4 w-4" /> Add line</button>
@@ -375,11 +373,7 @@ const Admin: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                      <label className={labelClass}>Discount<select value={discountType} onChange={(event) => setDiscountType(event.target.value as typeof discountType)} className={fieldClass}><option value="none">None</option><option value="percentage">Percentage</option><option value="fixed">Fixed USD</option></select></label>
-                      {discountType !== 'none' && <><label className={labelClass}>{discountType === 'percentage' ? 'Percent' : 'Amount USD'}<input inputMode="decimal" value={discountValue} onChange={(event) => setDiscountValue(event.target.value)} className={fieldClass} /></label><label className={labelClass}>Reason<input value={discountReason} onChange={(event) => setDiscountReason(event.target.value)} className={fieldClass} /></label></>}
-                    </div>
-                    <div className="mt-6 flex flex-col gap-5 border-y border-white/10 py-5 sm:flex-row sm:items-end sm:justify-between"><dl className="min-w-[260px] space-y-2 text-sm"><div className="flex justify-between gap-8 text-[#F8F4E8]/65"><dt>Line subtotal</dt><dd>{formatUsd(quoteSubtotal)}</dd></div><div className="flex justify-between gap-8 text-emerald-300"><dt>Discount</dt><dd>−{formatUsd(quoteDiscount)}</dd></div><div className="flex justify-between gap-8 border-t border-white/10 pt-2 text-lg font-extrabold text-[#F8F4E8]"><dt>Draft total</dt><dd>{formatUsd(quoteTotal)}</dd></div></dl><button onClick={saveQuote} disabled={working === 'quote'} className="inline-flex min-h-11 items-center justify-center rounded-full bg-white/10 px-6 text-sm font-bold hover:bg-white/15 disabled:opacity-50"><Save className="mr-2 h-4 w-4" /> Save quote draft</button></div>
+                    <div className="mt-6 flex flex-col gap-5 border-y border-white/10 py-5 sm:flex-row sm:items-end sm:justify-between"><dl className="min-w-[260px] space-y-2 text-sm"><div className="flex justify-between gap-8 border-t border-white/10 pt-2 text-lg font-extrabold text-[#F8F4E8]"><dt>Draft total</dt><dd>{formatUsd(quoteTotal)}</dd></div></dl><button onClick={saveQuote} disabled={working === 'quote'} className="inline-flex min-h-11 items-center justify-center rounded-full bg-white/10 px-6 text-sm font-bold hover:bg-white/15 disabled:opacity-50"><Save className="mr-2 h-4 w-4" /> Save quote draft</button></div>
                     </div></AnimatedDisclosure>
                   </section>
 
@@ -510,8 +504,8 @@ const CompactCatalogPanel: React.FC<{ catalog: BookingCatalog; dirty: boolean; w
   const items = [...catalog.items].sort((a, b) => a.sortOrder - b.sortOrder);
   return <section className="mt-7">
     <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="text-2xl font-extrabold">Booking catalog</h2><p className="mt-2 text-sm text-[#F8F4E8]/58">Review the published offering, then open editing only when prices or availability need to change.</p></div><button onClick={() => setEditing((open) => !open)} aria-expanded={editing} aria-controls="catalog-editor" className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Pencil className="mr-2 h-4 w-4" /> {editing ? 'Close editor' : 'Edit catalog'}</button></div>
-    {!editing && <div className="mt-5 divide-y divide-white/10">{items.map((item) => <div key={item.id} className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_150px_110px] sm:items-center"><div><p className="font-bold">{item.name}</p><p className="mt-1 text-xs text-[#F8F4E8]/48">{item.pricingBasis === 'per_person' ? 'Per person' : 'Per group'}{item.maxParticipants ? ` · Maximum ${item.maxParticipants} guests` : ''}</p></div><span className="font-bold">{formatUsd(item.priceCents)}</span><span className={`w-fit rounded-full px-2 py-1 text-xs font-bold ${item.active ? 'bg-emerald-300/10 text-emerald-200' : 'bg-white/8 text-[#B7D2D7]'}`}>{item.active ? 'Active' : 'Inactive'}</span></div>)}</div>}
-    <AnimatedDisclosure open={editing} id="catalog-editor"><div className="pt-5"><div className="divide-y divide-white/10">{items.map((item) => <div key={item.id} className="grid gap-4 py-4 sm:grid-cols-[minmax(220px,1fr)_120px_120px_110px_90px] sm:items-end"><label className={labelClass}>Public name<input value={item.name} onChange={(event) => updateItem(item.id, { name: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Price USD<input inputMode="decimal" value={(item.priceCents / 100).toFixed(2)} onChange={(event) => updateItem(item.id, { priceCents: Math.max(0, Math.round(Number(event.target.value) * 100) || 0) })} className={fieldClass} /></label><label className={labelClass}>Pricing<select value={item.pricingBasis} onChange={(event) => updateItem(item.id, { pricingBasis: event.target.value as BookingCatalogItem['pricingBasis'] })} className={fieldClass}><option value="per_person">Per person</option><option value="per_group">Per group</option></select></label><label className={labelClass}>Max guests<input type="number" min={1} max={80} value={item.maxParticipants ?? ''} placeholder="No limit" onChange={(event) => updateItem(item.id, { maxParticipants: event.target.value ? Math.min(80, Math.max(1, Number(event.target.value) || 1)) : undefined })} className={fieldClass} /></label><label className="flex min-h-11 items-center gap-2 text-sm font-bold"><input type="checkbox" checked={item.active} onChange={(event) => updateItem(item.id, { active: event.target.checked })} className="h-4 w-4 accent-[#11C7D9]" /> Active</label></div>)}</div><div className="mt-5 flex flex-wrap justify-end gap-3"><button onClick={() => void save()} disabled={!dirty || working} className="rounded-lg border border-white/18 px-5 py-3 text-sm font-bold disabled:opacity-40">Save draft</button><button onClick={() => void publish()} disabled={dirty || working} className="rounded-lg bg-[var(--brand-orange)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">Publish</button></div></div></AnimatedDisclosure>
+    {!editing && <div className="mt-5 divide-y divide-white/10">{items.map((item) => <div key={item.id} className="grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_150px_110px] sm:items-center"><div><p className="font-bold">{item.name}</p><p className="mt-1 text-xs text-[#F8F4E8]/58">{item.pricingBasis === 'per_person' ? 'Per person' : item.pricingBasis === 'tiered_transfer' ? 'Tiered transfer' : 'Per group'}{item.pricingBasis === 'per_person' && item.minimumPaidParticipants ? ` · Minimum billed ${item.minimumPaidParticipants}` : ''}{item.maxParticipants ? ` · Maximum ${item.maxParticipants} guests` : ''}</p></div><span className="font-bold">{formatUsd(item.priceCents)}</span><span className={`w-fit rounded-full px-2 py-1 text-xs font-bold ${item.active ? 'bg-emerald-300/10 text-emerald-200' : 'bg-white/8 text-[#B7D2D7]'}`}>{item.active ? 'Active' : 'Inactive'}</span></div>)}</div>}
+    <AnimatedDisclosure open={editing} id="catalog-editor"><div className="pt-5"><p className="mb-2 text-sm leading-relaxed text-[#F8F4E8]/65">Minimum billed guests controls the lowest quantity used for per-person estimates and initial quotes. Leave it blank to bill the actual guest count.</p><div className="divide-y divide-white/10">{items.map((item) => <div key={item.id} className="grid gap-4 py-4 md:grid-cols-2 xl:grid-cols-[minmax(220px,1fr)_110px_120px_120px_110px_90px] xl:items-end"><label className={labelClass}>Public name<input value={item.name} onChange={(event) => updateItem(item.id, { name: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Price USD<input inputMode="decimal" value={(item.priceCents / 100).toFixed(2)} onChange={(event) => updateItem(item.id, { priceCents: Math.max(0, Math.round(Number(event.target.value) * 100) || 0) })} className={fieldClass} /></label><label className={labelClass}>Pricing<select value={item.pricingBasis} onChange={(event) => updateItem(item.id, { pricingBasis: event.target.value as BookingCatalogItem['pricingBasis'], ...(event.target.value === 'per_person' ? {} : { minimumPaidParticipants: undefined }) })} className={fieldClass}><option value="per_person">Per person</option><option value="per_group">Per group</option>{item.pricingBasis === 'tiered_transfer' && <option value="tiered_transfer">Tiered transfer</option>}</select></label><label className={labelClass}>Minimum billed<input type="number" min={1} max={item.maxParticipants ?? 80} disabled={item.pricingBasis !== 'per_person'} value={item.pricingBasis === 'per_person' ? item.minimumPaidParticipants ?? '' : ''} placeholder={item.pricingBasis === 'per_person' ? 'Actual guests' : 'Not applicable'} onChange={(event) => updateItem(item.id, { minimumPaidParticipants: event.target.value ? Math.min(item.maxParticipants ?? 80, Math.max(1, Number(event.target.value) || 1)) : undefined })} className={`${fieldClass} disabled:cursor-not-allowed disabled:opacity-45`} /></label><label className={labelClass}>Max guests<input type="number" min={1} max={80} value={item.maxParticipants ?? ''} placeholder="No limit" onChange={(event) => { const maxParticipants = event.target.value ? Math.min(80, Math.max(1, Number(event.target.value) || 1)) : undefined; updateItem(item.id, { maxParticipants, ...(maxParticipants && item.minimumPaidParticipants && item.minimumPaidParticipants > maxParticipants ? { minimumPaidParticipants: maxParticipants } : {}) }); }} className={fieldClass} /></label><label className="flex min-h-11 items-center gap-2 text-sm font-bold"><input type="checkbox" checked={item.active} onChange={(event) => updateItem(item.id, { active: event.target.checked })} className="h-4 w-4 accent-[#11C7D9]" /> Active</label></div>)}</div><div className="mt-5 flex flex-wrap justify-end gap-3"><button onClick={() => void save()} disabled={!dirty || working} className="rounded-lg border border-white/18 px-5 py-3 text-sm font-bold disabled:opacity-40">Save draft</button><button onClick={() => void publish()} disabled={dirty || working} className="rounded-lg bg-[var(--brand-orange)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">Publish</button></div></div></AnimatedDisclosure>
   </section>;
 };
 

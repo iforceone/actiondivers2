@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { API, buildWhatsAppUrl } from '../config';
 import { useBooking } from '../contexts/BookingContext';
-import { formatUsd } from '../shared/bookingCatalog';
+import { belizeDateAfter, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
 
 interface SubmissionResult {
   ok?: boolean;
@@ -14,10 +14,8 @@ interface SubmissionResult {
   error?: string;
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
 const Reservations: React.FC = () => {
-  const { catalog, items, addItem, removeItem, setRequestedDate, setParticipants, setAllParticipants, clearCart, catalogOnline } = useBooking();
+  const { catalog, items, addItem, removeItem, setRequestedDate, setParticipants, setDetails, setAllParticipants, clearCart, catalogOnline } = useBooking();
   const [selectedCatalogId, setSelectedCatalogId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -25,16 +23,19 @@ const Reservations: React.FC = () => {
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [accommodation, setAccommodation] = useState('');
-  const [divingExperience, setDivingExperience] = useState('');
   const [notes, setNotes] = useState('');
   const [company, setCompany] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<SubmissionResult | null>(null);
-  const estimate = useMemo(() => items.reduce((sum, item) => sum + item.priceCents * (item.pricingBasis === 'per_person' ? item.participantAdults + item.participantChildren : 1), 0), [items]);
-  const datesComplete = items.every((item) => item.requestedDate);
+  const estimate = useMemo(() => items.reduce((sum, item) => sum + estimateBookingItemCents(item, item.participantAdults + item.participantChildren, item.details), 0), [items]);
+  const datesComplete = items.every((item) => item.requestedDate >= belizeDateAfter(item.noticeDays));
   const participantsComplete = items.every((item) => item.participantAdults >= 0 && item.participantChildren >= 0 && item.participantAdults + item.participantChildren > 0 && item.participantAdults <= adults && item.participantChildren <= children && (!item.maxParticipants || item.participantAdults + item.participantChildren <= item.maxParticipants));
-  const availableCatalogItems = useMemo(() => catalog.items.filter((item) => item.active && !items.some((cartItem) => cartItem.catalogItemId === item.id)).sort((a, b) => a.sortOrder - b.sortOrder), [catalog.items, items]);
+  const detailsComplete = items.every((item) => {
+    if (item.serviceKind === 'recreational_dive') return Boolean(item.details.certificationLevel && item.details.lastDiveDate);
+    return true;
+  });
+  const availableCatalogItems = useMemo(() => catalog.items.filter((item) => item.active && (item.category === 'Island' || item.category === 'Mainland') && !items.some((cartItem) => cartItem.catalogItemId === item.id)).sort((a, b) => a.sortOrder - b.sortOrder), [catalog.items, items]);
   const addSelectedExperience = () => {
     const selected = availableCatalogItems.find((item) => item.id === selectedCatalogId);
     if (!selected) return;
@@ -47,8 +48,8 @@ const Reservations: React.FC = () => {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!items.length || !datesComplete || !participantsComplete) {
-      setError('Choose at least one tour, a requested date, and who is joining each experience. Tour participants cannot exceed the overall party size.');
+    if (!items.length || !datesComplete || !participantsComplete || !detailsComplete) {
+      setError('Complete each experience, including a date at least seven days away and any required diving or transfer details.');
       return;
     }
     setSubmitting(true);
@@ -65,10 +66,9 @@ const Reservations: React.FC = () => {
           adults,
           children,
           accommodation,
-          divingExperience,
           notes,
           company,
-          items: items.map((item) => ({ catalogItemId: item.catalogItemId, requestedDate: item.requestedDate, adults: item.participantAdults, children: item.participantChildren })),
+          items: items.map((item) => ({ catalogItemId: item.catalogItemId, requestedDate: item.requestedDate, adults: item.participantAdults, children: item.participantChildren, details: item.details })),
         }),
       });
       const body = await response.json() as SubmissionResult;
@@ -161,14 +161,18 @@ const Reservations: React.FC = () => {
                   <div key={item.catalogItemId} className="grid gap-5 py-6 sm:grid-cols-[minmax(0,1fr)_180px_170px_44px] sm:items-end">
                     <div>
                       <h3 className="font-bold text-[#F8F4E8]">{item.name}</h3>
-                      <p className="mt-2 text-sm text-[#F8F4E8]/60">{formatUsd(item.priceCents)} · {item.pricingBasis === 'per_group' ? 'group rate' : 'per person'} estimate{item.maxParticipants ? ` · maximum ${item.maxParticipants} guests` : ''}</p>
+                      <p className="mt-2 text-sm text-[#F8F4E8]/60">{formatUsd(item.priceCents)} · {item.pricingBasis === 'per_group' ? 'group rate' : item.pricingBasis === 'tiered_transfer' ? 'starting one-way rate' : 'per person'}{item.minimumPaidParticipants ? ` · minimum charge ${item.minimumPaidParticipants}` : ''}{item.maxParticipants ? ` · maximum ${item.maxParticipants} guests` : ''}{item.priceStatus === 'proposed' ? ' · proposed, staff confirmation required' : ''}</p>
                     </div>
                     <label className="block text-sm font-semibold text-[#F8F4E8]/75">
                       Requested date
-                      <input type="date" min={today} required value={item.requestedDate} onChange={(event) => setRequestedDate(item.catalogItemId, event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-4 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" />
+                      <input type="date" min={belizeDateAfter(item.noticeDays)} required value={item.requestedDate} onChange={(event) => setRequestedDate(item.catalogItemId, event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-4 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" />
                     </label>
                     <fieldset><legend className="text-sm font-semibold text-[#F8F4E8]/75">Who is joining?</legend><div className="mt-2 grid grid-cols-2 gap-2"><label className="text-xs text-[#F8F4E8]/60">Adults<input aria-label={`${item.name} adults`} type="number" min={0} max={Math.min(adults, Math.max(0, (item.maxParticipants ?? 80) - item.participantChildren))} value={item.participantAdults} onChange={(event) => setParticipants(item.catalogItemId, Math.min(Math.max(0, Number(event.target.value)), adults, Math.max(0, (item.maxParticipants ?? 80) - item.participantChildren)), item.participantChildren)} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label><label className="text-xs text-[#F8F4E8]/60">Children<input aria-label={`${item.name} children`} type="number" min={0} max={Math.min(children, Math.max(0, (item.maxParticipants ?? 80) - item.participantAdults))} value={item.participantChildren} onChange={(event) => setParticipants(item.catalogItemId, item.participantAdults, Math.min(Math.max(0, Number(event.target.value)), children, Math.max(0, (item.maxParticipants ?? 80) - item.participantAdults)))} className="mt-1 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-3 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label></div></fieldset>
                     <button type="button" onClick={() => removeItem(item.catalogItemId)} className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#F8F4E8]/55 transition-colors hover:bg-red-500/10 hover:text-red-300" aria-label={`Remove ${item.name}`}><Trash2 className="h-5 w-5" /></button>
+                    {item.serviceKind === 'recreational_dive' && <div className="grid gap-4 sm:col-span-4 sm:grid-cols-2">
+                      <label className="text-sm font-semibold text-[#F8F4E8]/75">Certification level<input required value={item.details.certificationLevel ?? ''} onChange={(event) => setDetails(item.catalogItemId, { certificationLevel: event.target.value })} placeholder="Required" className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
+                      <label className="text-sm font-semibold text-[#F8F4E8]/75">Last dive date<input type="date" required max={belizeDateAfter(0)} value={item.details.lastDiveDate ?? ''} onChange={(event) => setDetails(item.catalogItemId, { lastDiveDate: event.target.value })} className="mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-4 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" /></label>
+                    </div>}
                   </div>
                 ))}
               </div>
@@ -182,7 +186,6 @@ const Reservations: React.FC = () => {
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Phone (optional)<input type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Hotel or villa<input autoComplete="off" value={accommodation} onChange={(event) => setAccommodation(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
-                <label className="text-sm font-semibold text-[#F8F4E8]/75 sm:col-span-2">Diving experience<select value={divingExperience} onChange={(event) => setDivingExperience(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]"><option value="">Not applicable / select one</option><option>First time / not certified</option><option>Certified beginner</option><option>Experienced certified diver</option><option>Training or refresher needed</option></select></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75 sm:col-span-2">Anything else we should know?<textarea rows={5} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full resize-y rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
               </div>
               <input tabIndex={-1} aria-hidden="true" autoComplete="off" value={company} onChange={(event) => setCompany(event.target.value)} className="absolute left-[-9999px] h-px w-px" />
@@ -196,10 +199,10 @@ const Reservations: React.FC = () => {
                 <div className="flex justify-between gap-4 text-[#F8F4E8]/65"><span>Experiences</span><span className="font-bold text-[#F8F4E8]">{items.length}</span></div>
                 <div className="flex justify-between gap-4 text-[#F8F4E8]/65"><span>Starting estimate</span><span className="font-bold text-[#F8F4E8]">{formatUsd(estimate)}</span></div>
               </div>
-              <p className="mt-5 text-sm leading-relaxed text-[#F8F4E8]/60">This estimate is not charged today. Staff will confirm availability, group pricing, fees, and discounts in the final quote.</p>
+              <p className="mt-5 text-sm leading-relaxed text-[#F8F4E8]/60">This estimate is not charged today. It applies minimum paid-participant rules where shown. Staff will confirm availability and final quote-line quantities.</p>
               {error && <p role="alert" className="mt-5 rounded-xl bg-red-400/10 p-4 text-sm text-red-100">{error}</p>}
               {!participantsComplete && items.length > 0 && <p className="mt-5 rounded-xl bg-amber-400/10 p-3 text-sm leading-relaxed text-amber-100">Each experience needs at least one participant, without exceeding the overall adult and child totals.</p>}
-              <button disabled={submitting || !items.length || !datesComplete || !participantsComplete} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
+              <button disabled={submitting || !items.length || !datesComplete || !participantsComplete || !detailsComplete} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
                 {submitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving request…</> : 'Send reservation request'}
               </button>
               <a href={buildWhatsAppUrl(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-bold text-[#F8F4E8]"><MessageCircle className="mr-2 h-5 w-5" /> WhatsApp fallback</a>

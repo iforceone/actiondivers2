@@ -1,14 +1,42 @@
-export type PricingBasis = 'per_person' | 'per_group';
+export type PricingBasis = 'per_person' | 'per_group' | 'tiered_transfer';
+export type BookingCategory = 'Island' | 'Mainland' | 'Course' | 'Transfer';
+export type ServiceKind = 'recreational_dive' | 'course' | 'snorkeling' | 'fishing' | 'mainland' | 'transfer';
+export type ConfirmationMode = 'request_only' | 'instant';
+export type PriceStatus = 'current' | 'proposed';
+
+export interface BookingItemDetails {
+  certificationLevel?: string;
+  lastDiveDate?: string;
+  referralDocuments?: boolean;
+  transferTrip?: 'one_way' | 'round_trip';
+  arrivalTime?: string;
+  airline?: string;
+  flightNumber?: string;
+  returnDate?: string;
+  returnTime?: string;
+  returnAirline?: string;
+  returnFlightNumber?: string;
+  luggage?: string;
+  destination?: string;
+  specialRequirements?: string;
+}
 
 export interface BookingCatalogItem {
   id: string;
   tourId: string;
-  category: 'Island' | 'Mainland';
+  category: BookingCategory;
+  serviceKind: ServiceKind;
   name: string;
   description: string;
   priceCents: number;
   pricingBasis: PricingBasis;
+  noticeDays: number;
+  minimumPaidParticipants?: number;
   maxParticipants?: number;
+  confirmationMode: ConfirmationMode;
+  priceStatus: PriceStatus;
+  includedParticipants?: number;
+  additionalParticipantPriceCents?: number;
   active: boolean;
   sortOrder: number;
 }
@@ -22,59 +50,125 @@ export interface BookingCatalog {
 const item = (
   id: string,
   tourId: string,
-  category: BookingCatalogItem['category'],
+  category: BookingCategory,
+  serviceKind: ServiceKind,
   name: string,
   priceCents: number,
   sortOrder: number,
-  pricingBasis: PricingBasis = 'per_person',
-  description = '',
-  maxParticipants?: number,
-): BookingCatalogItem => ({ id, tourId, category, name, description, priceCents, pricingBasis, maxParticipants, active: true, sortOrder });
+  options: Partial<BookingCatalogItem> = {},
+): BookingCatalogItem => ({
+  id,
+  tourId,
+  category,
+  serviceKind,
+  name,
+  description: '',
+  priceCents,
+  pricingBasis: 'per_person',
+  noticeDays: 7,
+  confirmationMode: 'request_only',
+  priceStatus: 'current',
+  active: true,
+  sortOrder,
+  ...options,
+});
 
 export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
-  version: 1,
+  version: 2,
   publishedAt: null,
   items: [
-    item('dive-single', 'scuba-diving', 'Island', 'Single Tank (Mexico Rocks)', 11625, 10),
-    item('dive-two', 'scuba-diving', 'Island', 'Two Tank Dive', 14438, 20),
-    item('dive-holchan', 'hol-chan-shark-ray-alley', 'Island', 'Hol Chan Combo Dive', 13313, 30),
-    item('dive-night', 'scuba-diving', 'Island', 'Night Dive (Love Tunnel)', 15563, 40),
-    item('course-refresher', 'diving-courses', 'Island', 'Refresher', 20875, 50),
-    item('course-resort', 'diving-courses', 'Island', 'Resort Course', 21188, 60),
-    item('course-discover', 'diving-courses', 'Island', 'Scuba Discovery', 21188, 70),
-    item('course-referral', 'diving-courses', 'Island', 'Open Water Referral (2 Days)', 48000, 80),
-    item('course-scubadiver', 'diving-courses', 'Island', 'Scuba Diver', 43688, 90),
-    item('course-owcert', 'diving-courses', 'Island', 'Open Water Certification (3 Days)', 56438, 100),
-    item('course-advanced', 'diving-courses', 'Island', 'Advanced Open Water', 49313, 110),
-    item('snorkel-hol', 'hol-chan-shark-ray-alley', 'Island', 'Hol Chan & Shark Ray Alley Snorkeling', 9000, 120),
-    item('snorkel-mex', 'mexico-rocks', 'Island', 'Mexico Rocks Snorkeling', 7500, 130),
-    item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'Caye Caulker, Manatee & Tarpon Feeding', 17500, 140),
-    item('snorkel-sailing', 'caye-caulker-manatee', 'Island', 'Sailing: Hol Chan & Caye Caulker', 17500, 150),
-    item('snorkel-bacalar', 'bacalar-chico', 'Island', 'Bacalar Chico Full-Day Adventure', 17500, 160),
-    item('fish-reef-half', 'fishing', 'Island', 'Reef Fishing (Half Day)', 30938, 170, 'per_group', '', 4),
-    item('fish-reef-full', 'fishing', 'Island', 'Reef Fishing (Full Day)', 56250, 180, 'per_group', '', 4),
-    item('fish-deep-half', 'fishing', 'Island', 'Deep Sea Fishing (Half Day)', 90000, 190, 'per_group', '', 4),
-    item('fish-deep-full', 'fishing', 'Island', 'Deep Sea Fishing (Full Day)', 180000, 200, 'per_group', '', 4),
-    item('fish-flat-half', 'fishing', 'Island', 'Flat Fishing (Half Day)', 39375, 210, 'per_group', '', 2),
-    item('fish-flat-full', 'fishing', 'Island', 'Flat Fishing (Full Day)', 60000, 220, 'per_group', '', 2),
-    item('bbq-full', 'beach-bbq', 'Island', 'Beach Bar-B-Q (1–4 people)', 56250, 230, 'per_group', '', 4),
-    item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'Altun Ha & Cave Tubing', 33750, 240),
-    item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'Xunantunich & Cave Tubing', 33750, 250),
-    item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'Cave Tubing & Zip-lining', 33750, 260),
-    item('main-lamanai', 'lamanai', 'Mainland', 'Lamanai Temple Tour', 28125, 270),
-    item('main-atm', 'atm-caves', 'Mainland', 'ATM Caves Expedition', 45000, 280),
+    item('dive-single', 'scuba-diving', 'Island', 'recreational_dive', 'Single Tank Dive (Mexico Rocks)', 11625, 10, { minimumPaidParticipants: 2 }),
+    item('dive-two', 'scuba-diving', 'Island', 'recreational_dive', 'Two Tank Dive', 14438, 20, { minimumPaidParticipants: 2 }),
+    item('dive-holchan', 'hol-chan-shark-ray-alley', 'Island', 'recreational_dive', 'Hol Chan Combo Dive', 13313, 30, { minimumPaidParticipants: 2 }),
+    item('dive-night', 'scuba-diving', 'Island', 'recreational_dive', 'Night Dive (Love Tunnel)', 15563, 40, { minimumPaidParticipants: 2 }),
+    item('course-refresher', 'courses', 'Course', 'course', 'Refresher', 20875, 50),
+    item('course-discover', 'courses', 'Course', 'course', 'Discover Scuba Diving', 21188, 60),
+    item('course-referral', 'courses', 'Course', 'course', 'Open Water Referral', 48000, 70),
+    item('course-scubadiver', 'courses', 'Course', 'course', 'Scuba Diver', 43688, 80),
+    item('course-owcert', 'courses', 'Course', 'course', 'Open Water Certification', 56438, 90),
+    item('course-advanced', 'courses', 'Course', 'course', 'Advanced Open Water', 49313, 100),
+    item('snorkel-hol', 'hol-chan-shark-ray-alley', 'Island', 'snorkeling', 'Hol Chan & Shark Ray Alley Snorkeling', 9000, 120, { minimumPaidParticipants: 4, maxParticipants: 12 }),
+    item('snorkel-mex', 'mexico-rocks', 'Island', 'snorkeling', 'Mexico Rocks Snorkeling', 7500, 130, { minimumPaidParticipants: 4, maxParticipants: 12 }),
+    item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', 17500, 140, { minimumPaidParticipants: 4, maxParticipants: 12 }),
+    item('snorkel-sailing', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Sailing: Hol Chan & Caye Caulker', 17500, 150, { minimumPaidParticipants: 4, maxParticipants: 12 }),
+    item('snorkel-bacalar', 'bacalar-chico', 'Island', 'snorkeling', 'Bacalar Chico Full-Day Adventure', 17500, 160, { minimumPaidParticipants: 4, maxParticipants: 12 }),
+    item('fish-reef-half', 'fishing', 'Island', 'fishing', 'Reef Fishing (Half Day)', 30938, 170, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('fish-reef-full', 'fishing', 'Island', 'fishing', 'Reef Fishing (Full Day)', 56250, 180, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('fish-deep-half', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Half Day)', 90000, 190, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('fish-deep-full', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Full Day)', 180000, 200, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('fish-flat-half', 'fishing', 'Island', 'fishing', 'Flat Fishing (Half Day)', 39375, 210, { pricingBasis: 'per_group', maxParticipants: 2 }),
+    item('fish-flat-full', 'fishing', 'Island', 'fishing', 'Flat Fishing (Full Day)', 60000, 220, { pricingBasis: 'per_group', maxParticipants: 2 }),
+    item('bbq-full', 'fishing', 'Island', 'fishing', 'Beach Bar-B-Q', 56250, 230, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'mainland', 'Altun Ha & Cave Tubing', 33750, 240, { minimumPaidParticipants: 2 }),
+    item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'mainland', 'Xunantunich & Cave Tubing', 33750, 250, { minimumPaidParticipants: 2 }),
+    item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'mainland', 'Cave Tubing & Zip-lining', 33750, 260, { minimumPaidParticipants: 2 }),
+    item('main-lamanai', 'lamanai', 'Mainland', 'mainland', 'Lamanai Jungle & New River Tour', 28125, 270, { minimumPaidParticipants: 2 }),
+    item('main-atm', 'atm-caves', 'Mainland', 'mainland', 'Actun Tunichil Muknal (ATM) Cave', 45000, 280, { minimumPaidParticipants: 2 }),
+    item('transfer-bze-san-pedro', 'transfers-charters', 'Transfer', 'transfer', 'Belize International Airport Boat Transfer', 60000, 290, {
+      pricingBasis: 'tiered_transfer',
+      priceStatus: 'proposed',
+      includedParticipants: 6,
+      additionalParticipantPriceCents: 10000,
+    }),
   ],
 };
 
-export const withDefaultParticipantLimits = (catalog: BookingCatalog): BookingCatalog => {
-  const defaultLimits = new Map(DEFAULT_BOOKING_CATALOG.items.map((item) => [item.id, item.maxParticipants]));
+export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCatalog => {
+  const defaults = new Map(DEFAULT_BOOKING_CATALOG.items.map((catalogItem) => [catalogItem.id, catalogItem]));
+  const legacyCatalog = catalog.items.some((catalogItem) => !catalogItem.serviceKind || catalogItem.noticeDays === undefined || !catalogItem.confirmationMode || !catalogItem.priceStatus);
+  const migratedItems = catalog.items
+    .filter((catalogItem) => catalogItem.id !== 'course-resort')
+    .map((catalogItem) => {
+      const policy = defaults.get(catalogItem.id);
+      if (!policy) return catalogItem;
+      const merged = { ...policy, ...catalogItem };
+      return legacyCatalog ? {
+        ...merged,
+        tourId: policy.tourId,
+        category: policy.category,
+        serviceKind: policy.serviceKind,
+        name: policy.name,
+        noticeDays: policy.noticeDays,
+        minimumPaidParticipants: policy.minimumPaidParticipants,
+        maxParticipants: policy.maxParticipants,
+        confirmationMode: policy.confirmationMode,
+        priceStatus: policy.priceStatus,
+        includedParticipants: policy.includedParticipants,
+        additionalParticipantPriceCents: policy.additionalParticipantPriceCents,
+      } : merged;
+    });
+  if (legacyCatalog) {
+    const migratedIds = new Set(migratedItems.map((catalogItem) => catalogItem.id));
+    DEFAULT_BOOKING_CATALOG.items.forEach((catalogItem) => {
+      if (!migratedIds.has(catalogItem.id)) migratedItems.push(catalogItem);
+    });
+  }
   return {
     ...catalog,
-    items: catalog.items.map((item) => ({
-      ...item,
-      maxParticipants: item.maxParticipants ?? defaultLimits.get(item.id),
-    })),
+    version: Math.max(catalog.version, DEFAULT_BOOKING_CATALOG.version),
+    items: migratedItems.sort((a, b) => a.sortOrder - b.sortOrder),
   };
+};
+
+export const withDefaultParticipantLimits = withDefaultBookingPolicies;
+
+export const estimateBookingItemCents = (catalogItem: BookingCatalogItem, participants: number, details?: BookingItemDetails) => {
+  const count = Math.max(1, Math.round(participants));
+  if (catalogItem.pricingBasis === 'tiered_transfer') {
+    const oneWay = Math.max(catalogItem.priceCents, count * (catalogItem.additionalParticipantPriceCents ?? 0));
+    return details?.transferTrip === 'round_trip' ? oneWay * 2 : oneWay;
+  }
+  if (catalogItem.pricingBasis === 'per_group') return catalogItem.priceCents;
+  return catalogItem.priceCents * Math.max(count, catalogItem.minimumPaidParticipants ?? 1);
+};
+
+export const belizeDateAfter = (days: number, now = new Date()) => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Belize', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(now);
+  const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+  const date = new Date(Date.UTC(Number(value.year), Number(value.month) - 1, Number(value.day) + days));
+  return date.toISOString().slice(0, 10);
 };
 
 export const catalogItemsForTour = (tourId: string, catalog = DEFAULT_BOOKING_CATALOG) =>

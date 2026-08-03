@@ -77,7 +77,7 @@ const MainlandAdventures: React.FC = () => {
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
                   <p className="mb-2 text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">Departures</p>
-                  <p className="text-[#F8F4E8] font-medium">Daily from 6:00 AM</p>
+                  <p className="text-[#F8F4E8] font-medium">Early; confirm when booking</p>
                 </div>
               </div>
               <div className="pt-8 flex items-center space-x-8">
