@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { API, buildWhatsAppUrl } from '../config';
 import { useBooking } from '../contexts/BookingContext';
-import { belizeDateAfter, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
+import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict } from '../shared/bookingCatalog';
 
 interface SubmissionResult {
   ok?: boolean;
@@ -30,6 +30,7 @@ const Reservations: React.FC = () => {
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const estimate = useMemo(() => items.reduce((sum, item) => sum + estimateBookingItemCents(item, item.participantAdults + item.participantChildren, item.details), 0), [items]);
   const datesComplete = items.every((item) => item.requestedDate >= belizeDateAfter(item.noticeDays));
+  const mainlandDatesValid = !hasMainlandDateConflict(items);
   const participantsComplete = items.every((item) => item.participantAdults >= 0 && item.participantChildren >= 0 && item.participantAdults + item.participantChildren > 0 && item.participantAdults <= adults && item.participantChildren <= children && (!item.maxParticipants || item.participantAdults + item.participantChildren <= item.maxParticipants));
   const detailsComplete = items.every((item) => {
     if (item.serviceKind === 'recreational_dive') return Boolean(item.details.certificationLevel && item.details.lastDiveDate);
@@ -48,8 +49,8 @@ const Reservations: React.FC = () => {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!items.length || !datesComplete || !participantsComplete || !detailsComplete) {
-      setError('Complete each experience, including a date at least seven days away and any required diving or transfer details.');
+    if (!items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid) {
+      setError(mainlandDatesValid ? 'Complete each experience, including a date at least seven days away and any required diving or transfer details.' : 'Choose a different date for each mainland adventure. Only one mainland tour can be scheduled per day.');
       return;
     }
     setSubmitting(true);
@@ -202,7 +203,8 @@ const Reservations: React.FC = () => {
               <p className="mt-5 text-sm leading-relaxed text-[#F8F4E8]/60">This estimate is not charged today. It applies minimum paid-participant rules where shown. Staff will confirm availability and final quote-line quantities.</p>
               {error && <p role="alert" className="mt-5 rounded-xl bg-red-400/10 p-4 text-sm text-red-100">{error}</p>}
               {!participantsComplete && items.length > 0 && <p className="mt-5 rounded-xl bg-amber-400/10 p-3 text-sm leading-relaxed text-amber-100">Each experience needs at least one participant, without exceeding the overall adult and child totals.</p>}
-              <button disabled={submitting || !items.length || !datesComplete || !participantsComplete || !detailsComplete} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
+              {!mainlandDatesValid && <p className="mt-5 rounded-xl bg-amber-400/10 p-3 text-sm leading-relaxed text-amber-100">Only one mainland adventure can be scheduled per day. Choose a different requested date for one of the mainland tours.</p>}
+              <button disabled={submitting || !items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
                 {submitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving request…</> : 'Send reservation request'}
               </button>
               <a href={buildWhatsAppUrl(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-bold text-[#F8F4E8]"><MessageCircle className="mr-2 h-5 w-5" /> WhatsApp fallback</a>

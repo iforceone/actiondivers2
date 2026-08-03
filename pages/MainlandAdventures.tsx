@@ -39,6 +39,9 @@ const MainlandAdventures: React.FC = () => {
         <p className="text-xl text-[#F8F4E8]/70 leading-relaxed font-light">
           Belize is more than the reef. Mainland day trips connect you with Maya history, cave tubing, zip-lining, river journeys, and rainforest scenery, with logistics handled from San Pedro.
         </p>
+        <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-[#F8F4E8]/65">
+          Mainland tours require at least two guests, and only one mainland adventure can be scheduled per day. Guests meet at Belize Express Water Taxi; exact meeting instructions are emailed after confirmation.
+        </p>
       </section>
 
       {/* Tours List */}

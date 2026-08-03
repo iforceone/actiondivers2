@@ -1,4 +1,4 @@
-import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
+import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, hasMainlandDateConflict, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { paymentIsAvailable } from './reservationRules';
@@ -291,6 +291,9 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
   }
   const requestKinds = new Set(normalizedItems.map((item) => item.catalog.category === 'Course' ? 'course' : item.catalog.category === 'Transfer' ? 'transfer' : 'tour'));
   if (requestKinds.size !== 1) return json({ ok: false, error: 'Tour, course, and transfer requests must be submitted separately.' }, 422);
+  if (hasMainlandDateConflict(normalizedItems.map((item) => ({ category: item.catalog.category, requestedDate: item.requestedDate })))) {
+    return json({ ok: false, error: 'Only one mainland adventure can be scheduled per day.' }, 422);
+  }
   const requestKind = [...requestKinds][0];
   const timestamp = nowIso();
   const id = crypto.randomUUID();

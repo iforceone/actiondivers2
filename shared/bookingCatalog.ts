@@ -74,7 +74,7 @@ const item = (
 });
 
 export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
-  version: 2,
+  version: 3,
   publishedAt: null,
   items: [
     item('dive-single', 'scuba-diving', 'Island', 'recreational_dive', 'Single Tank Dive (Mexico Rocks)', 11625, 10, { minimumPaidParticipants: 2 }),
@@ -98,7 +98,7 @@ export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
     item('fish-deep-full', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Full Day)', 180000, 200, { pricingBasis: 'per_group', maxParticipants: 4 }),
     item('fish-flat-half', 'fishing', 'Island', 'fishing', 'Flat Fishing (Half Day)', 39375, 210, { pricingBasis: 'per_group', maxParticipants: 2 }),
     item('fish-flat-full', 'fishing', 'Island', 'fishing', 'Flat Fishing (Full Day)', 60000, 220, { pricingBasis: 'per_group', maxParticipants: 2 }),
-    item('bbq-full', 'fishing', 'Island', 'fishing', 'Beach Bar-B-Q', 56250, 230, { pricingBasis: 'per_group', maxParticipants: 4 }),
+    item('bbq-full', 'fishing', 'Island', 'fishing', 'Beach Bar-B-Q', 17500, 230, { minimumPaidParticipants: 4 }),
     item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'mainland', 'Altun Ha & Cave Tubing', 33750, 240, { minimumPaidParticipants: 2 }),
     item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'mainland', 'Xunantunich & Cave Tubing', 33750, 250, { minimumPaidParticipants: 2 }),
     item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'mainland', 'Cave Tubing & Zip-lining', 33750, 260, { minimumPaidParticipants: 2 }),
@@ -121,7 +121,19 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
     .map((catalogItem) => {
       const policy = defaults.get(catalogItem.id);
       if (!policy) return catalogItem;
-      const merged = { ...policy, ...catalogItem };
+      const hasObsoleteBarbecuePricing = catalogItem.id === 'bbq-full' &&
+        catalogItem.priceCents === 56250 &&
+        catalogItem.pricingBasis === 'per_group' &&
+        catalogItem.minimumPaidParticipants === undefined &&
+        catalogItem.maxParticipants === 4;
+      const merged = hasObsoleteBarbecuePricing ? {
+        ...policy,
+        ...catalogItem,
+        priceCents: policy.priceCents,
+        pricingBasis: policy.pricingBasis,
+        minimumPaidParticipants: policy.minimumPaidParticipants,
+        maxParticipants: policy.maxParticipants,
+      } : { ...policy, ...catalogItem };
       return legacyCatalog ? {
         ...merged,
         tourId: policy.tourId,
@@ -151,6 +163,16 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
 };
 
 export const withDefaultParticipantLimits = withDefaultBookingPolicies;
+
+export const hasMainlandDateConflict = (items: Array<{ category: BookingCategory; requestedDate: string }>) => {
+  const mainlandDates = new Set<string>();
+  for (const item of items) {
+    if (item.category !== 'Mainland' || !item.requestedDate) continue;
+    if (mainlandDates.has(item.requestedDate)) return true;
+    mainlandDates.add(item.requestedDate);
+  }
+  return false;
+};
 
 export const estimateBookingItemCents = (catalogItem: BookingCatalogItem, participants: number, details?: BookingItemDetails) => {
   const count = Math.max(1, Math.round(participants));

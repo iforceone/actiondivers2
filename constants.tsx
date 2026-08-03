@@ -49,7 +49,7 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'There are a couple of popular snorkeling excursions that are a must-see when visiting Ambergris Caye. One excursion is Hol Chan and Shark-Ray Alley where you snorkel at the marine reserve through protected coral reefs with turtles, barracudas, spotted eagle rays, and more! After, feed the nurse sharks and rays at Shark-Ray Alley. Those who are brave enough can snorkel with them! Another great location is Mexico Rocks, located north of our shop.',
     isAvailable: true,
     image: '/images/gallery/Male-Snorkeler-OK-Sign.png', // REAL Action Divers Belize image - SNORKELING
-    duration: 'Half-day and full-day options',
+    duration: '2–3 hour and full-day options',
     departureTime: 'Daily from 9:00 AM',
     includes: ['Snorkeling gear', 'Marine park fee', 'Local guide'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Reusable water bottle'],
@@ -58,7 +58,7 @@ export const INITIAL_TOURS: Tour[] = [
       gear: 5.00,
       parkFee: 15.00,
       tax: 8.33,
-      note: 'Includes Park Fees. Hol Chan/Shark Ray: $90. Mexico Rocks: $75. Hol Chan/Caye Caulker/Manatee: $175. Sailing (Caye Caulker): $175 (Lunch extra).'
+      note: 'Includes Park Fees. Hol Chan/Shark Ray: $90. Mexico Rocks: $75. Hol Chan/Caye Caulker/Manatee: $175. Sailing (Caye Caulker): $175. Lunch is not included on Caye Caulker tours.'
     },
     features: [
       'Daily Departures: Snorkeling excursions start at 9:00 AM.',
@@ -77,8 +77,8 @@ export const INITIAL_TOURS: Tour[] = [
     longDescription: 'Hol Chan Marine Reserve and Shark Ray Alley combine protected reef scenery with the chance to encounter Belizean marine life. Action Divers currently offers this destination as a snorkeling excursion and as a combo dive, giving both snorkelers and certified divers a way to experience the area.',
     isAvailable: true,
     image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
-    duration: 'Confirm for your selected option',
-    departureTime: 'Confirm when booking',
+    duration: '3 hours for snorkeling',
+    departureTime: 'Daily from 9:00 AM',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -88,7 +88,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Departures from the Action Divers tour desk'
     ],
     options: [
-      { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A guided snorkeling excursion through Hol Chan and Shark Ray Alley.', price: 90.00 },
+      { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A three-hour guided snorkeling excursion through Hol Chan and Shark Ray Alley for groups of 4–12.', price: 90.00 },
       { name: 'Hol Chan Combo Dive', description: 'The dive option for certified guests who want to experience Hol Chan below the surface.', price: 133.13 }
     ]
   },
@@ -99,11 +99,11 @@ export const INITIAL_TOURS: Tour[] = [
     subCategory: 'Reef Adventure',
     price: 75.00,
     description: 'Explore the Mexico Rocks reef area north of the Action Divers shop by snorkel or scuba.',
-    longDescription: 'Mexico Rocks is located north of the Action Divers shop and is offered for both snorkeling and diving. Choose the experience that matches your comfort and certification level, then confirm current conditions, timing, and availability with the team.',
+    longDescription: 'Mexico Rocks is located north of the Action Divers shop and is offered for both snorkeling and diving. The snorkeling trip takes approximately two to three hours depending on where guests are staying. Choose the experience that matches your comfort and certification level, then confirm current conditions and availability with the team.',
     isAvailable: true,
     image: '/images/gallery/School-Fish.png',
-    duration: 'Confirm for your selected option',
-    departureTime: 'Confirm when booking',
+    duration: '2–3 hours for snorkeling',
+    departureTime: 'Daily from 9:00 AM',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -113,7 +113,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Pricing shown by activity'
     ],
     options: [
-      { name: 'Mexico Rocks Snorkeling', description: 'A guided snorkeling visit to the Mexico Rocks reef area.', price: 75.00 },
+      { name: 'Mexico Rocks Snorkeling', description: 'A two-to-three-hour guided visit for groups of 4–12; timing depends on where guests are staying.', price: 75.00 },
       { name: 'Single Dive: Mexico Rocks', description: 'A single guided dive for certified guests.', price: 116.25 }
     ]
   },
@@ -124,11 +124,11 @@ export const INITIAL_TOURS: Tour[] = [
     subCategory: 'Full-Day Island Tour',
     price: 175.00,
     description: 'Compare two Caye Caulker itineraries, including the manatee and tarpon-feeding option or a sailing day.',
-    longDescription: 'Action Divers lists two ways to build a Caye Caulker day into your trip. One itinerary combines Hol Chan, Caye Caulker, manatee viewing, and tarpon feeding. The sailing option combines Hol Chan, Shark Ray Alley, and Caye Caulker. Ask the team to confirm the current itinerary and availability for your dates.',
+    longDescription: 'Action Divers lists two ways to build a Caye Caulker day into your trip. One itinerary combines Hol Chan, Caye Caulker, manatee viewing, and tarpon feeding. The sailing option combines Hol Chan, Shark Ray Alley, and Caye Caulker. Both run from 9:00 AM to 3:00 PM. Lunch is not included on any Caye Caulker tour, so guests purchase their own lunch.',
     isAvailable: true,
     image: '/images/gallery/Three-of-a-Kind-boat-1.png',
-    duration: 'Full-day options',
-    departureTime: 'Confirm when booking',
+    duration: '9:00 AM–3:00 PM',
+    departureTime: '9:00 AM',
     includes: ['Guided island itinerary', 'Gear and park fees reflected where applicable'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Money for lunch and personal purchases'],
     features: [
@@ -138,7 +138,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Sailing itinerary with Shark Ray Alley'
     ],
     options: [
-      { name: 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', description: 'The listed combination itinerary joining reef and island stops.', price: 175.00 },
+      { name: 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', description: 'A 9:00 AM–3:00 PM combination itinerary joining reef and island stops.', price: 175.00, note: 'Lunch is not included; guests purchase their own lunch.' },
       { name: 'Sailing: Hol Chan, Shark Ray Alley & Caye Caulker', description: 'A sailing-based alternative for the Caye Caulker day.', price: 175.00, note: 'Lunch is not included.' }
     ]
   },
@@ -149,21 +149,22 @@ export const INITIAL_TOURS: Tour[] = [
     subCategory: 'Full-Day Reef Adventure',
     price: 175.00,
     description: 'A full-day snorkeling adventure to Bacalar Chico with gear and park fee included in the listed total.',
-    longDescription: 'Bacalar Chico is offered as a full-day snorkeling adventure from Ambergris Caye. The published total includes snorkeling gear and the park fee. Contact Action Divers with your preferred date and group size to confirm the day’s route, departure time, and availability.',
+    longDescription: 'Bacalar Chico is offered as a 9:00 AM–3:00 PM snorkeling adventure from Ambergris Caye for a minimum of four guests. The published total includes snorkeling gear and the park fee. Contact Action Divers with your preferred date and group size to confirm availability.',
     isAvailable: true,
     image: '/images/gallery/WhatsApp_Image_2026-03-08_at_9.57.19_AM.jpeg',
-    duration: 'Full day',
-    departureTime: 'Confirm when booking',
+    duration: '9:00 AM–3:00 PM',
+    departureTime: '9:00 AM',
     includes: ['Snorkeling gear', 'Park fee', 'Local guide and boat transport'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Hat or sun shirt', 'Reusable water bottle'],
     features: [
-      'Full-day snorkeling itinerary',
+      '9:00 AM–3:00 PM snorkeling itinerary',
+      'Minimum of 4 guests',
       'Bacalar Chico destination',
       'Snorkeling gear included',
       'Park fee included'
     ],
     options: [
-      { name: 'Bacalar Chico Full-Day Adventure', description: 'The published Bacalar Chico snorkeling itinerary with gear and park fee included.', price: 175.00 }
+      { name: 'Bacalar Chico Full-Day Adventure', description: 'A 9:00 AM–3:00 PM snorkeling itinerary for at least four guests, with gear and park fee included.', price: 175.00 }
     ]
   },
   {
@@ -182,7 +183,7 @@ export const INITIAL_TOURS: Tour[] = [
     priceBreakdown: {
       base: 275.00,
       tax: 34.38,
-      note: 'Reef Fishing (1-4 people): Half Day $309.38 | Full Day $562.50. Deep Sea (1-4 people): Half Day $900.00 | Full Day $1800.00. Flat Fishing (1-2 people): Half Day $393.75 | Full Day $600.00.'
+      note: 'Reef Fishing (1-4 people): Half Day $309.38 | Full Day $562.50. Deep Sea (1-4 people): Half Day $900.00 | Full Day $1800.00. Flat Fishing (1-2 people): Half Day $393.75 | Full Day $600.00. Beach Bar-B-Q: $175 per person, minimum 4.'
     },
     features: [
       'Daily Departures: Fishing excursions start at 9:00 AM.',
@@ -190,7 +191,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Full Day Reef Fishing: 9:00 AM to 3:00 PM.',
       'Deep-Sea Fishing ($900.00+)',
       'Flat Fishing ($393.75+)',
-      'Beach Bar-B-Q full-day option for groups of 1–4'
+      'Beach Bar-B-Q: $175 per person with a 4-person minimum'
     ],
     options: [
       { name: 'Reef Fishing — Half Day', description: 'Group rate for 1–4 guests.', price: 309.38 },
@@ -199,7 +200,7 @@ export const INITIAL_TOURS: Tour[] = [
       { name: 'Deep Sea Fishing — Full Day', description: 'Group rate for 1–4 guests.', price: 1800.00 },
       { name: 'Flat Fishing — Half Day', description: 'Group rate for 1–2 guests.', price: 393.75 },
       { name: 'Flat Fishing — Full Day', description: 'Group rate for 1–2 guests.', price: 600.00 },
-      { name: 'Beach Bar-B-Q', description: 'A full-day fishing, snorkeling, and barbecue option. Location is confirmed based on conditions and accommodation setup.', price: 562.50 }
+      { name: 'Beach Bar-B-Q', description: 'A full-day fishing, snorkeling, and barbecue option priced per person with a four-person minimum. Location is confirmed based on conditions and accommodation setup.', price: 175.00 }
     ]
   },
   {
@@ -286,17 +287,17 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'mainland',
     price: 450.00,
     description: 'Actun Tunichil Muknal - a legendary Maya archaeological cave site.',
-    longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 6:00 am boat.',
+    longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 7:00 AM water taxi.',
     isAvailable: true,
     image: '/images/gallery/cave-exploration-real.jpg', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: '6:00 AM water taxi',
+    departureTime: '7:00 AM water taxi',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Closed-toe water shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 400.00,
       tax: 50.00,
-      note: 'Includes Park Fee and Lunch. Leaves island at 6:00 am.'
+      note: 'Includes Park Fee and Lunch. Leaves the island on the 7:00 AM water taxi.'
     }
   }
 ];

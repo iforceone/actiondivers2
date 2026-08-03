@@ -21,8 +21,9 @@ PRICING DETAILS:
 - Night Dive: Total $155.63.
 - Recreational dives require certification and a dive within the previous year. Otherwise direct guests to Discover Scuba Diving or Refresher.
 - Courses: Refresher ($208.75), Discover Scuba Diving / Resort Course ($211.88), Open Water Referral 2-day ($480.00), Scuba Diver ($436.88), Open Water Certification 3-day ($564.38), Advanced Open Water ($493.13).
-- Snorkeling: Hol Chan/Shark Ray ($90.00), Mexico Rocks ($75.00), Caye Caulker/Manatee/Tarpon Feeding ($175.00), Sailing - Hol Chan/Caye Caulker ($175.00, lunch not included), Bacalar Chico ($175.00).
-- Fishing & Beach Bar-B-Q: Reef (1-4 ppl) Half Day $309.38 / Full Day $562.50. Deep Sea (1-4 ppl) Half Day $900.00 / Full Day $1800.00. Flat Fishing (1-2 ppl) Half Day $393.75 / Full Day $600.00. Beach Bar-B-Q (1-4 ppl) $562.50; the location varies with conditions and accommodation setup.
+- Snorkeling groups are 4-12 guests. Mexico Rocks takes 2-3 hours depending on where guests are staying. Hol Chan/Shark Ray Alley takes 3 hours. Hol Chan/Caye Caulker/Manatee/Tarpon Feeding runs 9:00 AM-3:00 PM. Bacalar Chico runs 9:00 AM-3:00 PM with a 4-person minimum.
+- Snorkeling prices: Hol Chan/Shark Ray ($90.00), Mexico Rocks ($75.00), Caye Caulker/Manatee/Tarpon Feeding ($175.00), Sailing - Hol Chan/Caye Caulker ($175.00), Bacalar Chico ($175.00). Lunch is not included on any Caye Caulker tour; guests purchase their own lunch.
+- Fishing & Beach Bar-B-Q: Reef (1-4 ppl) Half Day $309.38 / Full Day $562.50. Deep Sea (1-4 ppl) Half Day $900.00 / Full Day $1800.00. Flat Fishing (maximum 2 ppl) Half Day $393.75 / Full Day $600.00. Beach Bar-B-Q is $175 per person with a 4-person minimum; the location varies with conditions and accommodation setup.
 - Proposed Belize International Airport boat transfer: $600 one way for 1-6 passengers; above six, $100 per passenger per direction; round trip is twice the one-way calculation. Staff must confirm all transfer pricing.
 - Mainland Tours:
     - Altun Ha & Cave Tubing: $337.50
@@ -31,6 +32,7 @@ PRICING DETAILS:
     - Lamanai Jungle & New River Tour: $281.25
     - Actun Tunichil Muknal (ATM) Cave: $450.00
 - All mainland experiences include park fees, a prepared lunch, and professional transportation from the island.
+- Mainland tours require at least 2 guests and only one mainland adventure can be scheduled per day. Guests meet at Belize Express Water Taxi; exact meeting instructions are emailed after confirmation. The ATM Cave tour uses the 7:00 AM water taxi.
 
 CONTACT INFO:
 - Phone: 011-501-671-2624

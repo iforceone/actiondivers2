@@ -144,7 +144,7 @@ const TourDetail: React.FC = () => {
                         <div>
                           <h3 className="text-lg font-bold text-[#F8F4E8]">{option.name}</h3>
                           <p className="mt-1 text-sm text-[#F8F4E8]/60">
-                            {formatUsd(option.priceCents)} · {option.pricingBasis === 'per_group' ? 'group rate' : 'per person'}{option.maxParticipants ? ` · maximum ${option.maxParticipants} guests` : ''}
+                            {formatUsd(option.priceCents)} · {option.pricingBasis === 'per_group' ? 'group rate' : 'per person'}{option.minimumPaidParticipants ? ` · minimum charge ${option.minimumPaidParticipants}` : ''}{option.maxParticipants ? ` · maximum ${option.maxParticipants} guests` : ''}
                           </p>
                         </div>
                         <button
