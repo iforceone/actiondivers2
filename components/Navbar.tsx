@@ -39,6 +39,17 @@ const Navbar: React.FC = () => {
     resetNavState();
   }, [location]);
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setActiveDropdown(null);
+      setMobileExpanded(null);
+      setIsOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
   const navItems = [
     { 
       name: 'Adventures',
@@ -87,7 +98,7 @@ const Navbar: React.FC = () => {
                 {item.items ? (
                   <div className="flex items-center h-full">
                     <div className="flex items-center h-full cursor-pointer group">
-                      <button type="button" aria-expanded={activeDropdown === item.name} className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}>
+                      <button type="button" aria-haspopup="menu" aria-expanded={activeDropdown === item.name} onClick={() => setActiveDropdown((open) => open === item.name ? null : item.name)} onFocus={() => setActiveDropdown(item.name)} className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}>
                         {item.name}
                       </button>
                       <ChevronDown className={`ml-1 w-3 h-3 text-[#8DDCE7]/45 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-[var(--brand-aqua)]' : ''}`} />
@@ -108,11 +119,12 @@ const Navbar: React.FC = () => {
 
                 {item.items && activeDropdown === item.name && (
                   <div className="absolute left-0 top-full w-64 pt-1 z-50">
-                    <div className="bg-[#001219] border border-white/10 rounded-2xl shadow-2xl py-4 animate-fade-in">
+                    <div role="menu" className="bg-[#001219] border border-white/10 rounded-2xl shadow-2xl py-4 animate-fade-in">
                       {item.items.map((sub) => (
                         <Link
                           key={sub.name}
                           to={sub.path}
+                          role="menuitem"
                           className="block px-6 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#8DDCE7]/70 transition-colors hover:bg-white/5 hover:text-[var(--brand-aqua)]"
                         >
                           {sub.name}
@@ -127,10 +139,12 @@ const Navbar: React.FC = () => {
           </div>
 
           <div className="lg:hidden flex items-center">
-            <button 
+            <button
               onClick={() => setIsOpen(true)} 
               className="text-[var(--brand-aqua)] p-2"
               aria-label="Open Menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
             >
               <Menu className="h-7 w-7" />
             </button>
@@ -139,19 +153,17 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div 
-        className={`lg:hidden fixed inset-0 z-[200] transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
+      {isOpen && <div className="fixed inset-0 z-[200] lg:hidden">
         <div 
           className="absolute inset-0 bg-black/80 transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         ></div>
         
-        <div className={`absolute top-0 right-0 w-[85%] max-w-[320px] h-full bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Site navigation" className="absolute right-0 top-0 flex h-full w-[85%] max-w-[320px] flex-col bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] animate-fade-in">
           
           <div className="flex items-center justify-between p-7 border-b border-white/5 bg-[#050f14] shrink-0">
             <div className="text-sm font-bold font-extrabold tracking-tight text-[var(--brand-ivory)] tracking-[0.3em] uppercase">Menu</div>
-            <button onClick={() => setIsOpen(false)} className="text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] p-2">
+            <button onClick={() => setIsOpen(false)} className="text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] p-2" aria-label="Close menu">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -216,7 +228,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </nav>
   );
 };

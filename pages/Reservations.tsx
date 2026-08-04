@@ -5,6 +5,7 @@ import SEO from '../components/SEO';
 import { API, buildWhatsAppUrl } from '../config';
 import { useBooking } from '../contexts/BookingContext';
 import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict } from '../shared/bookingCatalog';
+import { liveReservationRequestsEnabled, reservationUnavailableMessage } from '../utils/requestAvailability';
 
 interface SubmissionResult {
   ok?: boolean;
@@ -51,6 +52,10 @@ const Reservations: React.FC = () => {
     event.preventDefault();
     if (!items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid) {
       setError(mainlandDatesValid ? 'Complete each experience, including a date at least seven days away and any required diving or transfer details.' : 'Choose a different date for each mainland adventure. Only one mainland tour can be scheduled per day.');
+      return;
+    }
+    if (!liveReservationRequestsEnabled) {
+      setError(reservationUnavailableMessage);
       return;
     }
     setSubmitting(true);
@@ -113,6 +118,13 @@ const Reservations: React.FC = () => {
         <h1 className="mt-4 text-5xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-7xl">Build your Belize trip.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F8F4E8]/70">Choose dates at least seven days in advance for each experience. This is a request—not an instant booking. Staff confirms availability and sends the final quote before payment.</p>
       </header>
+
+      {!liveReservationRequestsEnabled && (
+        <div role="status" className="mt-8 flex items-start gap-3 rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm leading-relaxed text-[#C8F5F8]">
+          <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-[#11C7D9]" aria-hidden="true" />
+          <p><strong>Preview mode:</strong> build your request here, then use the WhatsApp button to send it. Online request saving will be enabled after the reservation service is ready.</p>
+        </div>
+      )}
 
       {!catalogOnline && (
         <div className="mt-8 flex max-w-3xl gap-3 rounded-xl bg-amber-400/10 p-4 text-sm leading-relaxed text-amber-100">
@@ -205,9 +217,9 @@ const Reservations: React.FC = () => {
               {!participantsComplete && items.length > 0 && <p className="mt-5 rounded-xl bg-amber-400/10 p-3 text-sm leading-relaxed text-amber-100">Each experience needs at least one participant, without exceeding the overall adult and child totals.</p>}
               {!mainlandDatesValid && <p className="mt-5 rounded-xl bg-amber-400/10 p-3 text-sm leading-relaxed text-amber-100">Only one mainland adventure can be scheduled per day. Choose a different requested date for one of the mainland tours.</p>}
               <button disabled={submitting || !items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
-                {submitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving request…</> : 'Send reservation request'}
+                {submitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving request…</> : liveReservationRequestsEnabled ? 'Send reservation request' : 'Check request details'}
               </button>
-              <a href={buildWhatsAppUrl(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-bold text-[#F8F4E8]"><MessageCircle className="mr-2 h-5 w-5" /> WhatsApp fallback</a>
+              <a href={buildWhatsAppUrl(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-bold text-[#F8F4E8]"><MessageCircle className="mr-2 h-5 w-5" /> Send through WhatsApp</a>
             </div>
           </aside>
       </form>

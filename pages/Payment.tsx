@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Clock3, CreditCard, Loader2, LockKeyhole, MessageCircle, ShieldCheck, TriangleAlert } from 'lucide-react';
 import SEO from '../components/SEO';
 import { API, buildWhatsAppUrl } from '../config';
+import { isAdminPreviewEnabled } from '../utils/adminPreview';
 
 interface PaymentDetails {
   reference: string;
@@ -114,7 +115,7 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
 
 export const PaymentPage: React.FC = () => {
   const { token = '' } = useParams();
-  const isPreview = import.meta.env.DEV && token === 'preview';
+  const isPreview = isAdminPreviewEnabled() && token === 'preview';
   const [payment, setPayment] = useState<PaymentDetails | null>(isPreview ? DEV_PAYMENT : null);
   const [loading, setLoading] = useState(!isPreview);
   const [starting, setStarting] = useState(false);
@@ -138,7 +139,7 @@ export const PaymentPage: React.FC = () => {
 
   const startPayment = async () => {
     if (isPreview) {
-      setError('This is a local visual preview. Connect the sandbox Worker before starting a bank payment.');
+      setError('This is a visual demonstration. No bank connection or payment will be started.');
       return;
     }
     setStarting(true);
@@ -164,6 +165,7 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <PaymentShell>
+      {isPreview && <div role="status" className="mb-5 rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm text-[#C8F5F8]"><strong>Payment preview:</strong> fictional reservation and amount. No card service is connected.</div>}
       <div className="grid overflow-hidden rounded-2xl bg-[#06212a] lg:grid-cols-[0.88fr_1.12fr]">
         <div className="relative min-h-[300px] overflow-hidden lg:min-h-[650px]">
           <img
@@ -240,7 +242,7 @@ export const PaymentPage: React.FC = () => {
 export const PaymentReturnPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') ?? '';
-  const isPreview = import.meta.env.DEV && token === 'preview-paid';
+  const isPreview = isAdminPreviewEnabled() && token === 'preview-paid';
   const [payment, setPayment] = useState<PaymentDetails | null>(isPreview ? { ...DEV_PAYMENT, status: 'paid', paidAt: new Date().toISOString() } : null);
   const [loading, setLoading] = useState(!isPreview);
   const [error, setError] = useState('');
@@ -272,6 +274,7 @@ export const PaymentReturnPage: React.FC = () => {
 
   return (
     <PaymentShell>
+      {isPreview && <div role="status" className="mx-auto mb-5 max-w-2xl rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm text-[#C8F5F8]"><strong>Payment result preview:</strong> this receipt and payment status are fictional. No bank transaction occurred.</div>}
       <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-[#06212a] p-8 text-center sm:p-12">
         {payment.status === 'paid' ? (
           <CheckCircle2 className="mx-auto h-14 w-14 text-green-400" />

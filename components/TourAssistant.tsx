@@ -12,12 +12,21 @@ const TourAssistant: React.FC = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    closeButtonRef.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setIsOpen(false);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isOpen]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -47,7 +56,7 @@ const TourAssistant: React.FC = () => {
           ></div>
           
           {/* Centered Chat Window */}
-          <div className="relative w-full max-w-[500px] h-[650px] max-h-[90vh] bg-[#001219] rounded-[2.5rem] flex flex-col overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-white/10 transition-all transform scale-100">
+          <div role="dialog" aria-modal="true" aria-labelledby="tour-assistant-title" className="relative flex h-[650px] max-h-[90vh] w-full max-w-[500px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#001219] shadow-[0_40px_100px_rgba(0,0,0,0.8)] transition-all sm:rounded-3xl">
             {/* Header */}
             <div className="p-6 flex justify-between items-center border-b border-white/5 bg-[#001219]">
               <div className="flex items-center space-x-4">
@@ -55,11 +64,12 @@ const TourAssistant: React.FC = () => {
                   <Sparkles className="text-[#001219] w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold tracking-tight text-[#F8F4E8] font-bold text-lg">Tour Assistant</h3>
+                  <h3 id="tour-assistant-title" className="font-extrabold tracking-tight text-[#F8F4E8] font-bold text-lg">Tour Assistant</h3>
                   <p className="text-xs text-[#F8F4E8]/65 uppercase tracking-[0.12em]">Tour Help</p>
                 </div>
               </div>
               <button 
+                ref={closeButtonRef}
                 onClick={() => setIsOpen(false)} 
                 className="p-3 rounded-full hover:bg-white/5 text-[#F8F4E8]/60 hover:text-[#F8F4E8] transition-colors"
                 aria-label="Close tour assistant"

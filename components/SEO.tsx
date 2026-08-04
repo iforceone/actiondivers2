@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { isAdminPreviewEnabled } from '../utils/adminPreview';
 
 export const SITE_URL = 'https://actiondivers2.davebze.workers.dev';
 export const SITE_NAME = 'Action Divers & Adventures';
@@ -51,13 +52,14 @@ const SEO: React.FC<SEOProps> = ({
   structuredData,
 }) => {
   useEffect(() => {
+    const preventIndexing = noindex || isAdminPreviewEnabled();
     const fullTitle = title.includes('Action Divers') ? title : `${title} | ${TITLE_SUFFIX}`;
     const canonical = absoluteUrl(path);
     const imageUrl = absoluteUrl(image);
 
     document.title = fullTitle;
     setMeta('meta[name="description"]', 'content', description);
-    setMeta('meta[name="robots"]', 'content', noindex ? 'noindex, nofollow' : 'index, follow');
+    setMeta('meta[name="robots"]', 'content', preventIndexing ? 'noindex, nofollow' : 'index, follow');
     setMeta('link[rel="canonical"]', 'href', canonical);
     setMeta('meta[property="og:title"]', 'content', fullTitle);
     setMeta('meta[property="og:description"]', 'content', description);

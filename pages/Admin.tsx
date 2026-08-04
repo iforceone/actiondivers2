@@ -3,6 +3,7 @@ import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, Do
 import { API } from '../config';
 import { BookingCatalog, BookingCatalogItem, BookingItemDetails, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
 import { isAdminPreviewEnabled } from '../utils/adminPreview';
+import SEO from '../components/SEO';
 
 type StaffRole = 'owner' | 'staff';
 type DashboardTab = 'reservations' | 'roster' | 'catalog' | 'templates' | 'staff';
@@ -30,6 +31,7 @@ const PREVIEW_RESERVATIONS: ReservationSummary[] = [
   { id: 'preview-2', reference: 'AD-REEF82', status: 'awaiting_payment', request_kind: 'course', customer_name: 'Daniel Ruiz', customer_email: 'daniel@example.com', adults: 2, children: 0, estimated_total_cents: 28876, current_quote_version: 1, version: 5, created_at: '2026-07-27T16:30:00.000Z', updated_at: '2026-07-28T13:42:00.000Z' },
   { id: 'preview-3', reference: 'AD-CAVE19', status: 'needs_contact', request_kind: 'transfer', customer_name: 'Priya Shah', customer_email: 'priya@example.com', adults: 4, children: 0, estimated_total_cents: 33750, current_quote_version: null, version: 2, created_at: '2026-07-26T18:15:00.000Z', updated_at: '2026-07-28T11:20:00.000Z' },
   { id: 'preview-4', reference: 'AD-PAID73', status: 'paid', request_kind: 'tour', customer_name: 'Noah Williams', customer_email: 'noah@example.com', adults: 2, children: 0, estimated_total_cents: 17500, current_quote_version: 1, version: 6, created_at: '2026-07-24T09:00:00.000Z', updated_at: '2026-07-27T20:12:00.000Z' },
+  { id: 'preview-5', reference: 'AD-UNAVL6', status: 'cancelled', request_kind: 'tour', customer_name: 'Elena Brooks', customer_email: 'elena@example.com', adults: 3, children: 1, estimated_total_cents: 70000, current_quote_version: null, version: 4, created_at: '2026-07-23T12:00:00.000Z', updated_at: '2026-07-27T18:20:00.000Z' },
 ];
 const PREVIEW_DETAIL: ReservationDetail = {
   reservation: { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', requestKind: 'tour', customer: { name: 'Maya Thompson', email: 'maya@example.com', phone: '+1 305 555 0148' }, party: { adults: 2, children: 1 }, accommodation: 'A hotel north of San Pedro', divingExperience: 'Certified beginner', customerNotes: 'We would prefer morning departures and need child-friendly snorkeling guidance.', internalNotes: 'Confirm the child snorkel equipment before sending.', customerMessage: null, estimatedTotalCents: 48125, version: 3, createdAt: '2026-07-28T14:10:00.000Z', updatedAt: '2026-07-28T15:05:00.000Z' },
@@ -281,13 +283,14 @@ const Admin: React.FC = () => {
   if (!session) return <div className="flex min-h-screen items-center justify-center bg-[#001219] px-6 text-center"><div className="max-w-lg"><AlertCircle className="mx-auto h-10 w-10 text-[var(--brand-orange)]" /><h1 className="mt-5 text-3xl font-extrabold text-[#F8F4E8]">Staff access unavailable</h1><p className="mt-4 leading-relaxed text-[#F8F4E8]/68">{error || 'Sign in through the approved Cloudflare Access application, then reload this page.'}</p><button onClick={() => window.location.reload()} className="mt-7 rounded-full bg-[var(--brand-orange)] px-6 py-3 font-bold text-white">Try again</button></div></div>;
 
   return (
-    <div className="min-h-screen bg-[#001219] pb-20 pt-24 text-[#F8F4E8]">
+    <div className="min-h-screen overflow-x-hidden bg-[#001219] pb-20 pt-24 text-[#F8F4E8]">
+      <SEO title={ADMIN_PREVIEW ? 'Staff Dashboard Preview' : 'Staff Dashboard'} description="Private Action Divers staff operations." path={ADMIN_PREVIEW ? '/admin/preview' : '/admin'} noindex />
       <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-10">
         <header className="flex flex-col gap-5 border-b border-white/10 py-7 sm:flex-row sm:items-center sm:justify-between">
           <div><p className="text-sm font-bold text-[#11C7D9]">Action Divers operations</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Reservations</h1></div>
           <div className="text-sm text-[#F8F4E8]/60"><span className="font-bold text-[#F8F4E8]">{session.name}</span><span className="ml-2 rounded-full bg-white/8 px-3 py-1 text-xs">{session.role}</span></div>
         </header>
-        {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Demo preview</strong> · Fictional data · Actions are simulated</span><span className="text-[#F8F4E8]/55">Cloudflare Access appears before this dashboard in production.</span></div>}
+        {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Demo preview</strong> · Fictional data · Actions are simulated and reset when the page reloads</span><span className="text-[#F8F4E8]/60">Production access and storage are not connected.</span></div>}
 
         <nav className="flex gap-1 overflow-x-auto border-b border-white/10 py-3" aria-label="Staff sections">
           {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Daily Roster'], ['catalog', DollarSign, 'Catalog'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (

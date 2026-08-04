@@ -21,7 +21,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
     duration: 'Single, two-tank, and night-dive options',
-    departureTime: 'Confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Professional local dive guide', 'Boat transport to the dive site'],
     whatToBring: ['Certification card if certified', 'Swimsuit and towel', 'Reef-safe sunscreen'],
     priceBreakdown: {
@@ -78,7 +78,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
     duration: '3 hours for snorkeling',
-    departureTime: 'Confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -103,7 +103,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/School-Fish.png',
     duration: '2–3 hours for snorkeling',
-    departureTime: 'Confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
@@ -214,7 +214,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/zipline-belize-01.webp', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Early morning; confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Closed-toe shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
@@ -233,7 +233,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/web-maya-ruin.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Early morning; confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
@@ -253,7 +253,7 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/web-xunantunich02.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Early morning; confirm when booking',
+    departureTime: 'Exact time confirmed after booking',
     includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
     whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {

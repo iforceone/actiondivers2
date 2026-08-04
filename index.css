@@ -24,6 +24,16 @@ body {
   font-family: 'Montserrat', sans-serif;
 }
 
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--brand-aqua);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--brand-aqua);
+  color: var(--brand-navy);
+}
+
 .serif { font-family: 'Playfair Display', serif; }
 
 .glass {

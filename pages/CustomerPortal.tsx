@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { API, CONTACT } from '../config';
 import { formatUsd } from '../shared/bookingCatalog';
+import { isAdminPreviewEnabled } from '../utils/adminPreview';
 
 interface PortalResponse {
   ok?: boolean;
@@ -41,14 +42,48 @@ const statusLabel: Record<string, string> = {
   new: 'Request received', reviewing: 'Under staff review', needs_contact: 'Staff needs to contact you', quoted: 'Reservation update', awaiting_payment: 'Ready for payment', paid: 'Paid', cancelled: 'Cancelled', completed: 'Completed',
 };
 
+const previewPortal = (paid: boolean): PortalResponse => ({
+  ok: true,
+  reservation: {
+    reference: paid ? 'AD-DEMO-PAID' : 'AD-DEMO-QUOTE',
+    status: paid ? 'paid' : 'awaiting_payment',
+    requestKind: 'tour',
+    customer: { name: 'Preview Guest', email: 'guest@example.com', phone: '+1 555 010 2026' },
+    party: { adults: 2, children: 1 },
+    accommodation: 'Sample hotel in San Pedro',
+    divingExperience: null,
+    customerNotes: 'Fictional reservation used only to preview the customer experience.',
+    customerMessage: 'This is a demonstration portal. No reservation or payment has been created.',
+    createdAt: '2026-08-01T14:00:00.000Z',
+  },
+  items: [
+    { id: 'demo-item-1', name_snapshot: 'Hol Chan & Shark Ray Alley Snorkeling', requested_date: '2026-09-12', adults: 2, children: 1 },
+  ],
+  quote: {
+    status: 'payable',
+    customer_message: 'Your requested tour is shown here as a fictional finalized quote for preview purposes.',
+    subtotal_cents: 36000,
+    discount_cents: 0,
+    total_cents: 36000,
+    expires_at: '2026-09-05T23:59:59.000Z',
+  },
+  quoteItems: [
+    { id: 'demo-line-1', label: 'Hol Chan & Shark Ray Alley Snorkeling', service_date: '2026-09-12', quantity: 4, unit_price_cents: 9000, line_total_cents: 36000, notes: 'Minimum billed quantity: 4 guests' },
+  ],
+  payment: paid ? { status: 'paid', paid_at: '2026-08-03T16:30:00.000Z', expires_at: '2026-09-05T23:59:59.000Z', receipt_reference: 'DEMO-RECEIPT' } : null,
+  paymentAvailable: !paid,
+});
+
 const CustomerPortal: React.FC = () => {
   const { token = '' } = useParams();
-  const [data, setData] = useState<PortalResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const isPreview = isAdminPreviewEnabled() && (token === 'preview' || token === 'preview-paid');
+  const [data, setData] = useState<PortalResponse | null>(() => isPreview ? previewPortal(token === 'preview-paid') : null);
+  const [loading, setLoading] = useState(!isPreview);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (isPreview) return;
     let active = true;
     fetch(API.url(`/portal/${encodeURIComponent(token)}`))
       .then(async (response) => {
@@ -59,9 +94,13 @@ const CustomerPortal: React.FC = () => {
       .catch((reason) => active && setError(reason instanceof Error ? reason.message : 'This reservation link could not be loaded.'))
       .finally(() => active && setLoading(false));
     return () => { active = false; };
-  }, [token]);
+  }, [isPreview, token]);
 
   const startPayment = async () => {
+    if (isPreview) {
+      window.location.assign('/pay/preview');
+      return;
+    }
     setStarting(true);
     setError('');
     try {
@@ -90,6 +129,7 @@ const CustomerPortal: React.FC = () => {
     <div className="min-h-screen bg-[#001219] px-4 pb-24 pt-32 sm:px-6 lg:pt-40">
       <SEO title={`Reservation ${reservation.reference}`} description="Private Action Divers reservation details." path="/reservation" noindex />
       <main className="mx-auto max-w-6xl">
+        {isPreview && <div role="status" className="mb-7 rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm leading-relaxed text-[#C8F5F8]"><strong>Customer portal preview:</strong> every name, date, price, message, and receipt shown here is fictional. No reservation is stored.</div>}
         <header className="flex flex-col gap-7 border-b border-white/10 pb-9 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-bold text-[#11C7D9]">{reservation.reference}</p>

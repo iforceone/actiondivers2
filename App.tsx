@@ -15,11 +15,8 @@ import TransfersCharters from './pages/TransfersCharters';
 import ServiceRequest from './pages/ServiceRequest';
 import VoyageChronicles from './pages/VoyageChronicles';
 import BlogPostPage from './pages/BlogPost';
-import Gallery from './pages/Gallery';
 import NotFound from './pages/NotFound';
 import ReservationCartPage from './pages/Reservations';
-import CustomerPortal from './pages/CustomerPortal';
-import { PaymentPage, PaymentReturnPage } from './pages/Payment';
 import { Check, Info, Anchor, Map, Ship, Droplets, MessageCircle, Loader2, CheckCircle2 } from 'lucide-react';
 import SEO, { SITE_URL } from './components/SEO';
 import { INITIAL_TOURS } from './constants';
@@ -30,6 +27,13 @@ import { isAdminPreviewEnabled } from './utils/adminPreview';
 const STAFF_PORTAL_BUILD_ENABLED = import.meta.env.DEV || import.meta.env.VITE_STAFF_PORTAL_ENABLED === 'true';
 const ADMIN_PREVIEW_ENABLED = isAdminPreviewEnabled();
 const Admin = STAFF_PORTAL_BUILD_ENABLED || ADMIN_PREVIEW_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
+const Gallery = React.lazy(() => import('./pages/Gallery'));
+const CustomerPortal = React.lazy(() => import('./pages/CustomerPortal'));
+const PaymentPage = React.lazy(() => import('./pages/Payment').then((module) => ({ default: module.PaymentPage })));
+const PaymentReturnPage = React.lazy(() => import('./pages/Payment').then((module) => ({ default: module.PaymentReturnPage })));
+
+const RouteLoading = () => <div className="flex min-h-[60vh] items-center justify-center pt-24 text-[#F8F4E8]"><Loader2 className="mr-3 h-6 w-6 animate-spin text-[#11C7D9]" /> Loading…</div>;
+const LazyPage: React.FC<{ children: React.ReactNode }> = ({ children }) => <React.Suspense fallback={<RouteLoading />}>{children}</React.Suspense>;
 
 const Footer = () => (
   <footer className="border-t border-white/5 bg-[#001219] px-4 py-12 md:py-16">
@@ -535,7 +539,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<><SEO title="Belize Scuba Diving & Adventure Tours" description="Explore scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye with Action Divers & Adventures." path="/" structuredData={businessStructuredData} /><Home /></>} />
             <Route path="/about" element={<><SEO title="About Action Divers Belize" description="Meet Action Divers & Adventures, a San Pedro, Ambergris Caye tour operator offering personal service and Belize reef and mainland adventures." path="/about" image="/images/gallery/SCUBA-and-Snorkelers-1.png" /><About /></>} />
-            <Route path="/gallery" element={<><SEO title="Belize Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours." path="/gallery" image="/images/gallery/Turtle.png" /><Gallery /></>} />
+            <Route path="/gallery" element={<><SEO title="Belize Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours." path="/gallery" image="/images/gallery/Turtle.png" /><LazyPage><Gallery /></LazyPage></>} />
             <Route path="/island-adventures" element={<><SEO title="Island Tours from San Pedro, Belize" description="Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures." path="/island-adventures" image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" /><IslandAdventures /></>} />
             <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours & Maya Ruins" description="Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
             <Route path="/courses" element={<Courses />} />
@@ -548,9 +552,9 @@ const App: React.FC = () => {
             <Route path="/blog" element={<VoyageChronicles />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/reservations" element={<ReservationCartPage />} />
-            <Route path="/reservation/:token" element={<CustomerPortal />} />
-            <Route path="/pay/:token" element={<PaymentPage />} />
-            <Route path="/payment/return" element={<PaymentReturnPage />} />
+            <Route path="/reservation/:token" element={<LazyPage><CustomerPortal /></LazyPage>} />
+            <Route path="/pay/:token" element={<LazyPage><PaymentPage /></LazyPage>} />
+            <Route path="/payment/return" element={<LazyPage><PaymentReturnPage /></LazyPage>} />
             {STAFF_PORTAL_BUILD_ENABLED && Admin
               ? <Route path="/admin" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />
               : <Route path="/admin" element={<Navigate to="/" replace />} />}

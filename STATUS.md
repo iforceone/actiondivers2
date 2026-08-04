@@ -57,3 +57,14 @@ Frontend and Worker TypeScript, Worker rules tests, production build, static int
 - Added additive `request_kind` storage plus staff queue labels and filters for tour, course, and transfer requests.
 
 Frontend and Worker TypeScript, focused Worker tests, production build, 1440px/390px responsive checks, separated selector checks, and browser console verification pass. No deployment, commit, push, or merge was performed.
+
+## Offline deployment-readiness checkpoint — 2026-08-04
+
+- Reservation, course, and transfer forms now default to an honest preview-only state and direct completed requests to WhatsApp while live storage remains gated.
+- Added branch/local-only fictional customer and payment previews alongside the existing staff dashboard preview. All preview surfaces are marked as demonstrations and request `noindex, nofollow`.
+- Added an unavailable reservation example, clarified that preview changes reset on reload, and retained simulated staff, template, catalog, roster, and quote controls.
+- Standardized unresolved schedules to “Exact time confirmed after booking,” improved keyboard focus and navigation behavior, labeled the mobile WhatsApp/AI controls, and removed mobile dashboard overflow.
+- Lazy-loaded the gallery, customer portal, and payment pages, reducing the main production JavaScript chunk from roughly 440 kB to 395 kB.
+- Added a repeatable readiness check for internal routes, sitemap destinations, image assets, configuration placeholders, and common secret patterns.
+
+Frontend and Worker TypeScript, production build, nine Worker rule tests, readiness checks, desktop/mobile route checks, preview-state checks, and browser console checks pass. External services and production feature gates remain unchanged.
