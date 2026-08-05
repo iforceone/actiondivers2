@@ -74,36 +74,37 @@ const item = (
 });
 
 export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
-  version: 4,
+  version: 5,
   publishedAt: null,
   items: [
-    item('dive-single', 'scuba-diving', 'Island', 'recreational_dive', 'Single Tank Dive (Mexico Rocks)', 11625, 10, { minimumPaidParticipants: 2 }),
-    item('dive-two', 'scuba-diving', 'Island', 'recreational_dive', 'Two Tank Dive', 14438, 20, { minimumPaidParticipants: 2 }),
-    item('dive-holchan', 'hol-chan-shark-ray-alley', 'Island', 'recreational_dive', 'Hol Chan Combo Dive', 13313, 30, { minimumPaidParticipants: 2 }),
-    item('dive-night', 'scuba-diving', 'Island', 'recreational_dive', 'Night Dive (Love Tunnel)', 15563, 40, { minimumPaidParticipants: 2 }),
-    item('course-refresher', 'courses', 'Course', 'course', 'Refresher', 20875, 50, { description: 'A morning refresher for certified divers returning after time away. Guests may then complete a recreational dive that afternoon.' }),
-    item('course-discover', 'courses', 'Course', 'course', 'Discover Scuba Diving', 21188, 60, { description: 'One beginner session, scheduled in the morning or afternoon. Exact time confirmed after booking.' }),
-    item('course-referral', 'courses', 'Course', 'course', 'Open Water Referral', 48000, 70, { description: 'Two training days from 9:00 AM to 12:00 PM each day. Staff must review referral documents.' }),
-    item('course-scubadiver', 'courses', 'Course', 'course', 'PADI Scuba Diver', 43688, 80, { description: 'A beginner session plus one additional morning of training.' }),
-    item('course-owcert', 'courses', 'Course', 'course', 'Open Water Certification', 56438, 90, { description: 'Approximately three mornings of training when starting from scratch.' }),
-    item('course-advanced', 'courses', 'Course', 'course', 'Advanced Open Water', 49313, 100, { description: 'Continuing training for divers ready to progress beyond Open Water. Exact time confirmed after booking.' }),
-    item('snorkel-hol', 'hol-chan-shark-ray-alley', 'Island', 'snorkeling', 'Hol Chan & Shark Ray Alley Snorkeling', 9000, 120, { minimumPaidParticipants: 4, maxParticipants: 12 }),
-    item('snorkel-mex', 'mexico-rocks', 'Island', 'snorkeling', 'Mexico Rocks Snorkeling', 7500, 130, { minimumPaidParticipants: 4, maxParticipants: 12 }),
-    item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', 17500, 140, { minimumPaidParticipants: 4, maxParticipants: 12 }),
-    item('snorkel-sailing', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Sailing: Hol Chan & Caye Caulker', 17500, 150, { minimumPaidParticipants: 4, maxParticipants: 12 }),
-    item('snorkel-bacalar', 'bacalar-chico', 'Island', 'snorkeling', 'Bacalar Chico Full-Day Adventure', 17500, 160, { minimumPaidParticipants: 4, maxParticipants: 12 }),
-    item('fish-reef-half', 'fishing', 'Island', 'fishing', 'Reef Fishing (Half Day)', 30938, 170, { pricingBasis: 'per_group', maxParticipants: 4 }),
-    item('fish-reef-full', 'fishing', 'Island', 'fishing', 'Reef Fishing (Full Day)', 56250, 180, { pricingBasis: 'per_group', maxParticipants: 4 }),
-    item('fish-deep-half', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Half Day)', 90000, 190, { pricingBasis: 'per_group', maxParticipants: 4 }),
-    item('fish-deep-full', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Full Day)', 180000, 200, { pricingBasis: 'per_group', maxParticipants: 4 }),
-    item('fish-flat-half', 'fishing', 'Island', 'fishing', 'Flat Fishing (Half Day)', 39375, 210, { pricingBasis: 'per_group', maxParticipants: 2 }),
-    item('fish-flat-full', 'fishing', 'Island', 'fishing', 'Flat Fishing (Full Day)', 60000, 220, { pricingBasis: 'per_group', maxParticipants: 2 }),
-    item('bbq-full', 'fishing', 'Island', 'fishing', 'Beach Bar-B-Q', 17500, 230, { minimumPaidParticipants: 4 }),
-    item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'mainland', 'Altun Ha & Cave Tubing', 33750, 240, { minimumPaidParticipants: 2 }),
-    item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'mainland', 'Xunantunich & Cave Tubing', 33750, 250, { minimumPaidParticipants: 2 }),
-    item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'mainland', 'Cave Tubing & Zip-lining', 33750, 260, { minimumPaidParticipants: 2 }),
-    item('main-lamanai', 'lamanai', 'Mainland', 'mainland', 'Lamanai Jungle & New River Tour', 28125, 270, { minimumPaidParticipants: 2 }),
-    item('main-atm', 'atm-caves', 'Mainland', 'mainland', 'Actun Tunichil Muknal (ATM) Cave', 45000, 280, { minimumPaidParticipants: 2 }),
+    item('dive-single', 'scuba-diving', 'Island', 'recreational_dive', 'Single Dive — Mexico Rocks', 11625, 10, { minimumPaidParticipants: 2, description: 'For certified divers active within the past year. Departure and duration are not yet published.' }),
+    item('dive-two', 'scuba-diving', 'Island', 'recreational_dive', 'Two Dives', 14438, 20, { minimumPaidParticipants: 2, description: 'For certified divers active within the past year. Departure and duration are not yet published.' }),
+    item('dive-holchan', 'hol-chan-shark-ray-alley', 'Island', 'recreational_dive', 'Hol Chan Combo Dive', 13313, 30, { minimumPaidParticipants: 2, description: 'For certified divers active within the past year. Departure and duration are not yet published.' }),
+    item('dive-night', 'scuba-diving', 'Island', 'recreational_dive', 'Night Dive', 15563, 40, { minimumPaidParticipants: 2, description: 'An evening activity for certified divers active within the past year. Exact check-in and departure are not yet published.' }),
+    item('course-refresher', 'courses', 'Course', 'course', 'Refresher', 20875, 50, { minimumPaidParticipants: 2, description: 'A morning session for certified divers returning after more than one year. A recreational dive may follow that afternoon when scheduling allows.' }),
+    item('course-resort', 'courses', 'Course', 'course', 'Resort Course', 21188, 60, { minimumPaidParticipants: 2, description: 'One introductory session for a guest who has never been certified, with equipment instruction, pool practice, and a shallow ocean dive once comfortable.' }),
+    item('course-discover', 'courses', 'Course', 'course', 'Scuba Discovery', 21188, 65, { minimumPaidParticipants: 2, description: 'One introductory session with equipment instruction, pool practice, and a shallow ocean dive. Exact session time is confirmed with the request.' }),
+    item('course-referral', 'courses', 'Course', 'course', 'Open Water Referral', 48000, 70, { minimumPaidParticipants: 2, description: 'Two training days from 9:00 AM to 12:00 PM each day. Guests arrive with completed referral or e-learning documents.' }),
+    item('course-scubadiver', 'courses', 'Course', 'course', 'PADI Scuba Diver', 43688, 80, { minimumPaidParticipants: 2, description: 'Pool work and training dives leading to a certification with a shallower depth limitation than full Open Water.' }),
+    item('course-owcert', 'courses', 'Course', 'course', 'Open Water Certification', 56438, 90, { minimumPaidParticipants: 2, description: 'Three days from the beginning, including study and exam work, pool training, and training dives.' }),
+    item('course-advanced', 'courses', 'Course', 'course', 'Advanced Open Water', 49313, 100, { minimumPaidParticipants: 2, description: 'Five additional dives focused on skill development. Course duration is confirmed with the request.' }),
+    item('snorkel-hol', 'hol-chan-shark-ray-alley', 'Island', 'snorkeling', 'Hol Chan & Shark Ray Alley Snorkeling', 9000, 120, { minimumPaidParticipants: 4, maxParticipants: 12, description: 'Departs 7:30 AM and lasts about 3 hours. Pickup timing depends on where the group is staying.' }),
+    item('snorkel-mex', 'mexico-rocks', 'Island', 'snorkeling', 'Mexico Rocks Snorkeling', 7500, 130, { minimumPaidParticipants: 4, maxParticipants: 12, description: 'Departs 7:30 AM and lasts 2–3 hours depending on pickup location.' }),
+    item('snorkel-manatee', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Hol Chan, Caye Caulker, Manatee & Tarpon Feeding', 17500, 140, { minimumPaidParticipants: 4, maxParticipants: 12, description: 'Runs 9:00 AM–3:00 PM. Lunch is not included; guests purchase lunch on Caye Caulker.' }),
+    item('snorkel-sailing', 'caye-caulker-manatee', 'Island', 'snorkeling', 'Sailing: Hol Chan & Caye Caulker', 17500, 150, { minimumPaidParticipants: 4, maxParticipants: 12, description: 'Runs 7:30 AM–3:00 PM. Lunch is not included; guests purchase lunch on Caye Caulker.' }),
+    item('snorkel-bacalar', 'bacalar-chico', 'Island', 'snorkeling', 'Bacalar Chico Full-Day Adventure', 17500, 160, { minimumPaidParticipants: 4, maxParticipants: 12, description: 'Runs 9:00 AM–3:00 PM with pickup included.' }),
+    item('fish-reef-half', 'fishing', 'Island', 'fishing', 'Reef Fishing (Half Day)', 30938, 170, { pricingBasis: 'per_group', maxParticipants: 4, description: '9:00 AM–1:00 PM for 1–4 guests. Water, sodas, tackle, and bait included; lunch not included.' }),
+    item('fish-reef-full', 'fishing', 'Island', 'fishing', 'Reef Fishing (Full Day)', 56250, 180, { pricingBasis: 'per_group', maxParticipants: 4, description: '9:00 AM–3:00 PM for 1–4 guests. Water, sodas, tackle, and bait included.' }),
+    item('fish-deep-half', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Half Day)', 90000, 190, { pricingBasis: 'per_group', maxParticipants: 4, description: '9:00 AM–1:00 PM for 1–4 guests. Water, sodas, tackle, and bait included; lunch not included.' }),
+    item('fish-deep-full', 'fishing', 'Island', 'fishing', 'Deep Sea Fishing (Full Day)', 180000, 200, { pricingBasis: 'per_group', maxParticipants: 4, description: '9:00 AM–3:00 PM for 1–4 guests. Water, sodas, tackle, and bait included.' }),
+    item('fish-flat-half', 'fishing', 'Island', 'fishing', 'Flat Fishing (Half Day)', 39375, 210, { pricingBasis: 'per_group', maxParticipants: 2, description: '9:00 AM–1:00 PM. One flat boat price for 1–2 guests; water, sodas, tackle, and bait included.' }),
+    item('fish-flat-full', 'fishing', 'Island', 'fishing', 'Flat Fishing (Full Day)', 60000, 220, { pricingBasis: 'per_group', maxParticipants: 2, description: '9:00 AM–3:00 PM. One flat boat price for 1–2 guests; water, sodas, tackle, and bait included.' }),
+    item('bbq-full', 'fishing', 'Island', 'fishing', 'Beach Bar-B-Q Fishing Trip', 17500, 230, { minimumPaidParticipants: 4, description: '9:00 AM–3:00 PM. Fishing with a prepared fish barbecue, water, sodas, and snorkeling gear included.' }),
+    item('main-altun', 'altun-ha-cave-tubing', 'Mainland', 'mainland', 'Altun Ha & Cave Tubing', 33750, 240, { minimumPaidParticipants: 2, description: 'Full day using the 7:00 AM water taxi from Belize Express in San Pedro.' }),
+    item('main-xunantunich', 'xunantunich-cave-tubing', 'Mainland', 'mainland', 'Xunantunich & Cave Tubing', 33750, 250, { minimumPaidParticipants: 2, description: 'Full day using the 7:00 AM water taxi from Belize Express in San Pedro.' }),
+    item('main-cave', 'cave-tubing-ziplining', 'Mainland', 'mainland', 'Cave Tubing & Zip-lining', 33750, 260, { minimumPaidParticipants: 2, description: 'Full day using the 7:00 AM water taxi from Belize Express in San Pedro.' }),
+    item('main-lamanai', 'lamanai', 'Mainland', 'mainland', 'Lamanai Jungle & New River Tour', 28125, 270, { minimumPaidParticipants: 2, description: 'Full day using the 6:00 AM water taxi from Belize Express in San Pedro.' }),
+    item('main-atm', 'atm-caves', 'Mainland', 'mainland', 'Actun Tunichil Muknal (ATM) Cave', 45000, 280, { minimumPaidParticipants: 2, description: 'A physically demanding full day using the 6:00 AM water taxi from Belize Express in San Pedro.' }),
     item('transfer-bze-san-pedro', 'transfers-charters', 'Transfer', 'transfer', 'Belize International Airport Boat Transfer', 60000, 290, {
       pricingBasis: 'tiered_transfer',
       priceStatus: 'proposed',
@@ -116,8 +117,8 @@ export const DEFAULT_BOOKING_CATALOG: BookingCatalog = {
 export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCatalog => {
   const defaults = new Map(DEFAULT_BOOKING_CATALOG.items.map((catalogItem) => [catalogItem.id, catalogItem]));
   const legacyCatalog = catalog.items.some((catalogItem) => !catalogItem.serviceKind || catalogItem.noticeDays === undefined || !catalogItem.confirmationMode || !catalogItem.priceStatus);
+  const needsPolicyUpgrade = legacyCatalog || catalog.version < DEFAULT_BOOKING_CATALOG.version;
   const migratedItems = catalog.items
-    .filter((catalogItem) => catalogItem.id !== 'course-resort')
     .map((catalogItem) => {
       const policy = defaults.get(catalogItem.id);
       if (!policy) return catalogItem;
@@ -139,12 +140,13 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
         description: catalogItem.description || policy.description,
         name: catalogItem.id === 'course-scubadiver' && catalogItem.name === 'Scuba Diver' ? policy.name : mergedBase.name,
       };
-      return legacyCatalog ? {
+      return needsPolicyUpgrade ? {
         ...merged,
         tourId: policy.tourId,
         category: policy.category,
         serviceKind: policy.serviceKind,
         name: policy.name,
+        description: policy.description,
         noticeDays: policy.noticeDays,
         minimumPaidParticipants: policy.minimumPaidParticipants,
         maxParticipants: policy.maxParticipants,
@@ -154,7 +156,7 @@ export const withDefaultBookingPolicies = (catalog: BookingCatalog): BookingCata
         additionalParticipantPriceCents: policy.additionalParticipantPriceCents,
       } : merged;
     });
-  if (legacyCatalog) {
+  if (needsPolicyUpgrade) {
     const migratedIds = new Set(migratedItems.map((catalogItem) => catalogItem.id));
     DEFAULT_BOOKING_CATALOG.items.forEach((catalogItem) => {
       if (!migratedIds.has(catalogItem.id)) migratedItems.push(catalogItem);

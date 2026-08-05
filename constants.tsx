@@ -17,12 +17,14 @@ export const INITIAL_TOURS: Tour[] = [
     category: 'island',
     price: 116.25,
     description: 'Guided reef and night dives for certified divers who have dived within the previous year.',
-    longDescription: 'Explore dive sites around Ambergris Caye on single-tank, two-tank, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. A certified diver returning after more than one year should complete a Refresher in the morning and may then join a recreational dive that afternoon. New divers should choose Discover Scuba Diving through the Courses page.',
+    longDescription: 'Explore dive sites around Ambergris Caye on single-dive, two-dive, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. A certified diver returning after more than one year should complete a Refresher in the morning and may then join a recreational dive that afternoon. New divers should choose Resort Course or Scuba Discovery through the Courses page.',
     isAvailable: true,
     image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
     duration: 'Single, two-tank, and night-dive options',
-    departureTime: 'Exact time confirmed after booking',
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Exact meeting and check-in details are sent after confirmation.',
     includes: ['Professional local dive guide', 'Boat transport to the dive site'],
+    beforeYouBook: ['Open Water or another qualifying current certification is required.', 'Guests who have not dived in more than one year must complete a Refresher first.', 'Exact departure times and durations for regular dives are still being confirmed.'],
     whatToBring: ['Certification card if certified', 'Swimsuit and towel', 'Reef-safe sunscreen'],
     priceBreakdown: {
       base: 65.00,
@@ -32,7 +34,7 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Single Dive Mexico Rocks: $116.25. Hol Chan Combo: $133.13. Two dives: $144.38. Night dive: $155.63.'
     },
     features: [
-      'Regular recreational dive departure times are confirmed for each booking.',
+      'Regular recreational dive departure times are sent after confirmation.',
       'A morning Refresher may be followed by a recreational dive that afternoon.',
       'Certification required; divers inactive for over one year should complete a Refresher first.',
       'The Love Tunnel: Perfect for underwater weddings and spotting Spotted Drums.',
@@ -50,8 +52,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Male-Snorkeler-OK-Sign.png', // REAL Action Divers Belize image - SNORKELING
     duration: '2–3 hour and full-day options',
-    departureTime: 'Varies by selected tour',
+    departureTime: '7:30 AM or 9:00 AM, depending on the tour',
+    groupSize: '4–12 guests',
+    meetingPickup: 'Pickup can be included once the four-guest minimum is met; timing depends on where you are staying.',
     includes: ['Snorkeling gear', 'Marine park fee', 'Local guide'],
+    beforeYouBook: ['Request at least 7 days in advance.', 'Lunch is not included on tours that stop at Caye Caulker.'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Reusable water bottle'],
     priceBreakdown: {
       base: 61.67,
@@ -61,7 +66,7 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Includes Park Fees. Hol Chan/Shark Ray: $90. Mexico Rocks: $75. Hol Chan/Caye Caulker/Manatee: $175. Sailing (Caye Caulker): $175. Lunch is not included on Caye Caulker tours.'
     },
     features: [
-      'Departure time depends on the selected snorkeling itinerary.',
+      'Hol Chan and Mexico Rocks snorkeling depart at 7:30 AM.',
       'Hol Chan & Shark-Ray Alley: Snorkel with turtles and spotted eagle rays.',
       'Mexico Rocks: Aquarium-like clarity and northern secluded spots.',
       'Bacalar Chico: Full-day adventure ($175) including park fee.'
@@ -78,8 +83,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
     duration: '3 hours for snorkeling',
-    departureTime: 'Exact time confirmed after booking',
+    departureTime: '7:30 AM for snorkeling',
+    groupSize: '4–12 guests for snorkeling; minimum 2 for the combo dive',
+    meetingPickup: 'Snorkeling pickup details depend on where you are staying; dive check-in details are sent after confirmation.',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
+    beforeYouBook: ['The combo dive requires a qualifying certification and a dive within the previous year.', 'Request at least 7 days in advance.'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
       'Snorkeling and diving options',
@@ -88,7 +96,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Departures from the Action Divers tour desk'
     ],
     options: [
-      { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A three-hour guided snorkeling excursion through Hol Chan and Shark Ray Alley for groups of 4–12.', price: 90.00 },
+      { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A three-hour guided snorkeling excursion departing at 7:30 AM for groups of 4–12.', price: 90.00 },
       { name: 'Hol Chan Combo Dive', description: 'The dive option for certified guests who want to experience Hol Chan below the surface.', price: 133.13 }
     ]
   },
@@ -103,8 +111,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/School-Fish.png',
     duration: '2–3 hours for snorkeling',
-    departureTime: 'Exact time confirmed after booking',
+    departureTime: '7:30 AM for snorkeling',
+    groupSize: '4–12 guests for snorkeling; minimum 2 for the dive',
+    meetingPickup: 'Snorkeling pickup can be included once the minimum is met; timing depends on where you are staying.',
     includes: ['Local guide', 'Boat transport', 'Gear and park fees reflected in listed totals'],
+    beforeYouBook: ['The single dive requires a qualifying certification and a dive within the previous year.', 'Request at least 7 days in advance.'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Certification card for the dive option'],
     features: [
       'Snorkeling and single-dive options',
@@ -113,7 +124,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Pricing shown by activity'
     ],
     options: [
-      { name: 'Mexico Rocks Snorkeling', description: 'A two-to-three-hour guided visit for groups of 4–12; timing depends on where guests are staying.', price: 75.00 },
+      { name: 'Mexico Rocks Snorkeling', description: 'A two-to-three-hour guided visit departing at 7:30 AM for groups of 4–12; total duration varies with pickup location.', price: 75.00 },
       { name: 'Single Dive: Mexico Rocks', description: 'A single guided dive for certified guests.', price: 116.25 }
     ]
   },
@@ -129,7 +140,10 @@ export const INITIAL_TOURS: Tour[] = [
     image: '/images/gallery/Three-of-a-Kind-boat-1.png',
     duration: 'Full day; schedule varies by option',
     departureTime: '7:30 AM sailing / 9:00 AM tour',
+    groupSize: '4–12 guests',
+    meetingPickup: 'Exact pickup time depends on where you are staying and is sent after confirmation.',
     includes: ['Guided island itinerary', 'Gear and park fees reflected where applicable'],
+    beforeYouBook: ['Lunch is not included; guests purchase their own lunch on Caye Caulker.', 'Request at least 7 days in advance.'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Money for lunch and personal purchases'],
     features: [
       'Two Caye Caulker itinerary choices',
@@ -154,7 +168,10 @@ export const INITIAL_TOURS: Tour[] = [
     image: '/images/gallery/WhatsApp_Image_2026-03-08_at_9.57.19_AM.jpeg',
     duration: '9:00 AM–3:00 PM',
     departureTime: '9:00 AM',
+    groupSize: '4–12 guests',
+    meetingPickup: 'Pickup is included; exact pickup details are sent after confirmation.',
     includes: ['Snorkeling gear', 'Park fee', 'Local guide and boat transport'],
+    beforeYouBook: ['Request at least 7 days in advance.'],
     whatToBring: ['Swimsuit and towel', 'Reef-safe sunscreen', 'Hat or sun shirt', 'Reusable water bottle'],
     features: [
       '9:00 AM–3:00 PM snorkeling itinerary',
@@ -177,8 +194,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/fishing-hero-highres.jpg', // HIGH-RES REAL Action Divers Belize image
     duration: 'Half-day and full-day options',
-    departureTime: 'Varies by selected option',
+    departureTime: '9:00 AM for every fishing option',
+    groupSize: 'Reef and deep sea: 1–4; flat fishing: 1–2; Beach Bar-B-Q: minimum 4',
+    meetingPickup: 'Exact meeting and check-in details are sent after confirmation.',
     includes: ['Water and sodas', 'Tackle and bait', 'Local fishing guide'],
+    beforeYouBook: ['Lunch is not included on standard fishing trips.', 'Flat fishing uses one boat price for one or two guests.', 'Beach Bar-B-Q has a four-person minimum and no published maximum yet.'],
     whatToBring: ['Hat and sunglasses', 'Reef-safe sunscreen', 'Light long-sleeve shirt'],
     priceBreakdown: {
       base: 275.00,
@@ -186,7 +206,7 @@ export const INITIAL_TOURS: Tour[] = [
       note: 'Reef Fishing (1-4 people): Half Day $309.38 | Full Day $562.50. Deep Sea (1-4 people): Half Day $900.00 | Full Day $1800.00. Flat Fishing (1-2 people): Half Day $393.75 | Full Day $600.00. Beach Bar-B-Q: $175 per person, minimum 4.'
     },
     features: [
-      'Exact departure times depend on the selected fishing option.',
+      'All fishing options depart at 9:00 AM.',
       'Half Day Reef Fishing: 9:00 AM to 1:00 PM.',
       'Full Day Reef Fishing: 9:00 AM to 3:00 PM.',
       'Fishing and Beach Bar-B-Q Tour: 9:00 AM to 3:00 PM.',
@@ -195,13 +215,13 @@ export const INITIAL_TOURS: Tour[] = [
       'Beach Bar-B-Q: $175 per person with a 4-person minimum'
     ],
     options: [
-      { name: 'Reef Fishing — Half Day', description: 'Group rate for 1–4 guests.', price: 309.38 },
-      { name: 'Reef Fishing — Full Day', description: 'Group rate for 1–4 guests.', price: 562.50 },
-      { name: 'Deep Sea Fishing — Half Day', description: 'Group rate for 1–4 guests.', price: 900.00 },
-      { name: 'Deep Sea Fishing — Full Day', description: 'Group rate for 1–4 guests.', price: 1800.00 },
-      { name: 'Flat Fishing — Half Day', description: 'Group rate for 1–2 guests.', price: 393.75 },
-      { name: 'Flat Fishing — Full Day', description: 'Group rate for 1–2 guests.', price: 600.00 },
-      { name: 'Beach Bar-B-Q', description: 'A full-day fishing, snorkeling, and barbecue option priced per person with a four-person minimum. Location is confirmed based on conditions and accommodation setup.', price: 175.00 }
+      { name: 'Reef Fishing — Half Day', description: '9:00 AM–1:00 PM. Group rate for 1–4 guests; water, sodas, tackle, and bait included.', price: 309.38, note: 'Lunch is not included.' },
+      { name: 'Reef Fishing — Full Day', description: '9:00 AM–3:00 PM. Group rate for 1–4 guests; water, sodas, tackle, and bait included.', price: 562.50, note: 'Do not assume lunch is included; confirm food arrangements when booking.' },
+      { name: 'Deep Sea Fishing — Half Day', description: '9:00 AM–1:00 PM. Group rate for 1–4 guests; water, sodas, tackle, and bait included.', price: 900.00, note: 'Lunch is not included.' },
+      { name: 'Deep Sea Fishing — Full Day', description: '9:00 AM–3:00 PM. Group rate for 1–4 guests; water, sodas, tackle, and bait included.', price: 1800.00, note: 'Do not assume lunch is included; confirm food arrangements when booking.' },
+      { name: 'Flat Fishing — Half Day', description: '9:00 AM–1:00 PM. One flat boat price for 1–2 guests; water, sodas, tackle, and bait included.', price: 393.75 },
+      { name: 'Flat Fishing — Full Day', description: '9:00 AM–3:00 PM. One flat boat price for 1–2 guests; water, sodas, tackle, and bait included.', price: 600.00 },
+      { name: 'Beach Bar-B-Q Fishing Trip', description: '9:00 AM–3:00 PM. Fishing with a prepared fish barbecue, water, sodas, and snorkeling gear; priced per person with a four-person minimum.', price: 175.00, note: 'The barbecue location is confirmed based on conditions and accommodation setup.' }
     ]
   },
   {
@@ -214,8 +234,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/zipline-belize-01.webp', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Exact time confirmed after booking',
-    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    departureTime: '7:00 AM water taxi',
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Meet at Belize Express Water Taxi in San Pedro; precise terminal and check-in details are sent after confirmation.',
+    includes: ['Water taxi and mainland van transport', 'Private mainland guide', 'Park fee and required equipment', 'Belizean lunch, water, and sodas'],
+    beforeYouBook: ['Cave activities depend on weather and safe water levels.', 'Only one mainland adventure may be booked per guest per day.', 'A vegetarian lunch can be arranged when requested in advance.'],
     whatToBring: ['Closed-toe shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 300.00,
@@ -233,8 +256,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/web-maya-ruin.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Exact time confirmed after booking',
-    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    departureTime: '7:00 AM water taxi',
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Meet at Belize Express Water Taxi in San Pedro; precise terminal and check-in details are sent after confirmation.',
+    includes: ['Water taxi and mainland van transport', 'Private mainland guide', 'Park fee and required equipment', 'Belizean lunch, water, and sodas'],
+    beforeYouBook: ['Cave activities depend on weather and safe water levels.', 'Only one mainland adventure may be booked per guest per day.', 'A vegetarian lunch can be arranged when requested in advance.'],
     whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 300.00,
@@ -253,8 +279,11 @@ export const INITIAL_TOURS: Tour[] = [
     isAvailable: true,
     image: '/images/gallery/web-xunantunich02.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
-    departureTime: 'Exact time confirmed after booking',
-    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    departureTime: '7:00 AM water taxi',
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Meet at Belize Express Water Taxi in San Pedro; precise terminal and check-in details are sent after confirmation.',
+    includes: ['Water taxi and mainland van transport', 'Private mainland guide', 'Park fee and required equipment', 'Belizean lunch, water, and sodas'],
+    beforeYouBook: ['Cave activities depend on weather and safe water levels.', 'Only one mainland adventure may be booked per guest per day.', 'A vegetarian lunch can be arranged when requested in advance.'],
     whatToBring: ['Comfortable walking shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 300.00,
@@ -274,7 +303,10 @@ export const INITIAL_TOURS: Tour[] = [
     image: '/images/gallery/web-lamani.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
     departureTime: '6:00 AM water taxi',
-    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Meet at Belize Express Water Taxi in San Pedro; precise terminal and check-in details are sent after confirmation.',
+    includes: ['Water taxi and mainland van transport', 'Private mainland guide', 'Park fee', 'Belizean lunch, water, and sodas'],
+    beforeYouBook: ['Only one mainland adventure may be booked per guest per day.', 'A vegetarian lunch can be arranged when requested in advance.'],
     whatToBring: ['Comfortable walking shoes', 'Hat and sunscreen', 'Insect repellent'],
     priceBreakdown: {
       base: 250.00,
@@ -294,7 +326,10 @@ export const INITIAL_TOURS: Tour[] = [
     image: '/images/gallery/cave-exploration-real.jpg', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
     departureTime: '6:00 AM water taxi',
-    includes: ['Park fee', 'Lunch', 'Water taxi and mainland van transport'],
+    groupSize: 'Minimum 2 guests',
+    meetingPickup: 'Meet at Belize Express Water Taxi in San Pedro; precise terminal and check-in details are sent after confirmation.',
+    includes: ['Water taxi and mainland van transport', 'Private mainland guide', 'Park fee and required activity equipment', 'Belizean lunch, water, and sodas'],
+    beforeYouBook: ['This is physically demanding and includes hiking plus entering or swimming through water.', 'Only one mainland adventure may be booked per guest per day.', 'A vegetarian lunch can be arranged when requested in advance.'],
     whatToBring: ['Closed-toe water shoes', 'Change of clothes', 'Insect repellent'],
     priceBreakdown: {
       base: 400.00,

@@ -7,7 +7,8 @@ file tracks what must happen after owner and infrastructure decisions resume.
 ## Owner confirmation
 
 - [ ] Approve current prices, fees, minimum billed quantities, and capacities.
-- [ ] Confirm unresolved start times or approve “Exact time confirmed after booking.”
+- [ ] Confirm departure/check-in times and durations for the four regular dives.
+- [ ] Confirm exact session hours for Refresher, Resort Course, and Scuba Discovery, plus the Advanced Open Water duration.
 - [ ] Approve public contact/location wording and PADI instructor wording.
 - [ ] Supply privacy, cancellation, refund, no-show, weather, and terms language.
 - [ ] Approve staff email addresses and customer-data retention period.

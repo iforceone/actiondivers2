@@ -68,3 +68,10 @@ Frontend and Worker TypeScript, focused Worker tests, production build, 1440px/3
 - Added a repeatable readiness check for internal routes, sitemap destinations, image assets, configuration placeholders, and common secret patterns.
 
 Frontend and Worker TypeScript, production build, nine Worker rule tests, readiness checks, desktop/mobile route checks, preview-state checks, and browser console checks pass. External services and production feature gates remain unchanged.
+
+## Owner booking-details checkpoint — 2026-08-05
+
+- Added confirmed snorkeling, fishing, and mainland departure times, durations, group limits, pickup/meeting arrangements, inclusions, and weather notes.
+- Added a consistent booking-details presentation to activity pages and hid the four unresolved recreational-dive departure times instead of guessing them.
+- Restored Resort Course and Scuba Discovery as separate course offerings and applied the confirmed two-person minimum to every course.
+- Updated the reservation catalog and assistant service facts while leaving assistant behavior, external services, payments, and production gates unchanged.

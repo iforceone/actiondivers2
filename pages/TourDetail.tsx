@@ -2,7 +2,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { INITIAL_TOURS } from '../constants';
-import { Backpack, Check, CheckCircle2, Clock, DollarSign, Info, MapPin, PackageCheck, ShoppingBag } from 'lucide-react';
+import { Backpack, Check, CheckCircle2, Clock, DollarSign, Info, MapPin, PackageCheck, ShoppingBag, Users } from 'lucide-react';
 import SEO, { SITE_URL } from '../components/SEO';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { useBooking } from '../contexts/BookingContext';
@@ -89,6 +89,7 @@ const TourDetail: React.FC = () => {
         <div className="absolute bottom-20 left-0 right-0 max-w-7xl mx-auto px-4 text-center md:text-left">
           <span className="mb-4 block text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8]/85">{tour.subCategory || `${tour.category} Adventure`}</span>
           <h1 className="text-5xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-6xl md:text-8xl text-balance">{tour.name}</h1>
+          {(tour.departureTime || tour.duration) && <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-semibold text-[#F8F4E8]/90 md:justify-start">{tour.departureTime && <span>Departure: {tour.departureTime}</span>}{tour.duration && <span>Duration: {tour.duration}</span>}</div>}
         </div>
       </div>
 
@@ -197,7 +198,7 @@ const TourDetail: React.FC = () => {
                     <span className="text-2xl font-bold text-[#F8F4E8]">${tour.price.toFixed(2)} USD</span>
                   </div>
                   {tour.priceBreakdown.note && (
-                    <p className="mt-6 text-[10px] text-[#F8F4E8]/40 uppercase tracking-widest text-[#11C7D9] leading-relaxed">
+                    <p className="mt-6 text-xs leading-relaxed text-[#11C7D9]">
                       * {tour.priceBreakdown.note}
                     </p>
                   )}
@@ -248,6 +249,15 @@ const TourDetail: React.FC = () => {
               </section>
             )}
 
+            {tour.beforeYouBook && tour.beforeYouBook.length > 0 && (
+              <section className="rounded-2xl border border-white/10 bg-[#06212a] p-8">
+                <h3 className="text-2xl font-extrabold tracking-tight">Before You Book</h3>
+                <ul className="mt-6 space-y-3 text-[#F8F4E8]/75">
+                  {tour.beforeYouBook.map((item) => <li key={item} className="flex gap-3"><span className="text-[#11C7D9]">•</span>{item}</li>)}
+                </ul>
+              </section>
+            )}
+
             {relatedPosts.length > 0 && (
               <section className="glass p-10 rounded-3xl">
                 <h3 className="text-2xl font-extrabold tracking-tight mb-8">Helpful Planning Guides</h3>
@@ -277,17 +287,21 @@ const TourDetail: React.FC = () => {
                   <span>Starting at ${tour.price.toFixed(2)} USD</span>
                 </div>
                 <div className="flex items-center text-[#F8F4E8]/70">
-                  <MapPin className="w-5 h-5 mr-3 text-[#11C7D9]" />
-                  <span>5 miles north of San Pedro</span>
-                </div>
-                <div className="flex items-center text-[#F8F4E8]/70">
                   <Clock className="w-5 h-5 mr-3 text-[#11C7D9]" />
-                  <span>{tour.duration || 'Confirm duration when booking'}</span>
+                  <span><strong className="text-[#F8F4E8]">Duration:</strong> {tour.duration || 'Confirmed with your request'}</span>
                 </div>
-                <div className="flex items-center text-[#F8F4E8]/70">
+                {tour.departureTime && <div className="flex items-center text-[#F8F4E8]/70">
                   <Clock className="w-5 h-5 mr-3 text-[#11C7D9]" />
-                  <span>{tour.departureTime || 'Confirm departure time'}</span>
-                </div>
+                  <span><strong className="text-[#F8F4E8]">Departure:</strong> {tour.departureTime}</span>
+                </div>}
+                {tour.groupSize && <div className="flex items-center text-[#F8F4E8]/70">
+                  <Users className="w-5 h-5 mr-3 shrink-0 text-[#11C7D9]" />
+                  <span><strong className="text-[#F8F4E8]">Group size:</strong> {tour.groupSize}</span>
+                </div>}
+                {tour.meetingPickup && <div className="flex items-start text-[#F8F4E8]/70">
+                  <MapPin className="mt-0.5 w-5 h-5 mr-3 shrink-0 text-[#11C7D9]" />
+                  <span><strong className="text-[#F8F4E8]">Meeting / pickup:</strong> {tour.meetingPickup}</span>
+                </div>}
               </div>
 
               <a

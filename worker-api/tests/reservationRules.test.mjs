@@ -10,7 +10,7 @@ test('catalog identifiers and prices are safe server inputs', () => {
   assert.ok(DEFAULT_BOOKING_CATALOG.items.every((item) => item.noticeDays >= 7));
 });
 
-test('course schedules and the PADI Scuba Diver name hydrate older catalogs', () => {
+test('course schedules, names, and minimums hydrate older catalogs', () => {
   const current = DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-scubadiver');
   const hydrated = withDefaultBookingPolicies({
     version: 99,
@@ -18,8 +18,11 @@ test('course schedules and the PADI Scuba Diver name hydrate older catalogs', ()
     items: [{ ...current, name: 'Scuba Diver', description: '' }],
   }).items[0];
   assert.equal(hydrated.name, 'PADI Scuba Diver');
-  assert.match(hydrated.description, /additional morning/i);
+  assert.match(hydrated.description, /training dives/i);
   assert.match(DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-referral').description, /9:00 AM to 12:00 PM/i);
+  assert.ok(DEFAULT_BOOKING_CATALOG.items.filter((item) => item.serviceKind === 'course').every((item) => item.minimumPaidParticipants === 2));
+  assert.equal(DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-resort').name, 'Resort Course');
+  assert.equal(DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-discover').name, 'Scuba Discovery');
 });
 
 test('per-person estimates enforce the minimum paid quantity', () => {
@@ -71,19 +74,21 @@ test('the seven-day boundary is inclusive in Belize calendar dates', () => {
   assert.equal(belizeDateAfter(7, afterMidnightBelize), '2026-08-08');
 });
 
-test('legacy course alias is retired and capacity policies are present', () => {
+test('new service facts and capacity policies hydrate older catalogs', () => {
   const legacyCourse = { ...DEFAULT_BOOKING_CATALOG.items.find((item) => item.id === 'course-discover'), category: 'Island', tourId: 'diving-courses' };
   delete legacyCourse.serviceKind;
   delete legacyCourse.noticeDays;
   delete legacyCourse.confirmationMode;
   delete legacyCourse.priceStatus;
-  const hydrated = withDefaultBookingPolicies({ version: 1, publishedAt: null, items: [legacyCourse, { ...DEFAULT_BOOKING_CATALOG.items[4], id: 'course-resort' }] });
-  assert.equal(hydrated.items.some((item) => item.id === 'course-resort'), false);
+  const hydrated = withDefaultBookingPolicies({ version: 1, publishedAt: null, items: [legacyCourse] });
+  assert.equal(hydrated.items.some((item) => item.id === 'course-resort'), true);
   assert.equal(hydrated.items.find((item) => item.id === 'course-discover').category, 'Course');
   assert.equal(hydrated.items.some((item) => item.id === 'transfer-bze-san-pedro'), true);
   assert.ok(hydrated.items.filter((item) => item.serviceKind === 'snorkeling').every((item) => item.minimumPaidParticipants === 4 && item.maxParticipants === 12));
   assert.ok(hydrated.items.filter((item) => item.serviceKind === 'fishing' && item.id !== 'bbq-full').every((item) => item.maxParticipants === 2 || item.maxParticipants === 4));
   assert.equal(hydrated.items.find((item) => item.id === 'bbq-full').minimumPaidParticipants, 4);
+  assert.match(hydrated.items.find((item) => item.id === 'snorkel-hol').description, /7:30 AM/i);
+  assert.match(hydrated.items.find((item) => item.id === 'main-cave').description, /7:00 AM/i);
 });
 
 test('payment is available only for a live payable quote', () => {

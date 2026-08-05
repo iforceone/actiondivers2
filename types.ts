@@ -10,7 +10,10 @@ export interface Tour {
   image: string;
   duration?: string;
   departureTime?: string;
+  groupSize?: string;
+  meetingPickup?: string;
   includes?: string[];
+  beforeYouBook?: string[];
   whatToBring?: string[];
   features?: string[];
   options?: TourOption[];

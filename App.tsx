@@ -123,7 +123,8 @@ const RESERVATION_OPTIONS: Record<string, BookingOption[]> = {
   ],
   "Courses & Certifications": [
     { id: "course-refresher", name: "Refresher", price: 208.75, category: "Island" },
-    { id: "course-discover", name: "Discover Scuba (Scuba Discovery)", price: 211.88, category: "Island" },
+    { id: "course-resort", name: "Resort Course", price: 211.88, category: "Course" },
+    { id: "course-discover", name: "Scuba Discovery", price: 211.88, category: "Course" },
     { id: "course-referral", name: "Open Water Referral (2 Days)", price: 480.00, category: "Island" },
     { id: "course-scubadiver", name: "Scuba Diver", price: 436.88, category: "Island" },
     { id: "course-owcert", name: "Open Water Certification (3 Days)", price: 564.38, category: "Island" },
@@ -145,7 +146,7 @@ const RESERVATION_OPTIONS: Record<string, BookingOption[]> = {
     { id: "fish-flat-full", name: "Flat Fishing (Full Day)", price: 600.00, category: "Island" },
   ],
   "Specialty Island Tours": [
-    { id: "bbq-full", name: "Beach Bar-B-Q (1-4 ppl)", price: 562.50, category: "Island" },
+    { id: "bbq-full", name: "Beach Bar-B-Q Fishing Trip (minimum 4)", price: 175.00, category: "Island" },
   ],
   "Mainland Discovery": [
     { id: "main-altun", name: "Altun Ha & Cave Tubing", price: 337.50, category: "Mainland" },
