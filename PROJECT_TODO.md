@@ -18,7 +18,8 @@ file tracks what must happen after owner and infrastructure decisions resume.
 - [x] Create separate preview and production D1 databases and apply existing migrations.
 - [x] Seed the production catalog from the current server-side catalog and verify empty customer/payment tables.
 - [ ] Configure Cloudflare Access for approved staff and verify Worker-side JWT checks.
-- [ ] Test acknowledgement, staff notification, quote, update, and receipt delivery.
+- [x] Test reservation storage, customer acknowledgement, staff notification, and customer portal retrieval.
+- [ ] Test staff quote, update, payment-link, and receipt delivery after Cloudflare Access is active.
 - [ ] Enable reservations, then the staff portal, then the frontend submission flag.
 
 ## Payment launch

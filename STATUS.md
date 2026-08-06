@@ -83,3 +83,5 @@ Frontend and Worker TypeScript, production build, nine Worker rule tests, readin
 - Confirmed Gemini and Resend secrets exist without exposing their values; Belize Bank secrets remain unset.
 - Verified production-origin CORS, validation failures that avoid email/Gemini use, the public catalog, the disabled reservation gate, and one controlled assistant response.
 - Kept reservations, staff access, and payments disabled pending approved staff emails, Cloudflare Access, delivery testing, owner policies, and Belize Bank sandbox approval.
+- Completed a fictional reservation test using `kuvious@gmail.com`: D1 storage, customer acknowledgement, staff notification, and the branch customer portal all succeeded.
+- Restored the production reservation gate and normal business recipient after testing; the temporary customer reference remains available for the staff-dashboard test.
