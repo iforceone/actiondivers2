@@ -128,6 +128,8 @@ function validCatalog(value: unknown): value is BookingCatalog {
       (item.minimumPaidParticipants === undefined || item.maxParticipants === undefined || item.minimumPaidParticipants <= item.maxParticipants) &&
       (item.confirmationMode === 'request_only' || item.confirmationMode === 'instant') &&
       (item.priceStatus === 'current' || item.priceStatus === 'proposed') &&
+      (item.startTime === undefined || (typeof item.startTime === 'string' && item.startTime.length <= 100)) &&
+      (item.duration === undefined || (typeof item.duration === 'string' && item.duration.length <= 120)) &&
       typeof item.active === 'boolean' && Number.isInteger(item.sortOrder);
   });
 }
@@ -771,28 +773,33 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
   if (env.STAFF_PORTAL_ENABLED !== 'true') return json({ ok: false, error: 'Staff portal is not enabled.' }, 503);
   let staff: StaffIdentity;
   try { staff = await requireStaff(request, env); } catch (error) { return json({ ok: false, error: error instanceof Error ? error.message : 'Staff access denied.' }, staffErrorStatus(error)); }
-  if (pathname === '/admin-api/session' && request.method === 'GET') return json({ ok: true, staff }, 200);
+  if (pathname === '/admin-api/session' && request.method === 'GET') {
+    return json({ ok: true, staff, features: { paymentsEnabled: env.PAYMENTS_ENABLED === 'true' } }, 200);
+  }
   if (pathname === '/admin-api/roster' && request.method === 'GET') {
     const db = database(env);
     const url = new URL(request.url);
     const date = text(url.searchParams.get('date'), 10);
-    const tour = text(url.searchParams.get('tour'), 80);
-    if (!DATE_RE.test(date) || !tour) return json({ ok: false, error: 'Choose a valid date and tour.' }, 422);
+    const tours = [...new Set(url.searchParams.getAll('tour').map((value) => text(value, 80)).filter(Boolean))];
+    if (!DATE_RE.test(date) || tours.length < 1 || tours.length > 80) return json({ ok: false, error: 'Choose a valid date and at least one activity.' }, 422);
+    const placeholders = tours.map(() => '?').join(',');
     const rows = await db.prepare(`SELECT ri.id AS reservation_item_id, ri.name_snapshot AS tour_name, ri.requested_date,
       ri.adults, ri.children, r.id AS reservation_id, r.reference, r.status, r.customer_name, r.customer_email,
       r.customer_phone, r.accommodation, r.diving_experience, r.customer_notes, r.internal_notes
       FROM reservation_items ri
       JOIN reservations r ON r.id = ri.reservation_id
-      WHERE ri.requested_date = ? AND (ri.catalog_item_id = ? OR ri.tour_id = ?) AND r.status != 'cancelled'
-      ORDER BY r.customer_name COLLATE NOCASE, r.reference`)
-      .bind(date, tour, tour).all();
+      WHERE ri.requested_date = ? AND (ri.catalog_item_id IN (${placeholders}) OR ri.tour_id IN (${placeholders})) AND r.status != 'cancelled'
+      ORDER BY ri.name_snapshot COLLATE NOCASE, r.customer_name COLLATE NOCASE, r.reference`)
+      .bind(date, ...tours, ...tours).all();
+    const reservationIds = new Set<string>();
     const totals = rows.results.reduce<{ adults: number; children: number }>((total, row) => {
-      const value = row as { adults?: number; children?: number };
+      const value = row as { reservation_id?: string; adults?: number; children?: number };
+      if (value.reservation_id) reservationIds.add(value.reservation_id);
       total.adults += Number(value.adults ?? 0);
       total.children += Number(value.children ?? 0);
       return total;
     }, { adults: 0, children: 0 });
-    return json({ ok: true, roster: rows.results, totals: { ...totals, guests: totals.adults + totals.children, reservations: rows.results.length } }, 200);
+    return json({ ok: true, roster: rows.results, totals: { ...totals, guests: totals.adults + totals.children, reservations: reservationIds.size } }, 200);
   }
   if (pathname === '/admin-api/reservations' && request.method === 'GET') {
     const db = database(env);
