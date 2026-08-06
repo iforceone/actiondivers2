@@ -34,8 +34,8 @@ const VoyageChronicles: React.FC = () => {
   return (
     <div className="pt-48 pb-32 max-w-7xl mx-auto px-6">
       <SEO
-        title="Belize Travel Blog & Adventure Guides"
-        description="Read Action Divers & Adventures guides to snorkeling, scuba diving, island tours, mainland tours, and family-friendly Belize activities from San Pedro."
+        title="Belize Travel Guides"
+        description="Read guides to snorkeling, scuba diving, island tours, mainland tours, and family-friendly Belize activities from San Pedro."
         path="/blog"
         image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png"
         structuredData={structuredData}
@@ -54,6 +54,8 @@ const VoyageChronicles: React.FC = () => {
             <div className="relative aspect-[4/3] overflow-hidden">
               <img 
                 src={post.image}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 alt={post.title}
               />

@@ -10,6 +10,9 @@ const About: React.FC = () => {
         <img 
           src="/images/gallery/SCUBA-and-Snorkelers-1.png" 
           alt="Belizean Coastal View" 
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
@@ -33,9 +36,9 @@ const About: React.FC = () => {
               fun-filled vacation.
             </p>
             <p>
-              Our team is made up of licensed tour guides, each with several years of experience. We do our best to
-              assist our guests with whatever they need. We invite you to discover Belize with a team focused on
-              safety, service, and memorable days on the water.
+              Our team brings firsthand local knowledge to reef, fishing, island, and mainland adventures. We do our
+              best to assist guests with what they need and keep every trip focused on thoughtful service and memorable
+              days in Belize.
             </p>
             <p>
               Have questions about scuba diving, snorkeling, fishing, or mainland tours? Call us or send an inquiry and
@@ -51,7 +54,7 @@ const About: React.FC = () => {
               <Phone className="w-4 h-4" />
               <span>011-501-671-2624</span>
             </a>
-            <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40">Call us to plan your Belize tours</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">Call us to plan your Belize tours</p>
           </div>
         </div>
 
@@ -60,11 +63,13 @@ const About: React.FC = () => {
             <img 
               src="/images/gallery/Divers-Pointing-768x432.png" 
               alt="Action Divers Team" 
+              loading="lazy"
+              decoding="async"
               className="rounded-[2.5rem] shadow-2xl w-full aspect-video object-cover"
             />
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-12 py-8 rounded-[2rem] border border-white/20 shadow-2xl whitespace-nowrap">
-              <p className="text-5xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">20+</p>
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#F8F4E8]/60">Years of Local Experience</p>
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-7 rounded-2xl border border-white/20 whitespace-nowrap">
+              <p className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">Local Tour Team</p>
+              <p className="text-xs uppercase tracking-[0.14em] text-[#F8F4E8]/65">San Pedro, Ambergris Caye</p>
             </div>
           </div>
         </div>
@@ -79,7 +84,7 @@ const About: React.FC = () => {
               </div>
               <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Professionalism</h3>
               <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
-                Our guides are fully licensed and committed to the highest standards of safety and service quality.
+                Careful planning, clear communication, and personal service guide every guest experience.
               </p>
             </div>
             <div className="space-y-8 group">

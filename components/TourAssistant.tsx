@@ -12,12 +12,21 @@ const TourAssistant: React.FC = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    closeButtonRef.current?.focus();
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setIsOpen(false);
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isOpen]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -47,7 +56,7 @@ const TourAssistant: React.FC = () => {
           ></div>
           
           {/* Centered Chat Window */}
-          <div className="relative w-full max-w-[500px] h-[650px] max-h-[90vh] bg-[#001219] rounded-[2.5rem] flex flex-col overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] border border-white/10 transition-all transform scale-100">
+          <div role="dialog" aria-modal="true" aria-labelledby="tour-assistant-title" className="relative flex h-[650px] max-h-[90vh] w-full max-w-[500px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#001219] shadow-[0_40px_100px_rgba(0,0,0,0.8)] transition-all sm:rounded-3xl">
             {/* Header */}
             <div className="p-6 flex justify-between items-center border-b border-white/5 bg-[#001219]">
               <div className="flex items-center space-x-4">
@@ -55,13 +64,15 @@ const TourAssistant: React.FC = () => {
                   <Sparkles className="text-[#001219] w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold tracking-tight text-[#F8F4E8] font-bold text-lg">Tour Assistant</h3>
-                  <p className="text-[10px] text-[#F8F4E8]/60 uppercase tracking-[0.25em]">Tour Help</p>
+                  <h3 id="tour-assistant-title" className="font-extrabold tracking-tight text-[#F8F4E8] font-bold text-lg">Tour Assistant</h3>
+                  <p className="text-xs text-[#F8F4E8]/65 uppercase tracking-[0.12em]">Tour Help</p>
                 </div>
               </div>
               <button 
+                ref={closeButtonRef}
                 onClick={() => setIsOpen(false)} 
                 className="p-3 rounded-full hover:bg-white/5 text-[#F8F4E8]/60 hover:text-[#F8F4E8] transition-colors"
+                aria-label="Close tour assistant"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -84,7 +95,7 @@ const TourAssistant: React.FC = () => {
               ))}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="bg-white/5 p-4 rounded-3xl rounded-tl-none border border-white/5 animate-pulse text-[#F8F4E8]/40 text-[10px] uppercase tracking-widest font-bold">
+                  <div className="bg-white/5 p-4 rounded-3xl rounded-tl-none border border-white/5 animate-pulse text-[#F8F4E8]/60 text-xs font-bold">
                     Checking tour options...
                   </div>
                 </div>
@@ -95,15 +106,19 @@ const TourAssistant: React.FC = () => {
             <div className="p-6 border-t border-white/5 bg-[#001219] flex space-x-3 items-center">
               <input
                 type="text"
+                name="tourQuestion"
+                aria-label="Ask the tour assistant a question"
+                autoComplete="off"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Where should we take you?"
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Ask about a tour…"
                 className="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm text-[#F8F4E8] placeholder-[#F8F4E8]/30 focus:outline-none focus:border-[#F8F4E8]/50 transition-colors"
               />
               <button
                 onClick={handleSend}
                 className="w-14 h-14 rounded-full bg-[var(--brand-orange)] text-white flex items-center justify-center hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl shrink-0 active:scale-90"
+                aria-label="Send question"
               >
                 <Send className="w-5 h-5" />
               </button>

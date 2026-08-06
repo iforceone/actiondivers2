@@ -19,7 +19,14 @@ const API_BASE_URL = 'https://actiondivers-api.davebze.workers.dev';
 
 export const API = {
   baseUrl: API_BASE_URL,
-  isConfigured: () => !API_BASE_URL.includes('REPLACE_WITH_API_WORKER_URL'),
+  isConfigured: () => {
+    try {
+      const url = new URL(API_BASE_URL);
+      return url.protocol === 'https:' && Boolean(url.hostname);
+    } catch {
+      return false;
+    }
+  },
   /** url('/inquiry') -> 'https://.../inquiry' */
   url: (path: string) => `${API_BASE_URL.replace(/\/$/, '')}${path}`,
 };

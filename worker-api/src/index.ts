@@ -21,8 +21,10 @@
 
 import { GoogleGenAI } from '@google/genai';
 import { SYSTEM_INSTRUCTION } from './systemInstruction';
+import { handlePaymentRoute } from './payments';
+import { handleReservationRoute, ReservationEnv } from './reservations';
 
-export interface Env {
+export interface Env extends ReservationEnv {
   RESEND_API_KEY: string;
   GEMINI_API_KEY: string;
   TO_EMAIL: string;
@@ -60,8 +62,9 @@ function corsHeaders(origin: string, allowed: string[]): Record<string, string> 
   const allowOrigin = allowed.includes(origin) ? origin : allowed[0] ?? '';
   return {
     'Access-Control-Allow-Origin': allowOrigin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Idempotency-Key, If-Match',
+    'Access-Control-Allow-Credentials': 'true',
     Vary: 'Origin',
   };
 }
@@ -241,9 +244,23 @@ export default {
       .filter(Boolean);
     const cors = corsHeaders(origin, allowed);
     const json: Json = (body, status) =>
-      new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...cors } });
+      new Response(JSON.stringify(body), {
+        status,
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...cors },
+      });
 
+    const { pathname } = new URL(request.url);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+    if (request.method === 'GET' && pathname === '/health') {
+      return json({ ok: true, service: 'actiondivers-api' }, 200);
+    }
+
+    const reservationResponse = await handleReservationRoute(request, env, json, allowed.includes(origin));
+    if (reservationResponse) return reservationResponse;
+
+    const paymentResponse = await handlePaymentRoute(request, env, json, allowed.includes(origin));
+    if (paymentResponse) return paymentResponse;
+
     if (request.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
 
     // CORS headers only constrain browsers. Enforce the allowlist server-side so
@@ -253,7 +270,6 @@ export default {
       return json({ ok: false, error: 'Forbidden' }, 403);
     }
 
-    const { pathname } = new URL(request.url);
     switch (pathname) {
       // '/' kept for the original single-purpose deploy shape.
       case '/':

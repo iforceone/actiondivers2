@@ -64,7 +64,7 @@ const BlogPostPage: React.FC = () => {
         structuredData={[articleStructuredData, breadcrumbStructuredData]}
       />
       <section className="relative min-h-[70vh] flex items-end overflow-hidden">
-        <img src={post.image} alt={post.title} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+        <img src={post.image} alt={post.title} loading="eager" fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover opacity-60" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#001219] via-[#001219]/50 to-[#001219]/40"></div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 pb-24">
           <Link to="/blog" className="inline-flex items-center text-[#F8F4E8]/50 hover:text-[#F8F4E8] text-xs font-bold uppercase tracking-[0.3em] mb-10">

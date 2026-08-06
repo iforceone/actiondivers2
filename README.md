@@ -21,8 +21,12 @@ one, and adding one back would ship it to every visitor (see [Why there are two
 projects](#why-there-are-two-projects)). An older version of this README told you to do
 exactly that; it was wrong, and the key it referred to has been rotated.
 
-In local dev the Tour Assistant and reservations form call the deployed Worker, which
-allows `http://localhost:3000` as an origin. They work locally without extra setup.
+In local development the Tour Assistant calls the deployed Worker, which allows
+`http://localhost:3000` as an origin. Reservation, course, and transfer forms default
+to preview mode: guests can complete the UI and use the WhatsApp fallback, but the
+browser will not attempt a live reservation request. A future production build must
+explicitly set `VITE_RESERVATION_REQUESTS_ENABLED=true` only after the Worker reservation
+gate, database, email delivery, and staff workflow are ready.
 
 ```bash
 npm run build        # production build into dist/
@@ -129,7 +133,7 @@ deciding you want that migration.
 ```bash
 cd worker-api
 npx wrangler whoami        # confirm davebze@gmail.com first
-npx wrangler deploy
+npm run deploy
 ```
 
 Deploys take a few seconds to propagate. If you deploy and immediately test, you may hit
@@ -144,7 +148,7 @@ The `workers.dev` URL is hardcoded in **seven** places. Miss the first one and b
 chatbot and the reservations form return `403` on the new domain with no visible cause.
 
 1. **`worker-api/wrangler.toml`** → `ALLOWED_ORIGINS` — add the new origin (comma
-   separated, no trailing slash), then **`npx wrangler deploy`**. The Worker rejects any
+   separated, no trailing slash), then **`npm run deploy` from `worker-api/`**. The Worker rejects any
    other `Origin` with 403 server-side; this is real access control, not just a CORS
    header, so it will not "just work" until you do this.
 2. **`components/SEO.tsx`** → `SITE_URL` — drives canonical URLs and JSON-LD across all
@@ -211,18 +215,16 @@ PROJECT_TODO.md            business backlog (payments, transfers, content)
 
 ## Known open items
 
-Technical, roughly by priority:
+Remaining launch gates, roughly by priority:
 
-- **Mobile UX on the launcher dock.** The button tooltips are hover/focus only, so they
-  never appear on touch devices, and below 640px the assistant button is a bare sparkle
-  icon with no label (`hidden sm:inline`). Likely the majority of traffic.
-- **The reservations form's UI flow is untested end to end.** The Worker endpoint is
-  verified and a test inquiry was confirmed Delivered, but the form's own success and
-  error states have not been exercised in a browser.
-- **Single 377 kB JS chunk.** Under the 500 kB warning threshold now, but there is no
-  code splitting; `Gallery` and `TourAssistant` are reasonable lazy-load candidates.
-- **`FROM_EMAIL` and `TO_EMAIL` are both `info@`.** Workable, but guest replies go to
-  `reply_to` (the guest's own address), so confirm staff replies land where expected.
+- **Owner content approval.** Confirm prices, schedules still labeled “Exact time
+  confirmed after booking,” public contact details, and policy language.
+- **Reservation infrastructure.** Create D1, apply migrations, verify email delivery,
+  configure staff access, and enable the Worker and frontend gates in that order.
+- **Belize Bank approval.** Keep payments disabled until sandbox certification and the
+  cancellation/refund terms are approved.
+- **Email operations.** `FROM_EMAIL` and `TO_EMAIL` are both `info@`; confirm the staff
+  reply workflow and monitor delivery before enabling live requests.
 
 `PROJECT_TODO.md` holds the business backlog — payments via Belize Bank, airport
 transfers, and content work. Those are larger and need decisions from Action Divers
