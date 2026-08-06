@@ -81,6 +81,8 @@ bindings undefined, which throws on every request.
 
 `/assistant` also caps input at 2000 characters so one huge prompt can't run up the bill.
 
+`GET /health` provides a non-secret availability check for monitoring the API Worker.
+
 After changing vars, re-run `npm run deploy`. Secrets persist across deploys.
 
 ## Belize Bank payments
@@ -89,15 +91,15 @@ Payments use Belize Bank's hosted payment page and standard authorization endpoi
 never receives or stores card numbers or security codes. Staff confirms availability and the
 full USD amount first, then creates a private payment link.
 
-Before deploying payment routes:
+Before enabling payment routes:
 
 1. Confirm with Belize Bank that the merchant profile settles the API's amount as **USD**.
-2. Create the D1 database and paste its non-secret ID into the commented `PAYMENTS_DB` block
-   in `wrangler.toml`:
+2. Confirm the existing production and preview D1 bindings in `wrangler.toml`, then verify
+   that every migration has been applied:
 
 ```bash
-npx wrangler d1 create actiondivers-payments
-npx wrangler d1 migrations apply actiondivers-payments --remote --config wrangler.toml
+npx wrangler d1 migrations list PAYMENTS_DB --remote --preview --config wrangler.toml
+npx wrangler d1 migrations list PAYMENTS_DB --remote --config wrangler.toml
 ```
 
 3. Set payment secrets through Wrangler's hidden prompts:
@@ -116,13 +118,13 @@ browser-accessible refund endpoint.
 
 ## Reservation and staff portal launch
 
-1. Create one D1 database for reservations, quotes, catalog revisions, audit events, and
-   payment intents. Add its ID to the `PAYMENTS_DB` binding in `wrangler.toml`.
-2. Apply both migrations to a preview database first, then production:
+1. Use the separate preview and production D1 databases already bound as `PAYMENTS_DB` for
+   reservations, quotes, catalog revisions, audit events, and payment intents.
+2. Apply new migrations to preview first, then production:
 
 ```bash
-npx wrangler d1 migrations apply actiondivers-payments --remote --preview --config wrangler.toml
-npx wrangler d1 migrations apply actiondivers-payments --remote --config wrangler.toml
+npx wrangler d1 migrations apply PAYMENTS_DB --remote --preview --config wrangler.toml
+npx wrangler d1 migrations apply PAYMENTS_DB --remote --config wrangler.toml
 ```
 
 3. In Cloudflare Zero Trust, create Access applications for the website `/admin*` path and

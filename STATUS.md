@@ -75,3 +75,11 @@ Frontend and Worker TypeScript, production build, nine Worker rule tests, readin
 - Added a consistent booking-details presentation to activity pages and hid the four unresolved recreational-dive departure times instead of guessing them.
 - Restored Resort Course and Scuba Discovery as separate course offerings and applied the confirmed two-person minimum to every course.
 - Updated the reservation catalog and assistant service facts while leaving assistant behavior, external services, payments, and production gates unchanged.
+
+## Cloudflare infrastructure checkpoint — 2026-08-06
+
+- Created separate preview and production D1 databases and applied all five additive migrations to both.
+- Bound production D1 to the deployed `actiondivers-api` Worker while retaining the preview database for remote development and test migrations.
+- Confirmed Gemini and Resend secrets exist without exposing their values; Belize Bank secrets remain unset.
+- Verified production-origin CORS, validation failures that avoid email/Gemini use, the public catalog, the disabled reservation gate, and one controlled assistant response.
+- Kept reservations, staff access, and payments disabled pending approved staff emails, Cloudflare Access, delivery testing, owner policies, and Belize Bank sandbox approval.

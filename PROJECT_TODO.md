@@ -15,8 +15,8 @@ file tracks what must happen after owner and infrastructure decisions resume.
 
 ## Reservation and staff launch
 
-- [ ] Create separate preview and production D1 databases and apply existing migrations.
-- [ ] Seed and verify the published catalog against owner-approved information.
+- [x] Create separate preview and production D1 databases and apply existing migrations.
+- [x] Seed the production catalog from the current server-side catalog and verify empty customer/payment tables.
 - [ ] Configure Cloudflare Access for approved staff and verify Worker-side JWT checks.
 - [ ] Test acknowledgement, staff notification, quote, update, and receipt delivery.
 - [ ] Enable reservations, then the staff portal, then the frontend submission flag.

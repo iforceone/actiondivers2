@@ -251,6 +251,9 @@ export default {
 
     const { pathname } = new URL(request.url);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+    if (request.method === 'GET' && pathname === '/health') {
+      return json({ ok: true, service: 'actiondivers-api' }, 200);
+    }
 
     const reservationResponse = await handleReservationRoute(request, env, json, allowed.includes(origin));
     if (reservationResponse) return reservationResponse;

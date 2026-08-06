@@ -4,6 +4,9 @@ compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
+[observability]
+enabled = true
+
 # Non-secret config. Edit these to taste.
 [vars]
 # Where inquiries are delivered. Must be a real mailbox — reservations@ does not
@@ -18,7 +21,7 @@ FROM_EMAIL = "Action Divers & Adventures <info@actiondiversbelize.com>"
 ALLOWED_ORIGINS = "https://actiondivers2.davebze.workers.dev,http://localhost:3000"
 PAYMENT_ENVIRONMENT = "sandbox"
 PAYMENT_SITE_ORIGIN = "https://actiondivers2.davebze.workers.dev"
-# Launch gates. Keep both false until D1, Cloudflare Access, approved staff,
+# Launch gates. Keep all false until D1, Cloudflare Access, approved staff,
 # email delivery, and the Belize Bank sandbox flow have all been verified.
 RESERVATIONS_V2_ENABLED = "false"
 STAFF_PORTAL_ENABLED = "false"
@@ -29,15 +32,14 @@ ACCESS_TEAM_DOMAIN = ""
 ACCESS_AUD = ""
 OWNER_EMAILS = ""
 
-# Create payment storage before deploying these routes:
-#   npx wrangler d1 create actiondivers-payments
-# Then paste the returned non-secret database ID and uncomment this block.
-# [[d1_databases]]
-# binding = "PAYMENTS_DB"
-# database_name = "actiondivers-payments"
-# database_id = "REPLACE_WITH_D1_DATABASE_ID"
-# preview_database_id = "REPLACE_WITH_PREVIEW_D1_DATABASE_ID"
-# migrations_dir = "migrations"
+# Shared reservation, quote, portal, and payment-intent storage. Preview and
+# production use separate databases; IDs are non-secret Cloudflare resource IDs.
+[[d1_databases]]
+binding = "PAYMENTS_DB"
+database_name = "actiondivers-reservations-production"
+database_id = "d3d3ec34-c463-4f36-af2c-5ab32a45acda"
+preview_database_id = "086ef147-6256-4087-8b48-df79237c16f5"
+migrations_dir = "migrations"
 
 # Rate limits are per client IP. `period` must be 10 or 60; each block needs its
 # own namespace_id. Requires wrangler 4 — v3 ignores these silently.
