@@ -1,6 +1,6 @@
 # Production readiness checkpoint
 
-Updated: 2026-07-27
+Updated: 2026-08-06
 
 ## Completed
 
@@ -85,3 +85,11 @@ Frontend and Worker TypeScript, production build, nine Worker rule tests, readin
 - Kept reservations, staff access, and payments disabled pending approved staff emails, Cloudflare Access, delivery testing, owner policies, and Belize Bank sandbox approval.
 - Completed a fictional reservation test using `kuvious@gmail.com`: D1 storage, customer acknowledgement, staff notification, and the branch customer portal all succeeded.
 - Restored the production reservation gate and normal business recipient after testing; the temporary customer reference remains available for the staff-dashboard test.
+
+## Staff Access checkpoint — 2026-08-06
+
+- Created one path-scoped Cloudflare Access application for the production and branch-preview `/admin*` routes and the API `/admin-api/*` routes.
+- Added a temporary one-time-PIN allow policy for `kuvious@gmail.com` and verified that unauthenticated visitors are redirected to Access before the dashboard loads.
+- Configured Worker-side Access issuer/audience verification and added the temporary account as an active owner in both D1 databases.
+- Enabled the staff API gate and production-build `/admin` route. No staff link was added to public navigation, and the browser bundle contains no staff credentials or API keys.
+- Reservations and payments remain disabled. The previous public site Worker version remains deployed; current website changes are still branch-only.
