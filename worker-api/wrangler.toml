@@ -42,6 +42,13 @@ database_id = "d3d3ec34-c463-4f36-af2c-5ab32a45acda"
 preview_database_id = "086ef147-6256-4087-8b48-df79237c16f5"
 migrations_dir = "migrations"
 
+# Private media storage. Public delivery remains Git-backed until a custom
+# media domain is connected; staff access is mediated by the API Worker.
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "actiondivers-media"
+preview_bucket_name = "actiondivers-media-preview"
+
 # Rate limits are per client IP. `period` must be 10 or 60; each block needs its
 # own namespace_id. Requires wrangler 4 — v3 ignores these silently.
 

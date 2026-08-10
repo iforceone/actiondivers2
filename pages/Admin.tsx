@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, DollarSign, Download, FileText, ListChecks, Loader2, Pencil, Plus, Printer, RefreshCw, Save, Search, Send, SlidersHorizontal, Trash2, Users } from 'lucide-react';
+import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, DollarSign, Download, FileText, Images, ListChecks, Loader2, Pencil, Plus, Printer, RefreshCw, Save, Search, Send, SlidersHorizontal, Trash2, UploadCloud, Users } from 'lucide-react';
 import { API } from '../config';
 import { BookingCatalog, BookingCatalogItem, BookingItemDetails, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
 import { isAdminPreviewEnabled } from '../utils/adminPreview';
 import SEO from '../components/SEO';
 
 type StaffRole = 'owner' | 'staff';
-type DashboardTab = 'reservations' | 'roster' | 'catalog' | 'templates' | 'staff';
+type DashboardTab = 'reservations' | 'roster' | 'catalog' | 'media' | 'templates' | 'staff';
 
 interface Session { email: string; name: string; role: StaffRole }
-interface SessionFeatures { paymentsEnabled: boolean }
+interface SessionFeatures { paymentsEnabled: boolean; mediaEnabled: boolean }
 interface ReservationSummary { id: string; reference: string; status: string; request_kind: 'tour' | 'course' | 'transfer'; customer_name: string; customer_email: string; adults: number; children: number; estimated_total_cents: number; current_quote_version: number | null; version: number; created_at: string; updated_at: string }
 interface ReservationDetail {
   reservation: { id: string; reference: string; status: string; requestKind: 'tour' | 'course' | 'transfer'; customer: { name: string; email: string; phone: string | null }; party: { adults: number; children: number }; accommodation: string | null; divingExperience: string | null; customerNotes: string | null; internalNotes: string | null; customerMessage: string | null; estimatedTotalCents: number; version: number; createdAt: string; updatedAt: string };
@@ -24,6 +24,13 @@ interface ReservationDetail {
 interface QuoteLine { key: string; reservationItemId: string | null; catalogItemId: string | null; label: string; serviceDate: string; quantity: number; unitPrice: string; notes: string }
 interface MessageTemplate { id: string; name: string; subject: string; body: string; active: number }
 interface RosterRow { reservation_item_id: string; tour_name: string; requested_date: string; adults: number; children: number; reservation_id: string; reference: string; status: string; customer_name: string; customer_email: string; customer_phone: string | null; accommodation: string | null; diving_experience: string | null; customer_notes: string | null; internal_notes: string | null }
+interface MediaAsset { id: string; object_key: string; original_name: string; title: string; alt_text: string; category: string; mime_type: string; byte_size: number; width: number | null; height: number | null; checksum_sha256: string; status: 'draft' | 'published' | 'archived'; created_by: string; updated_by: string; created_at: string; updated_at: string; deleted_at: string | null; preview_src?: string }
+
+const MEDIA_CATEGORIES = [
+  ['diving', 'Diving'], ['snorkeling', 'Snorkeling'], ['fishing', 'Fishing'],
+  ['boating', 'On the Water'], ['mainland', 'Mainland'], ['dining', 'Food & BBQ'],
+  ['nature', 'Wildlife'], ['courses', 'Courses'], ['transfers', 'Transfers'], ['general', 'General'],
+] as const;
 
 const STATUS_LABELS: Record<string, string> = { new: 'New', reviewing: 'Reviewing', needs_contact: 'Needs contact', quoted: 'Update sent', awaiting_payment: 'Awaiting payment', paid: 'Paid', cancelled: 'Cancelled', completed: 'Completed' };
 const ADMIN_PREVIEW = isAdminPreviewEnabled() && window.location.pathname === '/admin/preview';
@@ -57,6 +64,10 @@ const PREVIEW_TEMPLATES: MessageTemplate[] = [
   { id: 'needs-contact', name: 'Needs a quick conversation', subject: 'A question about your Action Divers reservation', body: 'We need to confirm one detail before finalizing your reservation. Please reply to this email.', active: 1 },
   { id: 'unavailable', name: 'Requested option unavailable', subject: 'Update about your Action Divers request', body: 'The requested tour or date is not currently available. Please reply and we will help find another option.', active: 1 },
 ];
+const PREVIEW_MEDIA: MediaAsset[] = [
+  { id: 'preview-media-1', object_key: 'media/2026/08/junior-scuba-student-belize-demo.jpg', original_name: 'junior-scuba-student-belize.jpg', title: 'Junior Scuba Student in Belize', alt_text: 'Young scuba student with an Action Divers instructor on a boat in Belize', category: 'diving', mime_type: 'image/jpeg', byte_size: 163931, width: 1200, height: 1600, checksum_sha256: 'preview-only', status: 'draft', created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: '2026-08-10T19:39:57.000Z', updated_at: '2026-08-10T19:39:57.000Z', deleted_at: null, preview_src: '/images/gallery/junior-scuba-student-belize.jpg' },
+  { id: 'preview-media-2', object_key: 'media/2026/08/nurse-shark-encounter-belize-demo.jpg', original_name: 'nurse-shark-encounter-clear-water-belize.jpg', title: 'Nurse Shark Encounter in Clear Water', alt_text: 'A nurse shark swimming through clear Caribbean water near guests in Belize', category: 'nature', mime_type: 'image/jpeg', byte_size: 330620, width: 1600, height: 900, checksum_sha256: 'preview-only-two', status: 'published', created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: '2026-08-10T20:14:17.000Z', updated_at: '2026-08-10T20:14:17.000Z', deleted_at: null, preview_src: '/images/gallery/nurse-shark-encounter-clear-water-belize.jpg' },
+];
 
 const apiFetch = async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
   const response = await fetch(API.url(path), { ...options, credentials: 'include', headers: { Accept: 'application/json', ...options.headers } });
@@ -66,6 +77,7 @@ const apiFetch = async <T,>(path: string, options: RequestInit = {}): Promise<T>
 };
 
 const dateTime = (value: string) => new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+const fileSize = (value: number) => value >= 1024 * 1024 ? `${(value / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(value / 1024))} KB`;
 const fieldClass = 'mt-2 w-full rounded-xl border border-white/15 bg-[#061a22] px-3 py-3 text-sm text-[#F8F4E8] outline-none focus:border-[#11C7D9]';
 const labelClass = 'block text-sm font-semibold text-[#F8F4E8]/68';
 
@@ -78,6 +90,7 @@ const AnimatedDisclosure: React.FC<{ open: boolean; id: string; children: React.
 const Admin: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [paymentsEnabled, setPaymentsEnabled] = useState(false);
+  const [mediaEnabled, setMediaEnabled] = useState(false);
   const [tab, setTab] = useState<DashboardTab>('reservations');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -99,6 +112,8 @@ const Admin: React.FC = () => {
   const [catalog, setCatalog] = useState<BookingCatalog | null>(null);
   const [catalogDirty, setCatalogDirty] = useState(false);
   const [staffRows, setStaffRows] = useState<Array<{ email: string; display_name: string | null; role: StaffRole; active: number }>>([]);
+  const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([]);
+  const [mediaNextCursor, setMediaNextCursor] = useState<string | null>(null);
 
   const [internalNotes, setInternalNotes] = useState('');
   const [customerMessage, setCustomerMessage] = useState('');
@@ -166,8 +181,10 @@ const Admin: React.FC = () => {
     if (ADMIN_PREVIEW) {
       setSession({ email: 'owner@actiondiversbelize.com', name: 'Action Divers Owner', role: 'owner' });
       setPaymentsEnabled(true);
+      setMediaEnabled(true);
       setReservations(PREVIEW_RESERVATIONS);
       setTemplates(PREVIEW_TEMPLATES);
+      setMediaAssets(PREVIEW_MEDIA);
       setCatalog(DEFAULT_BOOKING_CATALOG);
       applyDetail(PREVIEW_DETAIL);
       setSelectedId(PREVIEW_DETAIL.reservation.id);
@@ -182,6 +199,7 @@ const Admin: React.FC = () => {
     ]).then(([sessionBody, listBody, templateBody, catalogBody]) => {
       setSession(sessionBody.staff);
       setPaymentsEnabled(sessionBody.features.paymentsEnabled);
+      setMediaEnabled(Boolean(sessionBody.features.mediaEnabled));
       setReservations(listBody.reservations);
       setNextCursor(listBody.nextCursor);
       setTemplates(templateBody.templates);
@@ -194,6 +212,19 @@ const Admin: React.FC = () => {
   const run = async (key: string, action: () => Promise<void>) => {
     setWorking(key); setError(''); setNotice('');
     try { await action(); } catch (reason) { setError(reason instanceof Error ? reason.message : 'Action failed.'); } finally { setWorking(''); }
+  };
+
+  const loadMedia = async (cursor = '', append = false) => {
+    if (ADMIN_PREVIEW) {
+      setMediaAssets(PREVIEW_MEDIA);
+      setMediaNextCursor(null);
+      return;
+    }
+    const parameters = new URLSearchParams();
+    if (cursor) parameters.set('cursor', cursor);
+    const body = await apiFetch<{ media: MediaAsset[]; nextCursor: string | null }>(`/admin-api/media?${parameters}`);
+    setMediaAssets((current) => append ? [...current, ...body.media] : body.media);
+    setMediaNextCursor(body.nextCursor);
   };
 
   const saveReservation = () => detail && run('reservation', async () => {
@@ -243,6 +274,7 @@ const Admin: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'auto' });
     if (ADMIN_PREVIEW) {
       if ((next === 'catalog' || next === 'roster') && !catalog) setCatalog(DEFAULT_BOOKING_CATALOG);
+      if (next === 'media') setMediaAssets(PREVIEW_MEDIA);
       if (next === 'staff') setStaffRows([{ email: 'owner@actiondiversbelize.com', display_name: 'Action Divers Owner', role: 'owner', active: 1 }, { email: 'guide@actiondiversbelize.com', display_name: 'Reservations Team', role: 'staff', active: 1 }]);
       return;
     }
@@ -250,6 +282,7 @@ const Admin: React.FC = () => {
       const body = await apiFetch<{ published: BookingCatalog; draft: BookingCatalog | null }>('/admin-api/catalog');
       setCatalog(body.draft || body.published);
     }
+    if (next === 'media' && mediaEnabled) await loadMedia();
     if (next === 'staff' && session?.role === 'owner') {
       const body = await apiFetch<{ staff: typeof staffRows }>('/admin-api/staff'); setStaffRows(body.staff);
     }
@@ -301,7 +334,7 @@ const Admin: React.FC = () => {
         {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Demo preview</strong> · Fictional data · Actions are simulated and reset when the page reloads</span><span className="text-[#F8F4E8]/60">Production access and storage are not connected.</span></div>}
 
         <nav className="flex gap-1 overflow-x-auto border-b border-white/10 py-3" aria-label="Staff sections">
-          {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Daily Roster'], ['catalog', DollarSign, 'Catalog'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (
+          {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Daily Roster'], ['catalog', DollarSign, 'Catalog'], ['media', Images, 'Media'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (
             <button key={value} onClick={() => openTab(value)} className={`inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-bold transition-colors ${tab === value ? 'bg-[#11C7D9]/15 text-[#BDF5FA]' : 'text-[#F8F4E8]/58 hover:bg-white/5 hover:text-[#F8F4E8]'}`}><Icon className="mr-2 h-4 w-4" />{label}</button>
           ))}
         </nav>
@@ -410,6 +443,7 @@ const Admin: React.FC = () => {
         )}
 
         {tab === 'catalog' && catalog && <CompactCatalogPanel catalog={catalog} dirty={catalogDirty} working={Boolean(working)} updateItem={updateCatalogItem} save={saveCatalog} publish={publishCatalog} />}
+        {tab === 'media' && <CompactMediaPanel assets={mediaAssets} setAssets={setMediaAssets} nextCursor={mediaNextCursor} load={loadMedia} run={run} preview={ADMIN_PREVIEW} enabled={mediaEnabled} />}
         {tab === 'templates' && <CompactTemplatesPanel templates={templates} setTemplates={setTemplates} run={run} preview={ADMIN_PREVIEW} />}
         {tab === 'staff' && session.role === 'owner' && <CompactStaffPanel rows={staffRows} setRows={setStaffRows} run={run} preview={ADMIN_PREVIEW} currentEmail={session.email} />}
       </div>
@@ -523,6 +557,85 @@ const DailyRosterPanel: React.FC<{ catalog: BookingCatalog; preview: boolean }> 
     <p className="mt-4 text-sm text-amber-100/80">The roster identifies each booking’s lead guest and participant counts. Individual traveler names are not collected yet.</p>
     {rosterError && <p role="alert" className="mt-5 rounded-xl bg-red-400/10 p-4 text-sm text-red-100">{rosterError}</p>}
     {generated && <div className="mt-7"><div className="flex flex-wrap items-end justify-between gap-4"><div><h3 className="text-xl font-extrabold">{rosterTitle}</h3><p className="mt-1 text-sm text-[#F8F4E8]/55">{date}</p></div><dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm"><div><dt className="text-[#F8F4E8]/50">Reservations</dt><dd className="mt-1 font-bold">{totals.reservations}</dd></div><div><dt className="text-[#F8F4E8]/50">Adults</dt><dd className="mt-1 font-bold">{totals.adults}</dd></div><div><dt className="text-[#F8F4E8]/50">Children</dt><dd className="mt-1 font-bold">{totals.children}</dd></div><div><dt className="text-[#F8F4E8]/50">Tour places</dt><dd className="mt-1 font-bold text-[#11C7D9]">{totals.guests}</dd></div></dl></div>{rows.length === 0 ? <div className="mt-6 border-y border-white/10 py-12 text-center text-[#F8F4E8]/55">No active reservations match the selected activities and date.</div> : <div className="mt-5 overflow-x-auto"><table className="min-w-[1180px] w-full border-collapse text-left text-sm"><thead><tr className="border-b border-white/15 text-xs text-[#B7D2D7]"><th className="px-3 py-3 font-semibold">Activity</th><th className="px-3 py-3 font-semibold">Guest / reference</th><th className="px-3 py-3 font-semibold">Participation</th><th className="px-3 py-3 font-semibold">Contact</th><th className="px-3 py-3 font-semibold">Accommodation</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-3 py-3 font-semibold">Notes</th></tr></thead><tbody>{rows.map((row) => <tr key={row.reservation_item_id} className="border-b border-white/8 align-top"><td className="max-w-[220px] px-3 py-4 font-semibold text-[#D9EEF1]">{row.tour_name}</td><td className="px-3 py-4"><p className="font-bold">{row.customer_name}</p><p className="mt-1 text-xs text-[#11C7D9]">{row.reference}</p></td><td className="px-3 py-4"><p>{row.adults} adults</p><p className="mt-1 text-[#F8F4E8]/58">{row.children} children</p></td><td className="px-3 py-4"><p>{row.customer_email}</p><p className="mt-1 text-[#F8F4E8]/58">{row.customer_phone || 'No phone'}</p></td><td className="px-3 py-4 text-[#F8F4E8]/72">{row.accommodation || 'Not provided'}</td><td className="px-3 py-4"><span className="rounded-full bg-white/8 px-3 py-1 text-xs font-bold">{STATUS_LABELS[row.status] || row.status}</span></td><td className="max-w-sm px-3 py-4 text-[#F8F4E8]/65">{row.customer_notes || 'No customer notes'}{row.internal_notes && <p className="mt-2 text-amber-100"><strong>Staff:</strong> {row.internal_notes}</p>}</td></tr>)}</tbody></table></div>}</div>}
+  </section>;
+};
+
+type MediaPanelProps = {
+  assets: MediaAsset[];
+  setAssets: React.Dispatch<React.SetStateAction<MediaAsset[]>>;
+  nextCursor: string | null;
+  load: (cursor?: string, append?: boolean) => Promise<void>;
+  run: (key: string, action: () => Promise<void>) => Promise<void>;
+  preview: boolean;
+  enabled: boolean;
+};
+
+const CompactMediaPanel: React.FC<MediaPanelProps> = ({ assets, setAssets, nextCursor, load, run, preview, enabled }) => {
+  const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [draft, setDraft] = useState({ title: '', altText: '', category: 'general' });
+
+  const update = (id: string, changes: Partial<MediaAsset>) => setAssets((current) => current.map((asset) => asset.id === id ? { ...asset, ...changes } : asset));
+  const save = (asset: MediaAsset) => run(`media-${asset.id}`, async () => {
+    if (!preview) {
+      const body = await apiFetch<{ asset: MediaAsset }>(`/admin-api/media/${encodeURIComponent(asset.id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: asset.title, altText: asset.alt_text, category: asset.category, status: asset.status }),
+      });
+      update(asset.id, body.asset);
+    }
+    setEditingId(null);
+  });
+  const archive = (asset: MediaAsset) => run(`media-${asset.id}`, async () => {
+    if (!window.confirm(`Archive “${asset.title}”? The stored object will be retained for recovery.`)) return;
+    if (!preview) await apiFetch(`/admin-api/media/${encodeURIComponent(asset.id)}`, { method: 'DELETE' });
+    setAssets((current) => current.filter((candidate) => candidate.id !== asset.id));
+  });
+  const upload = () => run('media-upload', async () => {
+    if (!file) throw new Error('Choose an image to upload.');
+    if (preview) {
+      const timestamp = new Date().toISOString();
+      setAssets((current) => [{
+        id: crypto.randomUUID(), object_key: `preview/${file.name}`, original_name: file.name,
+        title: draft.title, alt_text: draft.altText, category: draft.category, mime_type: file.type,
+        byte_size: file.size, width: null, height: null, checksum_sha256: 'preview-only', status: 'draft',
+        created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: timestamp,
+        updated_at: timestamp, deleted_at: null, preview_src: URL.createObjectURL(file),
+      }, ...current]);
+    } else {
+      let width: number | undefined;
+      let height: number | undefined;
+      try {
+        const bitmap = await createImageBitmap(file);
+        width = bitmap.width;
+        height = bitmap.height;
+        bitmap.close();
+      } catch { /* Dimensions are optional metadata; the Worker still validates the file bytes. */ }
+      const form = new FormData();
+      form.set('file', file);
+      form.set('title', draft.title);
+      form.set('altText', draft.altText);
+      form.set('category', draft.category);
+      if (width && height) { form.set('width', String(width)); form.set('height', String(height)); }
+      await apiFetch('/admin-api/media', { method: 'POST', body: form });
+      await load();
+    }
+    setFile(null);
+    setDraft({ title: '', altText: '', category: 'general' });
+    setAdding(false);
+  });
+
+  return <section className="mt-7 max-w-6xl">
+    <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-start sm:justify-between"><div><h2 className="text-2xl font-extrabold">Media library</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/58">Store approved photography with useful titles and alt text. Public pages remain on their current Git-backed images until the media domain is connected.</p></div><button onClick={() => setAdding((open) => !open)} disabled={!enabled} aria-expanded={adding} aria-controls="media-upload" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#11C7D9] px-5 text-sm font-bold text-[#001219] hover:bg-[#43d4e0] disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> {adding ? 'Close upload' : 'Upload photo'}</button></div>
+    {!enabled && <div className="mt-5 rounded-xl bg-amber-300/10 p-4 text-sm leading-relaxed text-amber-100">R2 media storage is not bound to this API deployment yet. Upload controls will activate after the private bucket binding is deployed.</div>}
+    <div className="mt-5 rounded-xl bg-[#0a3039] p-4 text-sm leading-relaxed text-[#D9EEF1]"><strong>Private foundation:</strong> “Approved” records editorial intent only. It does not publish a new public URL during this phase.</div>
+    <AnimatedDisclosure open={adding && enabled} id="media-upload"><div className="mt-5 rounded-xl bg-[#402b24] p-5"><div className="grid gap-4 md:grid-cols-2"><label className={`${labelClass} md:col-span-2`}>Image file<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-white/15 bg-[#061a22] px-3 py-3 text-sm text-[#F8F4E8] file:mr-4 file:rounded-lg file:border-0 file:bg-[#0d3943] file:px-4 file:py-2 file:font-bold file:text-[#D9EEF1]" /></label><label className={labelClass}>SEO title<input value={draft.title} maxLength={120} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="Nurse Shark Encounter in Belize" className={fieldClass} /></label><label className={labelClass}>Category<select value={draft.category} onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))} className={fieldClass}>{MEDIA_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className={`${labelClass} md:col-span-2`}>Descriptive alt text<textarea rows={3} value={draft.altText} maxLength={240} onChange={(event) => setDraft((current) => ({ ...current, altText: event.target.value }))} placeholder="Describe what is visibly happening in the photograph." className={fieldClass} /></label></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-[#F8F4E8]/58">JPEG, PNG, or WebP · Maximum 10 MB · Duplicate files are rejected</p><button onClick={upload} disabled={!file || !draft.title.trim() || !draft.altText.trim()} className="inline-flex min-h-11 items-center rounded-lg bg-[var(--brand-orange)] px-5 font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> Store in R2</button></div></div></AnimatedDisclosure>
+    <div className="mt-7 divide-y divide-white/10 border-y border-white/10">
+      {assets.length === 0 ? <div className="py-14 text-center"><Images className="mx-auto h-9 w-9 text-[#11C7D9]/55" /><p className="mt-4 font-bold">No managed media yet</p><p className="mt-2 text-sm text-[#F8F4E8]/50">Upload the first approved photograph when you are ready.</p></div> : assets.map((asset) => <article key={asset.id} className="py-5"><div className="flex flex-col gap-4 sm:flex-row sm:items-center"><div className="h-24 w-full shrink-0 overflow-hidden rounded-lg bg-[#06242c] sm:w-36"><img src={asset.preview_src || API.url(`/admin-api/media/${encodeURIComponent(asset.id)}/content`)} crossOrigin={asset.preview_src ? undefined : 'use-credentials'} alt="" loading="lazy" className="h-full w-full object-cover" /></div><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-bold">{asset.title}</h3><span className={`rounded-full px-2 py-1 text-xs font-bold ${asset.status === 'published' ? 'bg-emerald-300/10 text-emerald-200' : 'bg-white/8 text-[#B7D2D7]'}`}>{asset.status === 'published' ? 'Approved' : 'Draft'}</span></div><p className="mt-2 line-clamp-2 text-sm text-[#B7D2D7]">{asset.alt_text}</p><p className="mt-2 text-xs text-[#F8F4E8]/42">{MEDIA_CATEGORIES.find(([value]) => value === asset.category)?.[1] || asset.category} · {fileSize(asset.byte_size)} · {asset.width && asset.height ? `${asset.width} × ${asset.height} · ` : ''}{dateTime(asset.created_at)}</p></div><button onClick={() => setEditingId((id) => id === asset.id ? null : asset.id)} aria-expanded={editingId === asset.id} aria-controls={`media-${asset.id}`} className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Pencil className="mr-2 h-4 w-4" /> Edit</button></div><AnimatedDisclosure open={editingId === asset.id} id={`media-${asset.id}`}><div className="pt-5"><div className="grid gap-4 md:grid-cols-2"><label className={labelClass}>SEO title<input value={asset.title} maxLength={120} onChange={(event) => update(asset.id, { title: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Category<select value={asset.category} onChange={(event) => update(asset.id, { category: event.target.value })} className={fieldClass}>{MEDIA_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className={`${labelClass} md:col-span-2`}>Alt text<textarea rows={3} value={asset.alt_text} maxLength={240} onChange={(event) => update(asset.id, { alt_text: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Editorial status<select value={asset.status} onChange={(event) => update(asset.id, { status: event.target.value as MediaAsset['status'] })} className={fieldClass}><option value="draft">Draft</option><option value="published">Approved for future publishing</option></select></label><div className="flex items-end justify-end gap-2"><button onClick={() => archive(asset)} className="inline-flex min-h-10 items-center rounded-lg px-4 text-sm font-bold text-red-200 hover:bg-red-400/10"><Trash2 className="mr-2 h-4 w-4" /> Archive</button><button onClick={() => save(asset)} disabled={!asset.title.trim() || !asset.alt_text.trim()} className="inline-flex min-h-10 items-center rounded-lg bg-[#11C7D9] px-4 text-sm font-bold text-[#001219] disabled:opacity-40"><Save className="mr-2 h-4 w-4" /> Save</button></div></div></div></AnimatedDisclosure></article>)}
+    </div>
+    {nextCursor && <div className="mt-6 text-center"><button onClick={() => run('media-more', () => load(nextCursor, true))} className="min-h-10 rounded-lg bg-[#0d3943] px-5 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]">Load 24 more</button></div>}
   </section>;
 };
 

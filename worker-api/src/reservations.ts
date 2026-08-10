@@ -2,10 +2,11 @@ import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalo
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { paymentIsAvailable } from './reservationRules';
+import { handleAdminMedia, MediaEnv } from './media';
 
 type Json = (body: unknown, status: number) => Response;
 
-export interface ReservationEnv extends PaymentEnv, AccessEnv {
+export interface ReservationEnv extends PaymentEnv, AccessEnv, MediaEnv {
   RESEND_API_KEY: string;
   TO_EMAIL: string;
   FROM_EMAIL: string;
@@ -774,7 +775,7 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
   let staff: StaffIdentity;
   try { staff = await requireStaff(request, env); } catch (error) { return json({ ok: false, error: error instanceof Error ? error.message : 'Staff access denied.' }, staffErrorStatus(error)); }
   if (pathname === '/admin-api/session' && request.method === 'GET') {
-    return json({ ok: true, staff, features: { paymentsEnabled: env.PAYMENTS_ENABLED === 'true' } }, 200);
+    return json({ ok: true, staff, features: { paymentsEnabled: env.PAYMENTS_ENABLED === 'true', mediaEnabled: Boolean(env.MEDIA_BUCKET) } }, 200);
   }
   if (pathname === '/admin-api/roster' && request.method === 'GET') {
     const db = database(env);
@@ -850,6 +851,12 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
   }
   const catalogMatch = /^\/admin-api\/catalog(?:\/(publish))?$/.exec(pathname);
   if (catalogMatch) return adminCatalog(request, env, staff, json, catalogMatch[1] ?? null);
+  const mediaMatch = /^\/admin-api\/media(?:\/([^/]+)(?:\/(content))?)?$/.exec(pathname);
+  if (mediaMatch) {
+    let assetId: string | undefined;
+    try { assetId = mediaMatch[1] ? decodeURIComponent(mediaMatch[1]) : undefined; } catch { return json({ ok: false, error: 'Invalid media identifier.' }, 400); }
+    return handleAdminMedia(request, env, staff, json, assetId, mediaMatch[2]);
+  }
   const templateMatch = /^\/admin-api\/templates(?:\/([^/]+))?$/.exec(pathname);
   if (templateMatch) return adminTemplates(request, env, staff, json, templateMatch[1]);
   const staffMatch = /^\/admin-api\/staff(?:\/([^/]+))?$/.exec(pathname);
