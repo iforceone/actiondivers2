@@ -33,6 +33,9 @@ const CATEGORY_VALUES = new Set([
   'nature', 'courses', 'transfers', 'general',
 ]);
 const STATUS_VALUES = new Set(['draft', 'published', 'archived']);
+const PUBLIC_GALLERY_CATEGORIES = new Set([
+  'diving', 'snorkeling', 'fishing', 'boating', 'mainland', 'dining', 'nature',
+]);
 
 const text = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : '';
 const integer = (value: unknown, min: number, max: number) => {
@@ -58,6 +61,8 @@ const slugify = (value: string) => value
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-+|-+$/g, '')
   .slice(0, 72) || 'action-divers-photo';
+
+const extensionForMime = (mime: string) => mime === 'image/png' ? 'png' : mime === 'image/webp' ? 'webp' : 'jpg';
 
 const sha256Hex = async (buffer: ArrayBuffer) => {
   const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
@@ -246,6 +251,76 @@ async function mediaContent(request: Request, env: MediaEnv, assetId: string, js
     headers.set('Vary', 'Origin');
   }
   return new Response(object.body, { headers });
+}
+
+async function listPublishedMedia(request: Request, env: MediaEnv) {
+  const rows = await database(env).prepare(`SELECT id, title, alt_text, category, mime_type, width, height, created_at
+    FROM media_assets
+    WHERE status = 'published' AND deleted_at IS NULL
+    ORDER BY created_at DESC, id DESC
+    LIMIT 200`).all<Pick<MediaAssetRow, 'id' | 'title' | 'alt_text' | 'category' | 'mime_type' | 'width' | 'height' | 'created_at'>>();
+  const origin = new URL(request.url).origin;
+  const media = rows.results
+    .filter((asset) => PUBLIC_GALLERY_CATEGORIES.has(asset.category))
+    .map((asset) => ({
+      id: asset.id,
+      src: `${origin}/media/${asset.id}/${slugify(asset.title)}.${extensionForMime(asset.mime_type)}`,
+      title: asset.title,
+      alt: asset.alt_text,
+      category: asset.category,
+      width: asset.width,
+      height: asset.height,
+    }));
+  return new Response(JSON.stringify({ ok: true, media }), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+      'Access-Control-Allow-Origin': '*',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  });
+}
+
+async function publishedMediaContent(request: Request, env: MediaEnv, assetId: string, json: Json) {
+  const row = await database(env).prepare(`SELECT object_key FROM media_assets
+    WHERE id = ? AND status = 'published' AND deleted_at IS NULL`)
+    .bind(assetId).first<{ object_key: string }>();
+  if (!row) return json({ ok: false, error: 'Published media not found.' }, 404);
+  const object = await bucket(env).get(row.object_key);
+  if (!object) return json({ ok: false, error: 'Published media not found.' }, 404);
+  if (request.headers.get('If-None-Match') === object.httpEtag) {
+    return new Response(null, { status: 304, headers: { ETag: object.httpEtag } });
+  }
+  const headers = new Headers();
+  object.writeHttpMetadata(headers);
+  headers.set('ETag', object.httpEtag);
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  headers.set('Access-Control-Allow-Origin', '*');
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('Content-Length', String(object.size));
+  return new Response(request.method === 'HEAD' ? null : object.body, { headers });
+}
+
+export async function handlePublicMedia(
+  request: Request,
+  env: MediaEnv,
+  json: Json,
+): Promise<Response | null> {
+  const { pathname } = new URL(request.url);
+  try {
+    if (pathname === '/media') {
+      return request.method === 'GET' ? listPublishedMedia(request, env) : json({ ok: false, error: 'Method not allowed.' }, 405);
+    }
+    const match = /^\/media\/([0-9a-f-]{36})\/[^/]+\.(?:jpe?g|png|webp)$/i.exec(pathname);
+    if (!match) return null;
+    if (request.method !== 'GET' && request.method !== 'HEAD') return json({ ok: false, error: 'Method not allowed.' }, 405);
+    return publishedMediaContent(request, env, match[1], json);
+  } catch (error) {
+    console.error('Public media operation failed', error);
+    const message = error instanceof Error && error.message.includes('not configured') ? error.message : mediaDatabaseError(error);
+    return json({ ok: false, error: message }, 503);
+  }
 }
 
 export async function handleAdminMedia(

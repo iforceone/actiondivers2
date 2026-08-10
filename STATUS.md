@@ -93,3 +93,14 @@ Frontend and Worker TypeScript, production build, nine Worker rule tests, readin
 - Configured Worker-side Access issuer/audience verification and added the temporary account as an active owner in both D1 databases.
 - Enabled the staff API gate and production-build `/admin` route. No staff link was added to public navigation, and the browser bundle contains no staff credentials or API keys.
 - Reservations and payments remain disabled. The previous public site Worker version remains deployed; current website changes are still branch-only.
+
+## R2 media and gallery checkpoint - 2026-08-10
+
+- Created separate private production and preview R2 buckets and bound production media storage to the API Worker.
+- Added additive D1 media metadata and audit storage plus Access-protected staff upload, edit, preview, and recoverable archive controls.
+- Added a public read-only feed that exposes only published assets; original objects remain private and are served with immutable caching, ETags, and MIME hardening.
+- Imported ten owner-supplied photographs with descriptive titles, alt text, activity categories, dimensions, checksums, and audit records.
+- Updated the public gallery to load published R2 photography first and preserve the existing Git-backed gallery as an automatic outage fallback.
+- Kept logos, favicons, social-sharing assets, and interface graphics in Git. No custom media domain or public website deployment was performed.
+
+Frontend and Worker TypeScript, all nine Worker rules tests, production build, metadata generation, readiness checks, Worker dry-run, live media feed, image delivery, cache validation, missing-image handling, and Access protection checks pass. The API Worker media route is deployed; the website remains branch-only for visual approval.

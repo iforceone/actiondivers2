@@ -2,7 +2,7 @@ import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalo
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { paymentIsAvailable } from './reservationRules';
-import { handleAdminMedia, MediaEnv } from './media';
+import { handleAdminMedia, handlePublicMedia, MediaEnv } from './media';
 
 type Json = (body: unknown, status: number) => Response;
 
@@ -875,6 +875,8 @@ export async function handleReservationRoute(
   originAllowed: boolean,
 ): Promise<Response | null> {
   const { pathname } = new URL(request.url);
+  const publicMedia = await handlePublicMedia(request, env, json);
+  if (publicMedia) return publicMedia;
   if (pathname.startsWith('/admin-api/')) {
     if (!originAllowed) return json({ ok: false, error: 'Forbidden.' }, 403);
     return handleAdmin(request, env, json, pathname);

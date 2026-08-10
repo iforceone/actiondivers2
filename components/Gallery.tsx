@@ -2,9 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, Grid3x3, ImageOff, List, Share2, X } from 'lucide-react';
 import { GALLERY_IMAGES } from '../utils/imageOptimization';
 import { GalleryImage } from '../types';
+import { API } from '../config';
 
 const INITIAL_VISIBLE = 16;
 const LOAD_STEP = 12;
+const MANAGED_FALLBACK_IDS = new Set(Array.from({ length: 10 }, (_, index) => `gallery-${index + 70}`));
 
 const categories = [
   { value: 'all', label: 'All' },
@@ -40,6 +42,7 @@ const cleanTitle = (title: string) => {
 };
 
 const Gallery: React.FC = () => {
+  const [managedImages, setManagedImages] = useState<GalleryImage[]>([]);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'masonry'>('masonry');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -47,9 +50,21 @@ const Gallery: React.FC = () => {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
 
+  const galleryImages = useMemo(() => {
+    const seen = new Set<string>();
+    const staticImages = managedImages.length > 0
+      ? GALLERY_IMAGES.filter((image) => !MANAGED_FALLBACK_IDS.has(image.id))
+      : GALLERY_IMAGES;
+    return [...managedImages, ...staticImages].filter((image) => {
+      const identity = `${image.src}|${image.title}`;
+      if (seen.has(identity)) return false;
+      seen.add(identity);
+      return true;
+    });
+  }, [managedImages]);
   const filteredImages = useMemo(
-    () => GALLERY_IMAGES.filter((image) => selectedCategory === 'all' || image.category === selectedCategory),
-    [selectedCategory],
+    () => galleryImages.filter((image) => selectedCategory === 'all' || image.category === selectedCategory),
+    [galleryImages, selectedCategory],
   );
   const visibleImages = filteredImages.slice(0, visibleCount);
   const selectedIndex = selectedImage ? filteredImages.findIndex((image) => image.id === selectedImage.id) : -1;
@@ -57,6 +72,39 @@ const Gallery: React.FC = () => {
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    if (!API.isConfigured()) return;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 8000);
+    fetch(API.url('/media'), { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Managed media is unavailable.');
+        return response.json() as Promise<{ media?: unknown }>;
+      })
+      .then((body) => {
+        if (!Array.isArray(body.media)) return;
+        const allowedCategories = new Set(categories.slice(1).map((category) => category.value));
+        const valid = body.media.filter((asset): asset is GalleryImage => {
+          if (!asset || typeof asset !== 'object') return false;
+          const candidate = asset as Partial<GalleryImage>;
+          return typeof candidate.id === 'string'
+            && typeof candidate.src === 'string'
+            && candidate.src.startsWith('https://')
+            && typeof candidate.title === 'string'
+            && typeof candidate.alt === 'string'
+            && typeof candidate.category === 'string'
+            && allowedCategories.has(candidate.category);
+        });
+        setManagedImages(valid);
+      })
+      .catch(() => undefined)
+      .finally(() => window.clearTimeout(timeout));
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedImage) return;
@@ -98,14 +146,23 @@ const Gallery: React.FC = () => {
     }
   };
 
-  const downloadImage = (image: GalleryImage) => {
-    const link = document.createElement('a');
+  const downloadImage = async (image: GalleryImage) => {
     const extension = image.src.split('.').pop()?.split('?')[0] || 'jpg';
-    link.href = image.src;
-    link.download = `${cleanTitle(image.title).replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.${extension}`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    const filename = `${cleanTitle(image.title).replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.${extension}`;
+    try {
+      const response = await fetch(image.src);
+      if (!response.ok) throw new Error('Download failed.');
+      const objectUrl = URL.createObjectURL(await response.blob());
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(image.src, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -121,18 +178,18 @@ const Gallery: React.FC = () => {
             <div className="flex items-center gap-3 self-start lg:self-auto">
               <span className="text-sm text-[#F8F4E8]/50">{filteredImages.length} photos</span>
               <div className="flex rounded-lg border border-white/15 bg-white/5 p-1">
-                <button type="button" onClick={() => setViewMode('grid')} aria-label="Square grid view" aria-pressed={viewMode === 'grid'} className={`p-2.5 transition-colors ${viewMode === 'grid' ? 'rounded-md bg-[var(--brand-orange)] text-white' : 'text-[#F8F4E8]/50 hover:text-white'}`}>
+                <button type="button" onClick={() => setViewMode('grid')} aria-label="Square grid view" aria-pressed={viewMode === 'grid'} className={`min-h-11 min-w-11 p-3 transition-colors ${viewMode === 'grid' ? 'rounded-md bg-[var(--brand-orange)] text-white' : 'text-[#F8F4E8]/50 hover:text-white'}`}>
                   <Grid3x3 className="h-4 w-4" />
                 </button>
-                <button type="button" onClick={() => setViewMode('masonry')} aria-label="Masonry view" aria-pressed={viewMode === 'masonry'} className={`p-2.5 transition-colors ${viewMode === 'masonry' ? 'rounded-md bg-[var(--brand-orange)] text-white' : 'text-[#F8F4E8]/50 hover:text-white'}`}>
+                <button type="button" onClick={() => setViewMode('masonry')} aria-label="Masonry view" aria-pressed={viewMode === 'masonry'} className={`min-h-11 min-w-11 p-3 transition-colors ${viewMode === 'masonry' ? 'rounded-md bg-[var(--brand-orange)] text-white' : 'text-[#F8F4E8]/50 hover:text-white'}`}>
                   <List className="h-4 w-4" />
                 </button>
               </div>
             </div>
           </div>
-          <div className="mt-8 flex gap-2 overflow-x-auto pb-2" aria-label="Filter gallery by category">
+          <div className="mt-8 flex gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter gallery by category">
             {categories.map((category) => (
-              <button key={category.value} type="button" onClick={() => setSelectedCategory(category.value)} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] transition-colors ${selectedCategory === category.value ? 'border-[#11C7D9] bg-[#11C7D9] text-[#001219]' : 'border-white/15 bg-white/5 text-[#F8F4E8]/60 hover:border-[#11C7D9]/60 hover:text-white'}`}>
+              <button key={category.value} type="button" onClick={() => setSelectedCategory(category.value)} className={`min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] transition-colors ${selectedCategory === category.value ? 'border-[#11C7D9] bg-[#11C7D9] text-[#001219]' : 'border-white/15 bg-white/5 text-[#F8F4E8]/60 hover:border-[#11C7D9]/60 hover:text-white'}`}>
                 {category.label}
               </button>
             ))}
@@ -154,7 +211,7 @@ const Gallery: React.FC = () => {
                     <span className="text-xs uppercase tracking-widest">Photo unavailable</span>
                   </span>
                 ) : (
-                  <img src={image.src} alt={cleanTitle(image.title)} loading={index < 4 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" className={`w-full object-cover transition duration-500 group-hover:scale-[1.03] ${viewMode === 'grid' ? 'h-full' : 'h-auto'} ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoadedImages((previous) => new Set(previous).add(image.src))} onError={() => setFailedImages((previous) => new Set(previous).add(image.src))} />
+                  <img src={image.src} alt={image.alt || cleanTitle(image.title)} loading={index < 4 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" className={`w-full object-cover transition duration-500 group-hover:scale-[1.03] ${viewMode === 'grid' ? 'h-full' : 'h-auto'} ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoadedImages((previous) => new Set(previous).add(image.src))} onError={() => setFailedImages((previous) => new Set(previous).add(image.src))} />
                 )}
                 {!failed && <span className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 via-black/55 to-transparent p-5 pt-16 transition-transform duration-300 group-hover:translate-y-0 group-focus-visible:translate-y-0"><span className="block font-bold text-white">{cleanTitle(image.title)}</span><span className="mt-1 block text-xs capitalize text-white/65">{categories.find((category) => category.value === image.category)?.label || image.category}</span></span>}
               </button>
@@ -176,7 +233,7 @@ const Gallery: React.FC = () => {
           <button type="button" onClick={(event) => { event.stopPropagation(); showPrevious(); }} className="absolute left-3 z-20 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 md:left-8" aria-label="Previous image"><ChevronLeft className="h-7 w-7" /></button>
           <button type="button" onClick={(event) => { event.stopPropagation(); showNext(); }} className="absolute right-3 z-20 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20 md:right-8" aria-label="Next image"><ChevronRight className="h-7 w-7" /></button>
           <div className="flex max-h-[92vh] max-w-6xl flex-col items-center" onClick={(event) => event.stopPropagation()}>
-            <img src={selectedImage.src} alt={cleanTitle(selectedImage.title)} decoding="async" className="max-h-[72vh] max-w-full rounded-xl object-contain" />
+            <img src={selectedImage.src} alt={selectedImage.alt || cleanTitle(selectedImage.title)} decoding="async" className="max-h-[72vh] max-w-full rounded-xl object-contain" />
             <div className="mt-5 text-center">
               <p className="text-xs uppercase tracking-[0.28em] text-[#11C7D9]">{selectedIndex + 1} / {filteredImages.length}</p>
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight">{cleanTitle(selectedImage.title)}</h2>
