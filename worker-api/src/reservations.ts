@@ -10,6 +10,7 @@ export interface ReservationEnv extends PaymentEnv, AccessEnv, MediaEnv {
   RESEND_API_KEY: string;
   TO_EMAIL: string;
   FROM_EMAIL: string;
+  ALLOWED_ORIGINS: string;
   PAYMENT_SITE_ORIGIN: string;
   RESERVATIONS_V2_ENABLED?: string;
   STAFF_PORTAL_ENABLED?: string;
@@ -78,7 +79,13 @@ const TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 const RESERVATION_STATUSES = new Set(['new', 'reviewing', 'needs_contact', 'quoted', 'awaiting_payment', 'paid', 'cancelled', 'completed']);
 const text = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : '';
 const nowIso = () => new Date().toISOString();
-const siteOrigin = (env: ReservationEnv) => env.PAYMENT_SITE_ORIGIN.replace(/\/$/, '');
+const siteOrigin = (env: ReservationEnv, request?: Request) => {
+  const fallback = env.PAYMENT_SITE_ORIGIN.replace(/\/$/, '');
+  const requestedOrigin = request?.headers.get('Origin')?.replace(/\/$/, '') ?? '';
+  if (!requestedOrigin.startsWith('https://')) return fallback;
+  const allowedOrigins = env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim().replace(/\/$/, '')).filter(Boolean);
+  return allowedOrigins.includes(requestedOrigin) ? requestedOrigin : fallback;
+};
 
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -302,7 +309,7 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
   const id = crypto.randomUUID();
   const reference = reservationReference();
   const portalToken = randomToken();
-  const portalUrl = `${siteOrigin(env)}/reservation/${portalToken}`;
+  const portalUrl = `${siteOrigin(env, request)}/reservation/${portalToken}`;
   const estimatedTotalCents = normalizedItems.reduce((total, item) => total + estimateBookingItemCents(item.catalog, item.adults + item.children, item.details), 0);
   const portalExpiresAt = new Date(Date.now() + 180 * 86_400_000).toISOString();
   const responseBody = { ok: true, reference, portalUrl, emailStatus: 'pending' };
@@ -458,7 +465,7 @@ async function rotatePortalToken(db: D1Database, reservationId: string, quoteId:
     token,
     hash: await tokenHash(token),
     expiresAt,
-    revoke: db.prepare('UPDATE customer_access_tokens SET active = 0, revoked_at = ? WHERE reservation_id = ? AND active = 1').bind(timestamp, reservationId),
+    revoke: db.prepare('UPDATE customer_access_tokens SET active = 0, revoked_at = ? WHERE reservation_id = ? AND quote_id IS NOT NULL AND active = 1').bind(timestamp, reservationId),
     insert: db.prepare(`INSERT INTO customer_access_tokens
       (id, reservation_id, quote_id, token_hash, active, expires_at, created_at) VALUES (?, ?, ?, ?, 1, ?, ?)`)
       .bind(crypto.randomUUID(), reservationId, quoteId, await tokenHash(token), expiresAt, timestamp),
@@ -504,7 +511,7 @@ async function sendQuote(request: Request, env: ReservationEnv, staff: StaffIden
   }
   const timestamp = nowIso();
   const portal = await rotatePortalToken(db, reservationId, quote.id, timestamp);
-  const portalUrl = `${siteOrigin(env)}/reservation/${portal.token}`;
+  const portalUrl = `${siteOrigin(env, request)}/reservation/${portal.token}`;
   const quoteExpiresAt = payable ? new Date(Date.now() + validForDays * 86_400_000).toISOString() : null;
   const statements = [
     portal.revoke,
