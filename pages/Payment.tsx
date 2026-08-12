@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Clock3, CreditCard, Loader2, LockKeyhole, MessageCircle, ShieldCheck, TriangleAlert } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Clock3, CreditCard, Loader2, LockKeyhole, Mail, ShieldCheck, TriangleAlert } from 'lucide-react';
 import SEO from '../components/SEO';
-import { API, buildWhatsAppUrl } from '../config';
-import { isAdminPreviewEnabled } from '../utils/adminPreview';
+import { API, CONTACT } from '../config';
 
 interface PaymentDetails {
   reference: string;
@@ -22,17 +21,6 @@ interface PaymentResponse {
   redirectUrl?: string;
   error?: string;
 }
-
-const DEV_PAYMENT: PaymentDetails = {
-  reference: 'AD-PREVIEW-001',
-  customerName: 'Guest Preview',
-  description: 'Confirmed Action Divers tour reservation',
-  amount: '450.00',
-  currency: 'USD',
-  status: 'created',
-  expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(),
-  paidAt: null,
-};
 
 function isGatewayUrl(value: string): boolean {
   try {
@@ -102,12 +90,10 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
       <h1 className="mt-6 text-3xl font-extrabold tracking-[-0.03em] text-[#F8F4E8]">Payment link unavailable</h1>
       <p className="mx-auto mt-4 max-w-md leading-relaxed text-[#F8F4E8]/75">{message}</p>
       <a
-        href={buildWhatsAppUrl('Hi Action Divers! I need help with my reservation payment link.')}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-colors hover:bg-[#20bd5a]"
+        href={`mailto:${CONTACT.email}?subject=Payment%20link%20help`}
+        className="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-orange)] px-6 py-3 font-bold text-white transition-colors hover:brightness-110"
       >
-        <MessageCircle className="h-5 w-5" /> Contact us on WhatsApp
+        <Mail className="h-5 w-5" /> Email Action Divers
       </a>
     </div>
   </PaymentShell>
@@ -115,14 +101,12 @@ const ErrorState: React.FC<{ message: string }> = ({ message }) => (
 
 export const PaymentPage: React.FC = () => {
   const { token = '' } = useParams();
-  const isPreview = isAdminPreviewEnabled() && token === 'preview';
-  const [payment, setPayment] = useState<PaymentDetails | null>(isPreview ? DEV_PAYMENT : null);
-  const [loading, setLoading] = useState(!isPreview);
+  const [payment, setPayment] = useState<PaymentDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isPreview) return;
     let active = true;
     fetch(API.url(`/payments/${encodeURIComponent(token)}`))
       .then(async (response) => {
@@ -135,13 +119,9 @@ export const PaymentPage: React.FC = () => {
     return () => {
       active = false;
     };
-  }, [isPreview, token]);
+  }, [token]);
 
   const startPayment = async () => {
-    if (isPreview) {
-      setError('This is a visual demonstration. No bank connection or payment will be started.');
-      return;
-    }
     setStarting(true);
     setError('');
     try {
@@ -165,7 +145,6 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <PaymentShell>
-      {isPreview && <div role="status" className="mb-5 rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm text-[#C8F5F8]"><strong>Payment preview:</strong> fictional reservation and amount. No card service is connected.</div>}
       <div className="grid overflow-hidden rounded-2xl bg-[#06212a] lg:grid-cols-[0.88fr_1.12fr]">
         <div className="relative min-h-[300px] overflow-hidden lg:min-h-[650px]">
           <img
@@ -242,13 +221,11 @@ export const PaymentPage: React.FC = () => {
 export const PaymentReturnPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') ?? '';
-  const isPreview = isAdminPreviewEnabled() && token === 'preview-paid';
-  const [payment, setPayment] = useState<PaymentDetails | null>(isPreview ? { ...DEV_PAYMENT, status: 'paid', paidAt: new Date().toISOString() } : null);
-  const [loading, setLoading] = useState(!isPreview);
+  const [payment, setPayment] = useState<PaymentDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (isPreview) return;
     let active = true;
     const verify = async () => {
       try {
@@ -266,7 +243,7 @@ export const PaymentReturnPage: React.FC = () => {
     return () => {
       active = false;
     };
-  }, [isPreview, token]);
+  }, [token]);
 
   if (loading) return <LoadingState />;
   if (!payment) return <ErrorState message={error || 'We could not verify this payment yet.'} />;
@@ -274,7 +251,6 @@ export const PaymentReturnPage: React.FC = () => {
 
   return (
     <PaymentShell>
-      {isPreview && <div role="status" className="mx-auto mb-5 max-w-2xl rounded-xl bg-[#11C7D9]/10 px-5 py-4 text-sm text-[#C8F5F8]"><strong>Payment result preview:</strong> this receipt and payment status are fictional. No bank transaction occurred.</div>}
       <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-[#06212a] p-8 text-center sm:p-12">
         {payment.status === 'paid' ? (
           <CheckCircle2 className="mx-auto h-14 w-14 text-green-400" />
@@ -294,11 +270,9 @@ export const PaymentReturnPage: React.FC = () => {
           </div>
         </div>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-          <Link to={isPreview ? '/pay/preview' : `/reservation/${encodeURIComponent(token)}`} className="rounded-full bg-[#F8F4E8] px-6 py-3 font-bold text-[#001219] transition-colors hover:bg-white">Return to reservation</Link>
+          <Link to={`/reservation/${encodeURIComponent(token)}`} className="rounded-full bg-[#F8F4E8] px-6 py-3 font-bold text-[#001219] transition-colors hover:bg-white">Return to reservation</Link>
           <a
-            href={buildWhatsAppUrl(`Hi Action Divers! I have a question about payment ${payment.reference}.`)}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`mailto:${CONTACT.email}?subject=${encodeURIComponent(`Payment question ${payment.reference}`)}`}
             className="rounded-full border border-white/20 px-6 py-3 font-bold text-[#F8F4E8] transition-colors hover:border-white/40"
           >
             Contact Action Divers

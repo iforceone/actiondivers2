@@ -780,18 +780,19 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
   if (pathname === '/admin-api/roster' && request.method === 'GET') {
     const db = database(env);
     const url = new URL(request.url);
-    const date = text(url.searchParams.get('date'), 10);
+    const dateFrom = text(url.searchParams.get('dateFrom'), 10);
+    const dateTo = text(url.searchParams.get('dateTo'), 10);
     const tours = [...new Set(url.searchParams.getAll('tour').map((value) => text(value, 80)).filter(Boolean))];
-    if (!DATE_RE.test(date) || tours.length < 1 || tours.length > 80) return json({ ok: false, error: 'Choose a valid date and at least one activity.' }, 422);
+    if (!DATE_RE.test(dateFrom) || !DATE_RE.test(dateTo) || dateFrom > dateTo || tours.length < 1 || tours.length > 80) return json({ ok: false, error: 'Choose a valid date range and at least one activity.' }, 422);
     const placeholders = tours.map(() => '?').join(',');
     const rows = await db.prepare(`SELECT ri.id AS reservation_item_id, ri.name_snapshot AS tour_name, ri.requested_date,
       ri.adults, ri.children, r.id AS reservation_id, r.reference, r.status, r.customer_name, r.customer_email,
       r.customer_phone, r.accommodation, r.diving_experience, r.customer_notes, r.internal_notes
       FROM reservation_items ri
       JOIN reservations r ON r.id = ri.reservation_id
-      WHERE ri.requested_date = ? AND (ri.catalog_item_id IN (${placeholders}) OR ri.tour_id IN (${placeholders})) AND r.status != 'cancelled'
-      ORDER BY ri.name_snapshot COLLATE NOCASE, r.customer_name COLLATE NOCASE, r.reference`)
-      .bind(date, ...tours, ...tours).all();
+      WHERE ri.requested_date BETWEEN ? AND ? AND (ri.catalog_item_id IN (${placeholders}) OR ri.tour_id IN (${placeholders})) AND r.status != 'cancelled'
+      ORDER BY ri.requested_date, ri.name_snapshot COLLATE NOCASE, r.customer_name COLLATE NOCASE, r.reference`)
+      .bind(dateFrom, dateTo, ...tours, ...tours).all();
     const reservationIds = new Set<string>();
     const totals = rows.results.reduce<{ adults: number; children: number }>((total, row) => {
       const value = row as { reservation_id?: string; adults?: number; children?: number };
@@ -826,15 +827,18 @@ async function handleAdmin(request: Request, env: ReservationEnv, json: Json, pa
     if (dateConditions.length > 1) conditions.push(`EXISTS (SELECT 1 FROM reservation_items ri WHERE ${dateConditions.join(' AND ')})`);
     if (tour) { conditions.push('EXISTS (SELECT 1 FROM reservation_items ri WHERE ri.reservation_id = reservations.id AND (ri.catalog_item_id = ? OR ri.tour_id = ?))'); values.push(tour, tour); }
     const cursorParts = cursor.split('|');
-    if (cursorParts.length === 2 && cursorParts[0] && cursorParts[1]) {
-      conditions.push('(updated_at < ? OR (updated_at = ? AND id < ?))');
-      values.push(cursorParts[0], cursorParts[0], cursorParts[1]);
+    if (cursorParts.length === 3 && (cursorParts[0] === '0' || cursorParts[0] === '1') && cursorParts[1] && cursorParts[2]) {
+      const priority = Number(cursorParts[0]);
+      conditions.push(`((CASE WHEN status = 'new' THEN 0 ELSE 1 END) > ? OR ((CASE WHEN status = 'new' THEN 0 ELSE 1 END) = ? AND ((CASE WHEN status = 'new' THEN created_at ELSE updated_at END) < ? OR ((CASE WHEN status = 'new' THEN created_at ELSE updated_at END) = ? AND id < ?))))`);
+      values.push(priority, priority, cursorParts[1], cursorParts[1], cursorParts[2]);
     }
-    const sql = `SELECT id, reference, status, request_kind, customer_name, customer_email, adults, children, estimated_total_cents, current_quote_version, version, created_at, updated_at FROM reservations ${conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''} ORDER BY updated_at DESC, id DESC LIMIT 51`;
+    const sql = `SELECT id, reference, status, request_kind, customer_name, customer_email, adults, children, estimated_total_cents, current_quote_version, version, created_at, updated_at FROM reservations ${conditions.length ? `WHERE ${conditions.join(' AND ')}` : ''} ORDER BY CASE WHEN status = 'new' THEN 0 ELSE 1 END, CASE WHEN status = 'new' THEN created_at ELSE updated_at END DESC, id DESC LIMIT 51`;
     const rows = await db.prepare(sql).bind(...values).all<ReservationSummaryRow>();
     const page = rows.results.slice(0, 50);
     const last = page[page.length - 1];
-    return json({ ok: true, reservations: page, nextCursor: rows.results.length > 50 && last ? `${last.updated_at}|${last.id}` : null }, 200);
+    const lastPriority = last?.status === 'new' ? 0 : 1;
+    const lastSortTime = last?.status === 'new' ? last.created_at : last?.updated_at;
+    return json({ ok: true, reservations: page, nextCursor: rows.results.length > 50 && last && lastSortTime ? `${lastPriority}|${lastSortTime}|${last.id}` : null }, 200);
   }
   const reservationMatch = /^\/admin-api\/reservations\/([^/]+)(?:\/(quote-draft|send-update|send-for-payment|status))?$/.exec(pathname);
   if (reservationMatch) {

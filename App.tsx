@@ -22,11 +22,9 @@ import SEO, { SITE_URL } from './components/SEO';
 import { INITIAL_TOURS } from './constants';
 import { BLOG_POSTS } from './data/blogPosts';
 import { CONTACT, API, buildWhatsAppUrl } from './config';
-import { isAdminPreviewEnabled } from './utils/adminPreview';
 
 const STAFF_PORTAL_BUILD_ENABLED = import.meta.env.DEV || import.meta.env.VITE_STAFF_PORTAL_ENABLED === 'true';
-const ADMIN_PREVIEW_ENABLED = isAdminPreviewEnabled();
-const Admin = STAFF_PORTAL_BUILD_ENABLED || ADMIN_PREVIEW_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
+const Admin = STAFF_PORTAL_BUILD_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
 const Gallery = React.lazy(() => import('./pages/Gallery'));
 const CustomerPortal = React.lazy(() => import('./pages/CustomerPortal'));
 const PaymentPage = React.lazy(() => import('./pages/Payment').then((module) => ({ default: module.PaymentPage })));
@@ -49,6 +47,7 @@ const Footer = () => (
         <p className="text-[#F8F4E8]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
           Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. Visit our dive shop and tour desk 5 miles north of town at La Perla Del Caribe.
         </p>
+        <p className="mt-4 text-sm font-semibold text-[#8DE7EF]">Scuba courses taught by a PADI-certified instructor.</p>
       </div>
       <div>
         <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8] md:mb-6">Contact</h4>
@@ -559,7 +558,7 @@ const App: React.FC = () => {
             {STAFF_PORTAL_BUILD_ENABLED && Admin
               ? <Route path="/admin" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />
               : <Route path="/admin" element={<Navigate to="/" replace />} />}
-            {ADMIN_PREVIEW_ENABLED && Admin && <Route path="/admin/preview" element={<React.Suspense fallback={null}><Admin /></React.Suspense>} />}
+            <Route path="/admin/preview" element={<Navigate to="/admin" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

@@ -23,7 +23,7 @@ PAYMENT_ENVIRONMENT = "sandbox"
 PAYMENT_SITE_ORIGIN = "https://actiondivers2.davebze.workers.dev"
 # Launch gates. Staff is enabled only after D1 and Cloudflare Access verification;
 # reservations and payments stay off until their remaining launch checks pass.
-RESERVATIONS_V2_ENABLED = "false"
+RESERVATIONS_V2_ENABLED = "true"
 STAFF_PORTAL_ENABLED = "true"
 PAYMENTS_ENABLED = "false"
 # Non-secret Cloudflare Access configuration for the path-protected site and API

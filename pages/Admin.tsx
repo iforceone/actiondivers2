@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AlertCircle, CalendarDays, ChevronDown, ChevronRight, ClipboardList, DollarSign, Download, FileText, Images, ListChecks, Loader2, Pencil, Plus, Printer, RefreshCw, Save, Search, Send, SlidersHorizontal, Trash2, UploadCloud, Users } from 'lucide-react';
 import { API } from '../config';
 import { BookingCatalog, BookingCatalogItem, BookingItemDetails, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, formatUsd } from '../shared/bookingCatalog';
-import { isAdminPreviewEnabled } from '../utils/adminPreview';
 import SEO from '../components/SEO';
 
 type StaffRole = 'owner' | 'staff';
@@ -33,41 +32,6 @@ const MEDIA_CATEGORIES = [
 ] as const;
 
 const STATUS_LABELS: Record<string, string> = { new: 'New', reviewing: 'Reviewing', needs_contact: 'Needs contact', quoted: 'Update sent', awaiting_payment: 'Awaiting payment', paid: 'Paid', cancelled: 'Cancelled', completed: 'Completed' };
-const ADMIN_PREVIEW = isAdminPreviewEnabled() && window.location.pathname === '/admin/preview';
-const PREVIEW_RESERVATIONS: ReservationSummary[] = [
-  { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', request_kind: 'tour', customer_name: 'Maya Thompson', customer_email: 'maya@example.com', adults: 2, children: 1, estimated_total_cents: 48125, current_quote_version: null, version: 3, created_at: '2026-07-28T14:10:00.000Z', updated_at: '2026-07-28T15:05:00.000Z' },
-  { id: 'preview-2', reference: 'AD-REEF82', status: 'awaiting_payment', request_kind: 'course', customer_name: 'Daniel Ruiz', customer_email: 'daniel@example.com', adults: 2, children: 0, estimated_total_cents: 28876, current_quote_version: 1, version: 5, created_at: '2026-07-27T16:30:00.000Z', updated_at: '2026-07-28T13:42:00.000Z' },
-  { id: 'preview-3', reference: 'AD-CAVE19', status: 'needs_contact', request_kind: 'transfer', customer_name: 'Priya Shah', customer_email: 'priya@example.com', adults: 4, children: 0, estimated_total_cents: 33750, current_quote_version: null, version: 2, created_at: '2026-07-26T18:15:00.000Z', updated_at: '2026-07-28T11:20:00.000Z' },
-  { id: 'preview-4', reference: 'AD-PAID73', status: 'paid', request_kind: 'tour', customer_name: 'Noah Williams', customer_email: 'noah@example.com', adults: 2, children: 0, estimated_total_cents: 17500, current_quote_version: 1, version: 6, created_at: '2026-07-24T09:00:00.000Z', updated_at: '2026-07-27T20:12:00.000Z' },
-  { id: 'preview-5', reference: 'AD-UNAVL6', status: 'cancelled', request_kind: 'tour', customer_name: 'Elena Brooks', customer_email: 'elena@example.com', adults: 3, children: 1, estimated_total_cents: 70000, current_quote_version: null, version: 4, created_at: '2026-07-23T12:00:00.000Z', updated_at: '2026-07-27T18:20:00.000Z' },
-];
-const PREVIEW_DETAIL: ReservationDetail = {
-  reservation: { id: 'preview-1', reference: 'AD-DEMO24', status: 'reviewing', requestKind: 'tour', customer: { name: 'Maya Thompson', email: 'maya@example.com', phone: '+1 305 555 0148' }, party: { adults: 2, children: 1 }, accommodation: 'A hotel north of San Pedro', divingExperience: 'Certified beginner', customerNotes: 'We would prefer morning departures and need child-friendly snorkeling guidance.', internalNotes: 'Confirm the child snorkel equipment before sending.', customerMessage: null, estimatedTotalCents: 48125, version: 3, createdAt: '2026-07-28T14:10:00.000Z', updatedAt: '2026-07-28T15:05:00.000Z' },
-  items: [
-    { id: 'preview-item-1', catalog_item_id: 'snorkel-hol', name_snapshot: 'Hol Chan & Shark Ray Alley Snorkeling', requested_date: '2026-09-12', price_snapshot_cents: 9000, pricing_basis: 'per_person', adults: 2, children: 1, details_json: '{}' },
-    { id: 'preview-item-2', catalog_item_id: 'main-altun', name_snapshot: 'Altun Ha & Cave Tubing', requested_date: '2026-09-14', price_snapshot_cents: 33750, pricing_basis: 'per_person', adults: 2, children: 0, details_json: '{}' },
-  ],
-  quote: { id: 'preview-quote-1', status: 'draft', version: 1, customer_message: 'We can accommodate both requested experiences. Please review the proposed dates and details below.', subtotal_cents: 51750, discount_cents: 0, total_cents: 51750, expires_at: null },
-  quoteItems: [
-    { id: 'preview-line-1', reservation_item_id: 'preview-item-1', catalog_item_id: 'snorkel-hol', label: 'Hol Chan & Shark Ray Alley Snorkeling', service_date: '2026-09-12', quantity: 2, unit_price_cents: 9000, notes: 'Morning departure' },
-    { id: 'preview-line-2', reservation_item_id: 'preview-item-2', catalog_item_id: 'main-altun', label: 'Altun Ha & Cave Tubing', service_date: '2026-09-14', quantity: 1, unit_price_cents: 33750, notes: 'Mainland transfer included in quoted rate' },
-  ],
-  payment: null,
-  events: [
-    { actor: 'maya@example.com', event_type: 'reservation_created', detail_json: null, created_at: '2026-07-28T14:10:00.000Z' },
-    { actor: 'owner@actiondiversbelize.com', event_type: 'quote_draft_saved', detail_json: null, created_at: '2026-07-28T15:05:00.000Z' },
-  ],
-  deliveries: [{ recipient: 'maya@example.com', template_key: 'customer_acknowledgement', status: 'sent', created_at: '2026-07-28T14:10:05.000Z' }],
-};
-const PREVIEW_TEMPLATES: MessageTemplate[] = [
-  { id: 'quote-ready', name: 'Quote ready', subject: 'Your Action Divers reservation is ready', body: 'We have reviewed your requested tours and prepared the final details for your trip.', active: 1 },
-  { id: 'needs-contact', name: 'Needs a quick conversation', subject: 'A question about your Action Divers reservation', body: 'We need to confirm one detail before finalizing your reservation. Please reply to this email.', active: 1 },
-  { id: 'unavailable', name: 'Requested option unavailable', subject: 'Update about your Action Divers request', body: 'The requested tour or date is not currently available. Please reply and we will help find another option.', active: 1 },
-];
-const PREVIEW_MEDIA: MediaAsset[] = [
-  { id: 'preview-media-1', object_key: 'media/2026/08/junior-scuba-student-belize-demo.jpg', original_name: 'junior-scuba-student-belize.jpg', title: 'Junior Scuba Student in Belize', alt_text: 'Young scuba student with an Action Divers instructor on a boat in Belize', category: 'diving', mime_type: 'image/jpeg', byte_size: 163931, width: 1200, height: 1600, checksum_sha256: 'preview-only', status: 'draft', created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: '2026-08-10T19:39:57.000Z', updated_at: '2026-08-10T19:39:57.000Z', deleted_at: null, preview_src: '/images/gallery/junior-scuba-student-belize.jpg' },
-  { id: 'preview-media-2', object_key: 'media/2026/08/nurse-shark-encounter-belize-demo.jpg', original_name: 'nurse-shark-encounter-clear-water-belize.jpg', title: 'Nurse Shark Encounter in Clear Water', alt_text: 'A nurse shark swimming through clear Caribbean water near guests in Belize', category: 'nature', mime_type: 'image/jpeg', byte_size: 330620, width: 1600, height: 900, checksum_sha256: 'preview-only-two', status: 'published', created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: '2026-08-10T20:14:17.000Z', updated_at: '2026-08-10T20:14:17.000Z', deleted_at: null, preview_src: '/images/gallery/nurse-shark-encounter-clear-water-belize.jpg' },
-];
 
 const apiFetch = async <T,>(path: string, options: RequestInit = {}): Promise<T> => {
   const response = await fetch(API.url(path), { ...options, credentials: 'include', headers: { Accept: 'application/json', ...options.headers } });
@@ -123,13 +87,6 @@ const Admin: React.FC = () => {
   const [working, setWorking] = useState('');
 
   const loadList = async (status = statusFilter, cursor = '', append = false, clear = false) => {
-    if (ADMIN_PREVIEW) {
-      const normalizedQuery = clear ? '' : query.trim().toLowerCase();
-      const activeKind = clear ? '' : kindFilter;
-      setReservations(PREVIEW_RESERVATIONS.filter((reservation) => (!status || reservation.status === status) && (!activeKind || reservation.request_kind === activeKind) && (!normalizedQuery || `${reservation.reference} ${reservation.customer_name} ${reservation.customer_email}`.toLowerCase().includes(normalizedQuery))));
-      setNextCursor(null);
-      return;
-    }
     const parameters = new URLSearchParams();
     if (!clear && query.trim()) parameters.set('q', query.trim());
     if (status) parameters.set('status', status);
@@ -148,11 +105,6 @@ const Admin: React.FC = () => {
     try {
       setReservationEditing(false);
       setQuoteEditing(false);
-      if (ADMIN_PREVIEW) {
-        setSelectedId(id);
-        applyDetail({ ...PREVIEW_DETAIL, reservation: { ...PREVIEW_DETAIL.reservation, id, ...(PREVIEW_RESERVATIONS.find((row) => row.id === id) ? { reference: PREVIEW_RESERVATIONS.find((row) => row.id === id)!.reference, status: PREVIEW_RESERVATIONS.find((row) => row.id === id)!.status, customer: { ...PREVIEW_DETAIL.reservation.customer, name: PREVIEW_RESERVATIONS.find((row) => row.id === id)!.customer_name, email: PREVIEW_RESERVATIONS.find((row) => row.id === id)!.customer_email } } : {}) } });
-        return;
-      }
       const body = await apiFetch<{ detail: ReservationDetail }>(`/admin-api/reservations/${id}`);
       setSelectedId(id);
       setDetail(body.detail);
@@ -178,19 +130,6 @@ const Admin: React.FC = () => {
   };
 
   useEffect(() => {
-    if (ADMIN_PREVIEW) {
-      setSession({ email: 'owner@actiondiversbelize.com', name: 'Action Divers Owner', role: 'owner' });
-      setPaymentsEnabled(true);
-      setMediaEnabled(true);
-      setReservations(PREVIEW_RESERVATIONS);
-      setTemplates(PREVIEW_TEMPLATES);
-      setMediaAssets(PREVIEW_MEDIA);
-      setCatalog(DEFAULT_BOOKING_CATALOG);
-      applyDetail(PREVIEW_DETAIL);
-      setSelectedId(PREVIEW_DETAIL.reservation.id);
-      setLoading(false);
-      return;
-    }
     Promise.all([
       apiFetch<{ staff: Session; features: SessionFeatures }>('/admin-api/session'),
       apiFetch<{ reservations: ReservationSummary[]; nextCursor: string | null }>('/admin-api/reservations'),
@@ -215,11 +154,6 @@ const Admin: React.FC = () => {
   };
 
   const loadMedia = async (cursor = '', append = false) => {
-    if (ADMIN_PREVIEW) {
-      setMediaAssets(PREVIEW_MEDIA);
-      setMediaNextCursor(null);
-      return;
-    }
     const parameters = new URLSearchParams();
     if (cursor) parameters.set('cursor', cursor);
     const body = await apiFetch<{ media: MediaAsset[]; nextCursor: string | null }>(`/admin-api/media?${parameters}`);
@@ -228,7 +162,6 @@ const Admin: React.FC = () => {
   };
 
   const saveReservation = () => detail && run('reservation', async () => {
-    if (ADMIN_PREVIEW) { applyDetail({ ...detail, reservation: { ...detail.reservation, internalNotes, customerMessage, version: detail.reservation.version + 1 } }); setNotice('Preview: reservation changes saved locally.'); return; }
     const body = await apiFetch<{ detail: ReservationDetail }>(`/admin-api/reservations/${detail.reservation.id}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json', 'If-Match': String(detail.reservation.version) },
       body: JSON.stringify({ customer: detail.reservation.customer, party: detail.reservation.party, accommodation: detail.reservation.accommodation, divingExperience: detail.reservation.divingExperience, customerNotes: detail.reservation.customerNotes, items: detail.items.map((item) => ({ id: item.id, requestedDate: item.requested_date, adults: item.adults, children: item.children })), internalNotes, customerMessage }),
@@ -242,7 +175,6 @@ const Admin: React.FC = () => {
   });
 
   const saveQuote = () => detail && run('quote', async () => {
-    if (ADMIN_PREVIEW) { setNotice('Preview: quote draft saved locally.'); return; }
     const body = await apiFetch<{ detail: ReservationDetail }>(`/admin-api/reservations/${detail.reservation.id}/quote-draft`, {
       method: 'PUT', headers: { 'Content-Type': 'application/json', 'If-Match': String(detail.reservation.version) }, body: JSON.stringify(quotePayload()),
     });
@@ -250,7 +182,6 @@ const Admin: React.FC = () => {
   });
 
   const sendQuote = (payable: boolean) => detail && run(payable ? 'payment' : 'update', async () => {
-    if (ADMIN_PREVIEW) { applyDetail({ ...detail, reservation: { ...detail.reservation, status: payable ? 'awaiting_payment' : 'quoted', version: detail.reservation.version + 1 }, quote: detail.quote ? { ...detail.quote, status: payable ? 'payable' : 'sent_update' } : null }); setNotice(payable ? 'Preview: quote and payment link would be emailed.' : 'Preview: informational update would be emailed.'); return; }
     const draftBody = await apiFetch<{ detail: ReservationDetail }>(`/admin-api/reservations/${detail.reservation.id}/quote-draft`, {
       method: 'PUT', headers: { 'Content-Type': 'application/json', 'If-Match': String(detail.reservation.version) }, body: JSON.stringify(quotePayload()),
     });
@@ -262,7 +193,6 @@ const Admin: React.FC = () => {
   });
 
   const changeStatus = (status: string) => detail && run(`status-${status}`, async () => {
-    if (ADMIN_PREVIEW) { applyDetail({ ...detail, reservation: { ...detail.reservation, status, version: detail.reservation.version + 1 } }); setNotice(`Preview: status changed to ${STATUS_LABELS[status]}.`); return; }
     const body = await apiFetch<{ detail: ReservationDetail }>(`/admin-api/reservations/${detail.reservation.id}/status`, {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'If-Match': String(detail.reservation.version) }, body: JSON.stringify({ status, reason: internalNotes }),
     });
@@ -272,12 +202,6 @@ const Admin: React.FC = () => {
   const openTab = async (next: DashboardTab) => {
     setTab(next); setError(''); setNotice('');
     window.scrollTo({ top: 0, behavior: 'auto' });
-    if (ADMIN_PREVIEW) {
-      if ((next === 'catalog' || next === 'roster') && !catalog) setCatalog(DEFAULT_BOOKING_CATALOG);
-      if (next === 'media') setMediaAssets(PREVIEW_MEDIA);
-      if (next === 'staff') setStaffRows([{ email: 'owner@actiondiversbelize.com', display_name: 'Action Divers Owner', role: 'owner', active: 1 }, { email: 'guide@actiondiversbelize.com', display_name: 'Reservations Team', role: 'staff', active: 1 }]);
-      return;
-    }
     if ((next === 'catalog' || next === 'roster') && !catalog) {
       const body = await apiFetch<{ published: BookingCatalog; draft: BookingCatalog | null }>('/admin-api/catalog');
       setCatalog(body.draft || body.published);
@@ -304,14 +228,12 @@ const Admin: React.FC = () => {
   };
 
   const saveCatalog = () => catalog && run('catalog-save', async () => {
-    if (ADMIN_PREVIEW) { setCatalogDirty(false); setNotice('Preview: catalog draft saved locally.'); return; }
     await apiFetch('/admin-api/catalog', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(catalog) });
     setCatalogDirty(false); setNotice('Catalog draft saved.');
   });
 
   const publishCatalog = () => run('catalog-publish', async () => {
     if (catalogDirty) throw new Error('Save the catalog draft before publishing.');
-    if (ADMIN_PREVIEW) { setNotice('Preview: catalog revision published locally.'); return; }
     const body = await apiFetch<{ published: BookingCatalog }>('/admin-api/catalog/publish', { method: 'POST' });
     setCatalog(body.published); setNotice('Catalog published. Public prices now use this revision.');
   });
@@ -325,16 +247,15 @@ const Admin: React.FC = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#001219] pb-20 pt-24 text-[#F8F4E8]">
-      <SEO title={ADMIN_PREVIEW ? 'Staff Dashboard Preview' : 'Staff Dashboard'} description="Private Action Divers staff operations." path={ADMIN_PREVIEW ? '/admin/preview' : '/admin'} noindex />
+      <SEO title="Staff Dashboard" description="Private Action Divers staff operations." path="/admin" noindex />
       <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-10">
         <header className="flex flex-col gap-5 border-b border-white/10 py-7 sm:flex-row sm:items-center sm:justify-between">
           <div><p className="text-sm font-bold text-[#11C7D9]">Action Divers operations</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Reservations</h1></div>
           <div className="text-sm text-[#F8F4E8]/60"><span className="font-bold text-[#F8F4E8]">{session.name}</span><span className="ml-2 rounded-full bg-white/8 px-3 py-1 text-xs">{session.role}</span></div>
         </header>
-        {ADMIN_PREVIEW && <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#11C7D9]/10 px-4 py-3 text-sm text-[#BDF5FA]"><span><strong>Demo preview</strong> · Fictional data · Actions are simulated and reset when the page reloads</span><span className="text-[#F8F4E8]/60">Production access and storage are not connected.</span></div>}
 
         <nav className="flex gap-1 overflow-x-auto border-b border-white/10 py-3" aria-label="Staff sections">
-          {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Daily Roster'], ['catalog', DollarSign, 'Catalog'], ['media', Images, 'Media'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (
+          {([['reservations', ClipboardList, 'Reservations'], ['roster', ListChecks, 'Tour Roster'], ['catalog', DollarSign, 'Catalog'], ['media', Images, 'Media'], ['templates', FileText, 'Templates'], ...(session.role === 'owner' ? [['staff', Users, 'Staff']] : [])] as Array<[DashboardTab, React.ElementType, string]>).map(([value, Icon, label]) => (
             <button key={value} onClick={() => openTab(value)} className={`inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-bold transition-colors ${tab === value ? 'bg-[#11C7D9]/15 text-[#BDF5FA]' : 'text-[#F8F4E8]/58 hover:bg-white/5 hover:text-[#F8F4E8]'}`}><Icon className="mr-2 h-4 w-4" />{label}</button>
           ))}
         </nav>
@@ -436,16 +357,16 @@ const Admin: React.FC = () => {
           </div>
         )}
 
-        {tab === 'roster' && catalog && <DailyRosterPanel catalog={catalog} preview={ADMIN_PREVIEW} />}
+        {tab === 'roster' && catalog && <DailyRosterPanel catalog={catalog} />}
 
         {false && catalog && (
           <section className="mt-7"><div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between"><div><h2 className="text-2xl font-extrabold">Booking catalog</h2><p className="mt-2 text-sm text-[#F8F4E8]/58">Save changes as a draft, then publish one complete revision.</p></div><div className="flex gap-3"><button onClick={saveCatalog} disabled={!catalogDirty || Boolean(working)} className="rounded-full border border-white/18 px-5 py-3 text-sm font-bold disabled:opacity-40">Save draft</button><button onClick={publishCatalog} disabled={catalogDirty || Boolean(working)} className="rounded-full bg-[var(--brand-orange)] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">Publish</button></div></div><div className="mt-5 divide-y divide-white/10">{[...catalog.items].sort((a, b) => a.sortOrder - b.sortOrder).map((item) => <div key={item.id} className="grid gap-4 py-4 sm:grid-cols-[minmax(220px,1fr)_140px_130px_90px] sm:items-end"><label className={labelClass}>Public name<input value={item.name} onChange={(event) => updateCatalogItem(item.id, { name: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Price USD<input inputMode="decimal" value={(item.priceCents / 100).toFixed(2)} onChange={(event) => updateCatalogItem(item.id, { priceCents: Math.max(0, Math.round(Number(event.target.value) * 100) || 0) })} className={fieldClass} /></label><label className={labelClass}>Pricing<select value={item.pricingBasis} onChange={(event) => updateCatalogItem(item.id, { pricingBasis: event.target.value as BookingCatalogItem['pricingBasis'] })} className={fieldClass}><option value="per_person">Per person</option><option value="per_group">Per group</option></select></label><label className="flex min-h-11 items-center gap-2 text-sm font-bold"><input type="checkbox" checked={item.active} onChange={(event) => updateCatalogItem(item.id, { active: event.target.checked })} className="h-4 w-4 accent-[#11C7D9]" /> Active</label></div>)}</div></section>
         )}
 
         {tab === 'catalog' && catalog && <CompactCatalogPanel catalog={catalog} dirty={catalogDirty} working={Boolean(working)} updateItem={updateCatalogItem} save={saveCatalog} publish={publishCatalog} />}
-        {tab === 'media' && <CompactMediaPanel assets={mediaAssets} setAssets={setMediaAssets} nextCursor={mediaNextCursor} load={loadMedia} run={run} preview={ADMIN_PREVIEW} enabled={mediaEnabled} />}
-        {tab === 'templates' && <CompactTemplatesPanel templates={templates} setTemplates={setTemplates} run={run} preview={ADMIN_PREVIEW} />}
-        {tab === 'staff' && session.role === 'owner' && <CompactStaffPanel rows={staffRows} setRows={setStaffRows} run={run} preview={ADMIN_PREVIEW} currentEmail={session.email} />}
+        {tab === 'media' && <CompactMediaPanel assets={mediaAssets} setAssets={setMediaAssets} nextCursor={mediaNextCursor} load={loadMedia} run={run} enabled={mediaEnabled} />}
+        {tab === 'templates' && <CompactTemplatesPanel templates={templates} setTemplates={setTemplates} run={run} />}
+        {tab === 'staff' && session.role === 'owner' && <CompactStaffPanel rows={staffRows} setRows={setStaffRows} run={run} currentEmail={session.email} />}
       </div>
     </div>
   );
@@ -485,9 +406,11 @@ const StaffPanel: React.FC<{ rows: Array<{ email: string; display_name: string |
   return <section className="mt-7 max-w-6xl"><h2 className="text-2xl font-extrabold">Staff access</h2><p className="mt-2 text-sm text-[#F8F4E8]/58">Dashboard membership is managed here. Staff must also pass the Cloudflare Access email policy.</p><div className="mt-7 grid gap-7 lg:grid-cols-[minmax(0,1fr)_360px]"><div className="space-y-4">{rows.map((member) => <div key={member.email} className="rounded-xl bg-[#06242c] p-5"><div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_170px]"><label className={labelClass}>Display name<input value={member.display_name || ''} onChange={(event) => update(member.email, { display_name: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Role<select value={member.role} onChange={(event) => update(member.email, { role: event.target.value as StaffRole })} className={fieldClass}><option value="staff">Staff</option><option value="owner">Owner</option></select></label></div><p className="mt-3 text-sm text-[#B7D2D7]">{member.email}</p><div className="mt-4 flex flex-wrap items-center justify-between gap-3"><label className="flex items-center gap-2 text-sm font-bold text-[#D9EEF1]"><input type="checkbox" checked={Boolean(member.active)} onChange={(event) => update(member.email, { active: event.target.checked ? 1 : 0 })} className="h-4 w-4 accent-[#11C7D9]" /> {member.active ? 'Active' : 'Inactive'}</label><div className="flex gap-2">{member.email === currentEmail ? <span className="self-center px-3 text-xs text-[#B7D2D7]">Current account</span> : <button onClick={() => remove(member)} className="inline-flex min-h-10 items-center rounded-lg px-4 text-sm font-bold text-red-200 hover:bg-red-400/10"><Trash2 className="mr-2 h-4 w-4" /> Remove</button>}<button onClick={() => save(member)} className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Save className="mr-2 h-4 w-4" /> Save</button></div></div></div>)}</div><div className="h-fit rounded-xl bg-[#402b24] p-5"><h3 className="font-bold">Add or reactivate staff</h3><label className={`${labelClass} mt-4`}>Name<input value={displayName} onChange={(event) => setDisplayName(event.target.value)} className={fieldClass} /></label><label className={`${labelClass} mt-4`}>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className={fieldClass} /></label><label className={`${labelClass} mt-4`}>Role<select value={role} onChange={(event) => setRole(event.target.value as StaffRole)} className={fieldClass}><option value="staff">Staff</option><option value="owner">Owner</option></select></label><button onClick={add} disabled={!email.trim()} className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-[var(--brand-orange)] font-bold text-white disabled:opacity-40"><Plus className="mr-2 h-4 w-4" /> Save staff member</button></div></div></section>;
 };
 
-const DailyRosterPanel: React.FC<{ catalog: BookingCatalog; preview: boolean }> = ({ catalog, preview }) => {
-  const [date, setDate] = useState(preview ? '2026-09-12' : new Date().toISOString().slice(0, 10));
-  const [tours, setTours] = useState<string[]>(preview ? ['snorkel-hol'] : []);
+const DailyRosterPanel: React.FC<{ catalog: BookingCatalog }> = ({ catalog }) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const [dateFrom, setDateFrom] = useState(today);
+  const [dateTo, setDateTo] = useState(today);
+  const [tours, setTours] = useState<string[]>([]);
   const [rows, setRows] = useState<RosterRow[]>([]);
   const [totals, setTotals] = useState({ adults: 0, children: 0, guests: 0, reservations: 0 });
   const [loadingRoster, setLoadingRoster] = useState(false);
@@ -499,25 +422,17 @@ const DailyRosterPanel: React.FC<{ catalog: BookingCatalog; preview: boolean }> 
   const chooseGroup = (categories: BookingCatalogItem['category'][]) => { setTours(groupIds(categories)); setGenerated(false); };
   const toggleTour = (id: string) => { setTours((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]); setGenerated(false); };
   const rosterTitle = selectedItems.length === 1 ? selectedItems[0].name : `${selectedItems.length} selected activities`;
+  const date = dateFrom === dateTo ? dateFrom : `${dateFrom} through ${dateTo}`;
 
   const generate = async () => {
-    if (!date || tours.length === 0) return;
+    if (!dateFrom || !dateTo || dateFrom > dateTo || tours.length === 0) return;
     setLoadingRoster(true); setRosterError('');
     try {
-      let nextRows: RosterRow[];
-      if (preview) {
-        nextRows = PREVIEW_DETAIL.items.filter((item) => item.requested_date === date && Boolean(item.catalog_item_id && tours.includes(item.catalog_item_id))).map((item) => ({ reservation_item_id: item.id, tour_name: item.name_snapshot, requested_date: item.requested_date, adults: item.adults, children: item.children, reservation_id: PREVIEW_DETAIL.reservation.id, reference: PREVIEW_DETAIL.reservation.reference, status: PREVIEW_DETAIL.reservation.status, customer_name: PREVIEW_DETAIL.reservation.customer.name, customer_email: PREVIEW_DETAIL.reservation.customer.email, customer_phone: PREVIEW_DETAIL.reservation.customer.phone, accommodation: PREVIEW_DETAIL.reservation.accommodation, diving_experience: PREVIEW_DETAIL.reservation.divingExperience, customer_notes: PREVIEW_DETAIL.reservation.customerNotes, internal_notes: PREVIEW_DETAIL.reservation.internalNotes }));
-      } else {
-        const parameters = new URLSearchParams({ date });
-        tours.forEach((tour) => parameters.append('tour', tour));
-        const body = await apiFetch<{ roster: RosterRow[]; totals: typeof totals }>(`/admin-api/roster?${parameters}`);
-        nextRows = body.roster;
-        setTotals(body.totals);
-      }
-      if (preview) {
-        const reservationIds = new Set(nextRows.map((row) => row.reservation_id));
-        setTotals(nextRows.reduce((sum, row) => ({ adults: sum.adults + row.adults, children: sum.children + row.children, guests: sum.guests + row.adults + row.children, reservations: reservationIds.size }), { adults: 0, children: 0, guests: 0, reservations: reservationIds.size }));
-      }
+      const parameters = new URLSearchParams({ dateFrom, dateTo });
+      tours.forEach((tour) => parameters.append('tour', tour));
+      const body = await apiFetch<{ roster: RosterRow[]; totals: typeof totals }>(`/admin-api/roster?${parameters}`);
+      const nextRows = body.roster.map((row) => ({ ...row, tour_name: `${row.requested_date} · ${row.tour_name}` }));
+      setTotals(body.totals);
       setRows(nextRows); setGenerated(true);
     } catch (reason) { setRosterError(reason instanceof Error ? reason.message : 'The roster could not be generated.'); }
     finally { setLoadingRoster(false); }
@@ -529,12 +444,12 @@ const DailyRosterPanel: React.FC<{ catalog: BookingCatalog; preview: boolean }> 
     return `"${cell.replaceAll('"', '""')}"`;
   };
   const countLabel = (count: number, singular: string, plural = `${singular}s`) => `${count} ${count === 1 ? singular : plural}`;
-  const exportRows = rows.map((row) => [date, row.tour_name, row.reference, STATUS_LABELS[row.status] || row.status, row.customer_name, row.customer_email, row.customer_phone, row.accommodation, row.adults, row.children, row.adults + row.children, row.diving_experience, row.customer_notes, row.internal_notes]);
+  const exportRows = rows.map((row) => [row.requested_date, row.tour_name, row.reference, STATUS_LABELS[row.status] || row.status, row.customer_name, row.customer_email, row.customer_phone, row.accommodation, row.adults, row.children, row.adults + row.children, row.diving_experience, row.customer_notes, row.internal_notes]);
   const downloadCsv = () => {
     const headers = ['Date', 'Tour', 'Reference', 'Status', 'Lead guest', 'Email', 'Phone', 'Accommodation', 'Adults', 'Children', 'Total guests', 'Diving experience', 'Customer notes', 'Internal notes'];
     const csv = `\uFEFF${[headers, ...exportRows].map((row) => row.map(safeCell).join(',')).join('\r\n')}`;
     const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `action-divers-roster-${date}-${tours.length === 1 ? tours[0] : 'multiple-activities'}.csv`; anchor.click(); URL.revokeObjectURL(url);
+    const anchor = document.createElement('a'); anchor.href = url; anchor.download = `action-divers-roster-${dateFrom}-to-${dateTo}.csv`; anchor.click(); URL.revokeObjectURL(url);
   };
   const printRoster = () => {
     const escape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character] || character));
@@ -546,9 +461,9 @@ const DailyRosterPanel: React.FC<{ catalog: BookingCatalog; preview: boolean }> 
   };
 
   return <section className="mt-7">
-    <div className="flex flex-col gap-5 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between"><div><h2 className="text-2xl font-extrabold">Daily roster</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/60">Build one operational guest list across any combination of tours or courses. Cancelled reservations are excluded.</p></div>{generated && rows.length > 0 && <div className="flex flex-wrap gap-2"><button onClick={downloadCsv} className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Download className="mr-2 h-4 w-4" /> Download CSV</button><button onClick={printRoster} className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Printer className="mr-2 h-4 w-4" /> Print / Save PDF</button></div>}</div>
+    <div className="flex flex-col gap-5 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between"><div><h2 className="text-2xl font-extrabold">Tour roster</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/60">Build one operational guest list across a date range and any combination of tours or courses. Cancelled reservations are excluded.</p></div>{generated && rows.length > 0 && <div className="flex flex-wrap gap-2"><button onClick={downloadCsv} className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Download className="mr-2 h-4 w-4" /> Download CSV</button><button onClick={printRoster} className="inline-flex min-h-10 items-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Printer className="mr-2 h-4 w-4" /> Print / Save PDF</button></div>}</div>
     <div className="mt-6 rounded-xl bg-[#06242c] p-5">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><label className={`${labelClass} w-full md:max-w-[220px]`}>Roster date<input type="date" value={date} onChange={(event) => { setDate(event.target.value); setGenerated(false); }} className={`${fieldClass} [color-scheme:dark]`} /></label><button onClick={generate} disabled={!date || tours.length === 0 || loadingRoster} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#11C7D9] px-5 text-sm font-bold text-[#001219] disabled:cursor-not-allowed disabled:opacity-40">{loadingRoster ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ListChecks className="mr-2 h-4 w-4" />} Generate roster for {tours.length}</button></div>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end"><label className={`${labelClass} w-full md:max-w-[220px]`}>From<input type="date" value={dateFrom} onChange={(event) => { setDateFrom(event.target.value); if (event.target.value > dateTo) setDateTo(event.target.value); setGenerated(false); }} className={`${fieldClass} [color-scheme:dark]`} /></label><label className={`${labelClass} w-full md:max-w-[220px]`}>Through<input type="date" min={dateFrom} value={dateTo} onChange={(event) => { setDateTo(event.target.value); setGenerated(false); }} className={`${fieldClass} [color-scheme:dark]`} /></label><button onClick={generate} disabled={!dateFrom || !dateTo || dateFrom > dateTo || tours.length === 0 || loadingRoster} className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[#11C7D9] px-5 text-sm font-bold text-[#001219] disabled:cursor-not-allowed disabled:opacity-40">{loadingRoster ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ListChecks className="mr-2 h-4 w-4" />} Generate roster for {tours.length}</button></div>
       <div className="mt-5 border-t border-white/10 pt-5">
         <div className="flex flex-wrap items-center gap-2"><span className="mr-1 text-sm font-semibold text-[#D9EEF1]">Quick select</span><button onClick={() => chooseGroup(['Island', 'Mainland'])} className="min-h-9 rounded-lg bg-[#0d3943] px-3 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]">All tours</button><button onClick={() => chooseGroup(['Island'])} className="min-h-9 rounded-lg bg-[#0d3943] px-3 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]">Island adventures</button><button onClick={() => chooseGroup(['Mainland'])} className="min-h-9 rounded-lg bg-[#0d3943] px-3 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]">Mainland adventures</button><button onClick={() => chooseGroup(['Course'])} className="min-h-9 rounded-lg bg-[#0d3943] px-3 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]">All courses</button><button onClick={() => { setTours([]); setGenerated(false); }} className="min-h-9 rounded-lg px-3 text-sm font-bold text-[#B7D2D7] hover:bg-white/5 hover:text-white">Clear</button></div>
         <fieldset className="mt-4"><legend className="sr-only">Choose activities for the roster</legend><div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">{activeItems.map((item) => <label key={item.id} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${tours.includes(item.id) ? 'bg-[#11C7D9]/15 text-[#D9FBFF]' : 'bg-[#03181e] text-[#B7D2D7] hover:bg-[#092d35]'}`}><input type="checkbox" checked={tours.includes(item.id)} onChange={() => toggleTour(item.id)} className="h-4 w-4 shrink-0 accent-[#11C7D9]" /><span className="min-w-0"><span className="block font-semibold">{item.name}</span><span className="mt-0.5 block text-xs opacity-65">{item.category}</span></span></label>)}</div></fieldset>
@@ -566,11 +481,10 @@ type MediaPanelProps = {
   nextCursor: string | null;
   load: (cursor?: string, append?: boolean) => Promise<void>;
   run: (key: string, action: () => Promise<void>) => Promise<void>;
-  preview: boolean;
   enabled: boolean;
 };
 
-const CompactMediaPanel: React.FC<MediaPanelProps> = ({ assets, setAssets, nextCursor, load, run, preview, enabled }) => {
+const CompactMediaPanel: React.FC<MediaPanelProps> = ({ assets, setAssets, nextCursor, load, run, enabled }) => {
   const [adding, setAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -578,60 +492,46 @@ const CompactMediaPanel: React.FC<MediaPanelProps> = ({ assets, setAssets, nextC
 
   const update = (id: string, changes: Partial<MediaAsset>) => setAssets((current) => current.map((asset) => asset.id === id ? { ...asset, ...changes } : asset));
   const save = (asset: MediaAsset) => run(`media-${asset.id}`, async () => {
-    if (!preview) {
-      const body = await apiFetch<{ asset: MediaAsset }>(`/admin-api/media/${encodeURIComponent(asset.id)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: asset.title, altText: asset.alt_text, category: asset.category, status: asset.status }),
-      });
-      update(asset.id, body.asset);
-    }
+    const body = await apiFetch<{ asset: MediaAsset }>(`/admin-api/media/${encodeURIComponent(asset.id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: asset.title, altText: asset.alt_text, category: asset.category, status: asset.status }),
+    });
+    update(asset.id, body.asset);
     setEditingId(null);
   });
   const archive = (asset: MediaAsset) => run(`media-${asset.id}`, async () => {
     if (!window.confirm(`Archive “${asset.title}”? The stored object will be retained for recovery.`)) return;
-    if (!preview) await apiFetch(`/admin-api/media/${encodeURIComponent(asset.id)}`, { method: 'DELETE' });
+    await apiFetch(`/admin-api/media/${encodeURIComponent(asset.id)}`, { method: 'DELETE' });
     setAssets((current) => current.filter((candidate) => candidate.id !== asset.id));
   });
   const upload = () => run('media-upload', async () => {
     if (!file) throw new Error('Choose an image to upload.');
-    if (preview) {
-      const timestamp = new Date().toISOString();
-      setAssets((current) => [{
-        id: crypto.randomUUID(), object_key: `preview/${file.name}`, original_name: file.name,
-        title: draft.title, alt_text: draft.altText, category: draft.category, mime_type: file.type,
-        byte_size: file.size, width: null, height: null, checksum_sha256: 'preview-only', status: 'draft',
-        created_by: 'owner@example.com', updated_by: 'owner@example.com', created_at: timestamp,
-        updated_at: timestamp, deleted_at: null, preview_src: URL.createObjectURL(file),
-      }, ...current]);
-    } else {
-      let width: number | undefined;
-      let height: number | undefined;
-      try {
-        const bitmap = await createImageBitmap(file);
-        width = bitmap.width;
-        height = bitmap.height;
-        bitmap.close();
-      } catch { /* Dimensions are optional metadata; the Worker still validates the file bytes. */ }
-      const form = new FormData();
-      form.set('file', file);
-      form.set('title', draft.title);
-      form.set('altText', draft.altText);
-      form.set('category', draft.category);
-      if (width && height) { form.set('width', String(width)); form.set('height', String(height)); }
-      await apiFetch('/admin-api/media', { method: 'POST', body: form });
-      await load();
-    }
+    let width: number | undefined;
+    let height: number | undefined;
+    try {
+      const bitmap = await createImageBitmap(file);
+      width = bitmap.width;
+      height = bitmap.height;
+      bitmap.close();
+    } catch { /* Dimensions are optional metadata; the Worker still validates the file bytes. */ }
+    const form = new FormData();
+    form.set('file', file);
+    form.set('title', draft.title);
+    form.set('altText', draft.altText);
+    form.set('category', draft.category);
+    if (width && height) { form.set('width', String(width)); form.set('height', String(height)); }
+    await apiFetch('/admin-api/media', { method: 'POST', body: form });
+    await load();
     setFile(null);
     setDraft({ title: '', altText: '', category: 'general' });
     setAdding(false);
   });
 
   return <section className="mt-7 max-w-6xl">
-    <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-start sm:justify-between"><div><h2 className="text-2xl font-extrabold">Media library</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/58">Store approved photography with useful titles and alt text. Public pages remain on their current Git-backed images until the media domain is connected.</p></div><button onClick={() => setAdding((open) => !open)} disabled={!enabled} aria-expanded={adding} aria-controls="media-upload" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#11C7D9] px-5 text-sm font-bold text-[#001219] hover:bg-[#43d4e0] disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> {adding ? 'Close upload' : 'Upload photo'}</button></div>
+    <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-start sm:justify-between"><div><h2 className="text-2xl font-extrabold">Media library</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#F8F4E8]/58">Upload and manage photography shown in the public gallery.</p></div><button onClick={() => setAdding((open) => !open)} disabled={!enabled} aria-expanded={adding} aria-controls="media-upload" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg bg-[#11C7D9] px-5 text-sm font-bold text-[#001219] hover:bg-[#43d4e0] disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> {adding ? 'Close upload' : 'Upload photo'}</button></div>
     {!enabled && <div className="mt-5 rounded-xl bg-amber-300/10 p-4 text-sm leading-relaxed text-amber-100">R2 media storage is not bound to this API deployment yet. Upload controls will activate after the private bucket binding is deployed.</div>}
-    <div className="mt-5 rounded-xl bg-[#0a3039] p-4 text-sm leading-relaxed text-[#D9EEF1]"><strong>Private foundation:</strong> “Approved” records editorial intent only. It does not publish a new public URL during this phase.</div>
-    <AnimatedDisclosure open={adding && enabled} id="media-upload"><div className="mt-5 rounded-xl bg-[#402b24] p-5"><div className="grid gap-4 md:grid-cols-2"><label className={`${labelClass} md:col-span-2`}>Image file<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-white/15 bg-[#061a22] px-3 py-3 text-sm text-[#F8F4E8] file:mr-4 file:rounded-lg file:border-0 file:bg-[#0d3943] file:px-4 file:py-2 file:font-bold file:text-[#D9EEF1]" /></label><label className={labelClass}>SEO title<input value={draft.title} maxLength={120} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="Nurse Shark Encounter in Belize" className={fieldClass} /></label><label className={labelClass}>Category<select value={draft.category} onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))} className={fieldClass}>{MEDIA_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className={`${labelClass} md:col-span-2`}>Descriptive alt text<textarea rows={3} value={draft.altText} maxLength={240} onChange={(event) => setDraft((current) => ({ ...current, altText: event.target.value }))} placeholder="Describe what is visibly happening in the photograph." className={fieldClass} /></label></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-[#F8F4E8]/58">JPEG, PNG, or WebP · Maximum 10 MB · Duplicate files are rejected</p><button onClick={upload} disabled={!file || !draft.title.trim() || !draft.altText.trim()} className="inline-flex min-h-11 items-center rounded-lg bg-[var(--brand-orange)] px-5 font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> Store in R2</button></div></div></AnimatedDisclosure>
+    <AnimatedDisclosure open={adding && enabled} id="media-upload"><div className="mt-5 rounded-xl bg-[#402b24] p-5"><div className="grid gap-4 md:grid-cols-2"><label className={`${labelClass} md:col-span-2`}>Image file<input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setFile(event.target.files?.[0] ?? null)} className="mt-2 block w-full rounded-xl border border-white/15 bg-[#061a22] px-3 py-3 text-sm text-[#F8F4E8] file:mr-4 file:rounded-lg file:border-0 file:bg-[#0d3943] file:px-4 file:py-2 file:font-bold file:text-[#D9EEF1]" /></label><label className={labelClass}>SEO title<input value={draft.title} maxLength={120} onChange={(event) => setDraft((current) => ({ ...current, title: event.target.value }))} placeholder="Nurse Shark Encounter in Belize" className={fieldClass} /></label><label className={labelClass}>Category<select value={draft.category} onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))} className={fieldClass}>{MEDIA_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className={`${labelClass} md:col-span-2`}>Descriptive alt text<textarea rows={3} value={draft.altText} maxLength={240} onChange={(event) => setDraft((current) => ({ ...current, altText: event.target.value }))} placeholder="Describe what is visibly happening in the photograph." className={fieldClass} /></label></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-[#F8F4E8]/58">JPEG, PNG, or WebP · Maximum 10 MB · Duplicate files are rejected</p><button onClick={upload} disabled={!file || !draft.title.trim() || !draft.altText.trim()} className="inline-flex min-h-11 items-center rounded-lg bg-[var(--brand-orange)] px-5 font-bold text-white disabled:cursor-not-allowed disabled:opacity-40"><UploadCloud className="mr-2 h-4 w-4" /> Upload photo</button></div></div></AnimatedDisclosure>
     <div className="mt-7 divide-y divide-white/10 border-y border-white/10">
       {assets.length === 0 ? <div className="py-14 text-center"><Images className="mx-auto h-9 w-9 text-[#11C7D9]/55" /><p className="mt-4 font-bold">No managed media yet</p><p className="mt-2 text-sm text-[#F8F4E8]/50">Upload the first approved photograph when you are ready.</p></div> : assets.map((asset) => <article key={asset.id} className="py-5"><div className="flex flex-col gap-4 sm:flex-row sm:items-center"><div className="h-24 w-full shrink-0 overflow-hidden rounded-lg bg-[#06242c] sm:w-36"><img src={asset.preview_src || API.url(`/admin-api/media/${encodeURIComponent(asset.id)}/content`)} crossOrigin={asset.preview_src ? undefined : 'use-credentials'} alt="" loading="lazy" className="h-full w-full object-cover" /></div><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><h3 className="font-bold">{asset.title}</h3><span className={`rounded-full px-2 py-1 text-xs font-bold ${asset.status === 'published' ? 'bg-emerald-300/10 text-emerald-200' : 'bg-white/8 text-[#B7D2D7]'}`}>{asset.status === 'published' ? 'Approved' : 'Draft'}</span></div><p className="mt-2 line-clamp-2 text-sm text-[#B7D2D7]">{asset.alt_text}</p><p className="mt-2 text-xs text-[#F8F4E8]/42">{MEDIA_CATEGORIES.find(([value]) => value === asset.category)?.[1] || asset.category} · {fileSize(asset.byte_size)} · {asset.width && asset.height ? `${asset.width} × ${asset.height} · ` : ''}{dateTime(asset.created_at)}</p></div><button onClick={() => setEditingId((id) => id === asset.id ? null : asset.id)} aria-expanded={editingId === asset.id} aria-controls={`media-${asset.id}`} className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[#0d3943] px-4 text-sm font-bold text-[#D9EEF1] hover:bg-[#124852]"><Pencil className="mr-2 h-4 w-4" /> Edit</button></div><AnimatedDisclosure open={editingId === asset.id} id={`media-${asset.id}`}><div className="pt-5"><div className="grid gap-4 md:grid-cols-2"><label className={labelClass}>SEO title<input value={asset.title} maxLength={120} onChange={(event) => update(asset.id, { title: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Category<select value={asset.category} onChange={(event) => update(asset.id, { category: event.target.value })} className={fieldClass}>{MEDIA_CATEGORIES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className={`${labelClass} md:col-span-2`}>Alt text<textarea rows={3} value={asset.alt_text} maxLength={240} onChange={(event) => update(asset.id, { alt_text: event.target.value })} className={fieldClass} /></label><label className={labelClass}>Editorial status<select value={asset.status} onChange={(event) => update(asset.id, { status: event.target.value as MediaAsset['status'] })} className={fieldClass}><option value="draft">Draft</option><option value="published">Approved for future publishing</option></select></label><div className="flex items-end justify-end gap-2"><button onClick={() => archive(asset)} className="inline-flex min-h-10 items-center rounded-lg px-4 text-sm font-bold text-red-200 hover:bg-red-400/10"><Trash2 className="mr-2 h-4 w-4" /> Archive</button><button onClick={() => save(asset)} disabled={!asset.title.trim() || !asset.alt_text.trim()} className="inline-flex min-h-10 items-center rounded-lg bg-[#11C7D9] px-4 text-sm font-bold text-[#001219] disabled:opacity-40"><Save className="mr-2 h-4 w-4" /> Save</button></div></div></div></AnimatedDisclosure></article>)}
     </div>
@@ -653,33 +553,27 @@ type TemplatePanelProps = {
   templates: MessageTemplate[];
   setTemplates: React.Dispatch<React.SetStateAction<MessageTemplate[]>>;
   run: (key: string, action: () => Promise<void>) => Promise<void>;
-  preview: boolean;
 };
 
-const CompactTemplatesPanel: React.FC<TemplatePanelProps> = ({ templates, setTemplates, run, preview }) => {
+const CompactTemplatesPanel: React.FC<TemplatePanelProps> = ({ templates, setTemplates, run }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState({ name: '', subject: '', body: '' });
   const refresh = async () => setTemplates((await apiFetch<{ templates: MessageTemplate[] }>('/admin-api/templates')).templates);
   const update = (id: string, changes: Partial<MessageTemplate>) => setTemplates((current) => current.map((row) => row.id === id ? { ...row, ...changes } : row));
   const save = (template: MessageTemplate) => run(`template-${template.id}`, async () => {
-    if (!preview) {
-      await apiFetch(`/admin-api/templates/${encodeURIComponent(template.id)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...template, active: Boolean(template.active) }) });
-      await refresh();
-    }
+    await apiFetch(`/admin-api/templates/${encodeURIComponent(template.id)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...template, active: Boolean(template.active) }) });
+    await refresh();
     setEditingId(null);
   });
   const remove = (template: MessageTemplate) => run(`template-${template.id}`, async () => {
     if (!window.confirm(`Delete the “${template.name}” template?`)) return;
-    if (!preview) await apiFetch(`/admin-api/templates/${encodeURIComponent(template.id)}`, { method: 'DELETE' });
+    await apiFetch(`/admin-api/templates/${encodeURIComponent(template.id)}`, { method: 'DELETE' });
     setTemplates((current) => current.filter((row) => row.id !== template.id));
   });
   const create = () => run('template-new', async () => {
-    if (preview) setTemplates((current) => [...current, { id: crypto.randomUUID(), ...draft, active: 1 }]);
-    else {
-      await apiFetch('/admin-api/templates', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) });
-      await refresh();
-    }
+    await apiFetch('/admin-api/templates', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) });
+    await refresh();
     setDraft({ name: '', subject: '', body: '' });
     setAdding(false);
   });
@@ -692,29 +586,25 @@ const CompactTemplatesPanel: React.FC<TemplatePanelProps> = ({ templates, setTem
 };
 
 type StaffRow = { email: string; display_name: string | null; role: StaffRole; active: number };
-type StaffPanelProps = { rows: StaffRow[]; setRows: React.Dispatch<React.SetStateAction<StaffRow[]>>; run: (key: string, action: () => Promise<void>) => Promise<void>; preview: boolean; currentEmail: string };
+type StaffPanelProps = { rows: StaffRow[]; setRows: React.Dispatch<React.SetStateAction<StaffRow[]>>; run: (key: string, action: () => Promise<void>) => Promise<void>; currentEmail: string };
 
-const CompactStaffPanel: React.FC<StaffPanelProps> = ({ rows, setRows, run, preview, currentEmail }) => {
+const CompactStaffPanel: React.FC<StaffPanelProps> = ({ rows, setRows, run, currentEmail }) => {
   const [editingEmail, setEditingEmail] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState<{ email: string; displayName: string; role: StaffRole }>({ email: '', displayName: '', role: 'staff' });
   const refresh = async () => setRows((await apiFetch<{ staff: StaffRow[] }>('/admin-api/staff')).staff);
   const update = (email: string, changes: Partial<StaffRow>) => setRows((current) => current.map((row) => row.email === email ? { ...row, ...changes } : row));
   const save = (member: StaffRow) => run(`staff-${member.email}`, async () => {
-    if (!preview) {
-      await apiFetch(`/admin-api/staff/${encodeURIComponent(member.email)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: member.display_name, role: member.role, active: Boolean(member.active) }) });
-      await refresh();
-    }
+    await apiFetch(`/admin-api/staff/${encodeURIComponent(member.email)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: member.display_name, role: member.role, active: Boolean(member.active) }) });
+    await refresh();
     setEditingEmail(null);
   });
   const remove = (member: StaffRow) => run(`staff-${member.email}`, async () => {
     if (!window.confirm(`Remove staff access for ${member.email}?`)) return;
-    if (!preview) { await apiFetch(`/admin-api/staff/${encodeURIComponent(member.email)}`, { method: 'DELETE' }); await refresh(); }
-    else setRows((current) => current.map((row) => row.email === member.email ? { ...row, active: 0 } : row));
+    await apiFetch(`/admin-api/staff/${encodeURIComponent(member.email)}`, { method: 'DELETE' }); await refresh();
   });
   const add = () => run('staff-new', async () => {
-    if (preview) setRows((current) => [...current.filter((row) => row.email !== draft.email), { email: draft.email, display_name: draft.displayName, role: draft.role, active: 1 }]);
-    else { await apiFetch('/admin-api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) }); await refresh(); }
+    await apiFetch('/admin-api/staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) }); await refresh();
     setDraft({ email: '', displayName: '', role: 'staff' });
     setAdding(false);
   });
