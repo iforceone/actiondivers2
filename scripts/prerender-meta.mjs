@@ -33,6 +33,8 @@ const renderPageHead = (template, page) => {
   const canonical = absoluteUrl(page.path);
   const image = absoluteUrl(page.image || DEFAULT_IMAGE);
   const imageAlt = page.imageAlt || DEFAULT_IMAGE_ALT;
+  const imageWidth = page.imageWidth || (image === DEFAULT_IMAGE ? 1200 : undefined);
+  const imageHeight = page.imageHeight || (image === DEFAULT_IMAGE ? 630 : undefined);
   let html = template.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
 
   html = setMeta(html, 'name', 'description', page.description);
@@ -53,9 +55,9 @@ const renderPageHead = (template, page) => {
 
   html = html.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${escapeHtml(canonical)}">`);
   html = html.replace(/\s*<meta\s+property="og:image:(?:width|height)"[^>]*>\s*/gi, '\n    ');
-  if (image === DEFAULT_IMAGE) {
-    html = setMeta(html, 'property', 'og:image:width', '1200');
-    html = setMeta(html, 'property', 'og:image:height', '630');
+  if (imageWidth && imageHeight) {
+    html = setMeta(html, 'property', 'og:image:width', String(imageWidth));
+    html = setMeta(html, 'property', 'og:image:height', String(imageHeight));
   }
 
   html = html.replace(/\s*<script\s+type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>\s*/gi, '\n');
@@ -99,7 +101,15 @@ const routes = [
     description: 'Explore scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye with Action Divers & Adventures.',
     structuredData: businessStructuredData,
   },
-  { path: '/about', title: 'About Action Divers Belize', description: 'Meet Action Divers & Adventures, a San Pedro, Ambergris Caye tour operator offering personal service and Belize reef and mainland adventures.', image: '/images/gallery/SCUBA-and-Snorkelers-1.png' },
+  {
+    path: '/about',
+    title: 'About Action Divers & Roberto Castillo',
+    description: 'Meet Action Divers founder and PADI Dive Instructor Roberto Castillo, and discover the personal approach behind our Belize diving and adventure experiences.',
+    image: '/images/brand/about-roberto-castillo-social-share.jpg',
+    imageAlt: 'Roberto Castillo teaching a scuba student in San Pedro, Belize',
+    imageWidth: 1200,
+    imageHeight: 630,
+  },
   { path: '/gallery', title: 'Belize Adventure Photo Gallery', description: 'Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours.', image: '/images/gallery/Turtle.png' },
   { path: '/island-adventures', title: 'Island Tours from San Pedro, Belize', description: 'Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures.', image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png' },
   { path: '/mainland-adventures', title: 'Belize Mainland Tours & Maya Ruins', description: 'Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures.', image: '/images/gallery/web-maya-ruin.jpg' },

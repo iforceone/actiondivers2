@@ -13,6 +13,8 @@ interface SEOProps {
   path?: string;
   image?: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   type?: 'website' | 'article';
   noindex?: boolean;
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
@@ -47,6 +49,8 @@ const SEO: React.FC<SEOProps> = ({
   path = '/',
   image = DEFAULT_IMAGE,
   imageAlt = DEFAULT_IMAGE_ALT,
+  imageWidth = image === DEFAULT_IMAGE ? 1200 : undefined,
+  imageHeight = image === DEFAULT_IMAGE ? 630 : undefined,
   type = 'website',
   noindex = false,
   structuredData,
@@ -69,9 +73,9 @@ const SEO: React.FC<SEOProps> = ({
     setMeta('meta[property="og:locale"]', 'content', 'en_US');
     setMeta('meta[property="og:image"]', 'content', imageUrl);
     setMeta('meta[property="og:image:alt"]', 'content', imageAlt);
-    if (imageUrl === DEFAULT_IMAGE) {
-      setMeta('meta[property="og:image:width"]', 'content', '1200');
-      setMeta('meta[property="og:image:height"]', 'content', '630');
+    if (imageWidth && imageHeight) {
+      setMeta('meta[property="og:image:width"]', 'content', String(imageWidth));
+      setMeta('meta[property="og:image:height"]', 'content', String(imageHeight));
     } else {
       document.head.querySelector('meta[property="og:image:width"]')?.remove();
       document.head.querySelector('meta[property="og:image:height"]')?.remove();
@@ -93,7 +97,7 @@ const SEO: React.FC<SEOProps> = ({
         document.head.appendChild(script);
       });
     }
-  }, [title, description, path, image, imageAlt, type, noindex, structuredData]);
+  }, [title, description, path, image, imageAlt, imageWidth, imageHeight, type, noindex, structuredData]);
 
   return null;
 };

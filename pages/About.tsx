@@ -37,6 +37,10 @@ const About: React.FC = () => {
         title="About Action Divers & Roberto Castillo"
         description="Meet Action Divers founder and PADI Dive Instructor Roberto Castillo, and discover the personal approach behind our Belize diving and adventure experiences."
         path="/about"
+        image="/images/brand/about-roberto-castillo-social-share.jpg"
+        imageAlt="Roberto Castillo teaching a scuba student in San Pedro, Belize"
+        imageWidth={1200}
+        imageHeight={630}
       />
 
       <section className="relative flex min-h-[68vh] items-center justify-center overflow-hidden text-center">
