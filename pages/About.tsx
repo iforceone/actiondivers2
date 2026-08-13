@@ -1,129 +1,210 @@
-
 import React from 'react';
-import { Award, Users, Heart, Phone } from 'lucide-react';
+import { Heart, Phone, Sparkles, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
+
+const journey = [
+  { year: '1994', detail: 'Made San Pedro home' },
+  { year: '1996', detail: 'Began working in Belize tourism' },
+  { year: '1998', detail: 'Earned his first Open Water certification' },
+  { year: '2009', detail: 'Founded Action Divers' },
+  { year: '2011', detail: 'Became a PADI Dive Instructor' },
+  { year: 'Today', detail: 'Still diving, teaching and personally welcoming guests to Ambergris Caye' },
+];
+
+const differences = [
+  {
+    title: 'Small Groups',
+    description: 'More space, less rushing, and more time with your guide.',
+    icon: Users,
+  },
+  {
+    title: 'Personal Attention',
+    description: 'Instruction and trips adapted to the people actually on the boat.',
+    icon: Sparkles,
+  },
+  {
+    title: 'Belizean Hospitality',
+    description: "Guests aren't treated like booking numbers.",
+    icon: Heart,
+  },
+];
 
 const About: React.FC = () => {
   return (
-    <div className="bg-[#001219] min-h-screen text-center">
-      <section className="relative h-[65vh] flex items-center justify-center overflow-hidden">
-        <img 
-          src="/images/gallery/SCUBA-and-Snorkelers-1.png" 
-          alt="Belizean Coastal View" 
+    <main className="min-h-screen bg-[#001219] text-[#F8F4E8]">
+      <SEO
+        title="About Action Divers & Roberto Castillo"
+        description="Meet Action Divers founder and PADI Dive Instructor Roberto Castillo, and discover the personal approach behind our Belize diving and adventure experiences."
+        path="/about"
+      />
+
+      <section className="relative flex min-h-[68vh] items-center justify-center overflow-hidden text-center">
+        <img
+          src="/images/gallery/SCUBA-and-Snorkelers-1.png"
+          alt="Divers and snorkelers enjoying the Caribbean Sea in Belize"
           loading="eager"
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
+          className="absolute inset-0 h-full w-full object-cover opacity-45"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
-        <div className="relative z-10 px-4">
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 text-[#F8F4E8] tracking-tight">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/85 via-[#001219]/30 to-[#001219]" />
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-24">
+          <p className="mb-6 text-xs font-bold uppercase tracking-[0.32em] text-[#8DE7EF] sm:text-sm">
+            Action Divers & Adventures
+          </p>
+          <h1 className="text-6xl font-extrabold tracking-[-0.045em] text-[#F8F4E8] md:text-8xl">
             Our <span className="text-[#11C7D9]">Story</span>
           </h1>
-          <p className="text-sm uppercase tracking-[0.5em] text-[#F8F4E8]/60">Action Divers & Adventures</p>
-        </div>
-      </section>
-
-      <section className="max-w-4xl mx-auto px-6 py-24 space-y-16">
-        <div className="space-y-10">
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-[#F8F4E8] leading-tight">
-            A Passion for the <span className="text-[#11C7D9]">Caribbean Sea</span>
-          </h2>
-          <div className="space-y-8 text-xl font-light leading-relaxed text-[#F8F4E8]/80">
-            <p>
-              It's time to get started on your Belize adventure. Known for professionalism, knowledge, and friendly service,
-              Action Divers and Adventures is your one-stop tour operator ready to help you create that unforgettable 
-              fun-filled vacation.
-            </p>
-            <p>
-              Our team brings firsthand local knowledge to reef, fishing, island, and mainland adventures. We do our
-              best to assist guests with what they need and keep every trip focused on thoughtful service and memorable
-              days in Belize.
-            </p>
-            <p>
-              Have questions about scuba diving, snorkeling, fishing, or mainland tours? Call us or send an inquiry and
-              we will help you plan the right trip for your group.
-            </p>
-          </div>
-          
-          <div className="pt-10 flex flex-col items-center gap-4">
-            <a 
-              href="tel:0115016712624" 
-              className="inline-flex items-center space-x-4 bg-[var(--brand-orange)] text-white px-12 py-5 rounded-full font-bold uppercase tracking-[0.2em] hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl active:scale-95"
-            >
-              <Phone className="w-4 h-4" />
-              <span>011-501-671-2624</span>
-            </a>
-            <p className="text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">Call us to plan your Belize tours</p>
-          </div>
-        </div>
-
-        <div className="relative pt-12">
-          <div className="glass p-5 rounded-[3rem] transition-transform duration-700 hover:scale-[1.02]">
-            <img 
-              src="/images/gallery/Divers-Pointing-768x432.png" 
-              alt="Action Divers Team" 
-              loading="lazy"
-              decoding="async"
-              className="rounded-[2.5rem] shadow-2xl w-full aspect-video object-cover"
-            />
-            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 glass px-10 py-7 rounded-2xl border border-white/20 whitespace-nowrap">
-              <p className="text-2xl font-extrabold tracking-tight text-[#E9D8A6] mb-2">Local Tour Team</p>
-              <p className="text-xs uppercase tracking-[0.14em] text-[#F8F4E8]/65">San Pedro, Ambergris Caye</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-32 bg-white/5 mt-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-16">
-            <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
-                <Award className="w-10 h-10 text-[#F8F4E8]" />
-              </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Professionalism</h3>
-              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
-                Careful planning, clear communication, and personal service guide every guest experience.
-              </p>
-            </div>
-            <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
-                <Users className="w-10 h-10 text-[#F8F4E8]" />
-              </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Local Knowledge</h3>
-              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
-                With years of local experience, we help guests choose the reef, fishing, island, and mainland tours that fit their group.
-              </p>
-            </div>
-            <div className="space-y-8 group">
-              <div className="w-24 h-24 bg-[#11C7D9]/20 rounded-full flex items-center justify-center mx-auto border border-[#11C7D9]/40 group-hover:bg-[#11C7D9]/30 transition-all">
-                <Heart className="w-10 h-10 text-[#F8F4E8]" />
-              </div>
-              <h3 className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">Friendly Service</h3>
-              <p className="text-[#F8F4E8]/60 leading-relaxed font-light text-lg">
-                We make friends with our customers. Our warm hospitality keeps our guests returning year after year.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-40 px-6">
-        <div className="max-w-4xl mx-auto glass p-20 rounded-[4rem] border border-white/10 shadow-3xl">
-          <h2 className="text-5xl font-extrabold tracking-tight text-[#F8F4E8] mb-10 leading-tight">Ready to plan your <span className="text-[#11C7D9]">Belize adventure?</span></h2>
-          <p className="text-[#F8F4E8]/60 mb-14 text-xl font-light">
-            Tell us your dates, group size, and the tours you are interested in. We will help you choose the right options.
+          <p className="mx-auto mt-8 max-w-3xl text-lg font-light leading-relaxed text-[#F8F4E8]/78 sm:text-xl">
+            Founded in San Pedro in 2009, Action Divers grew from one local diver's belief that Belize adventures
+            should feel personal, unhurried, and genuinely welcoming.
           </p>
-          <Link 
-            to="/reservations" 
-            className="inline-block bg-[var(--brand-orange)] text-white px-16 py-6 rounded-full font-bold uppercase tracking-[0.3em] hover:bg-[var(--brand-orange-light)] transition-all shadow-2xl active:scale-95"
-          >
-            Inquire Today
-          </Link>
         </div>
       </section>
-    </div>
+
+      <section className="px-6 py-24 sm:py-32">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-3 shadow-2xl sm:rounded-[3rem] sm:p-5">
+              <img
+                src="/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg"
+                alt="Roberto Castillo teaching a scuba student in a pool in San Pedro, Belize"
+                loading="lazy"
+                decoding="async"
+                className="aspect-[4/3] w-full rounded-[1.5rem] object-cover object-center sm:rounded-[2.5rem]"
+              />
+            </div>
+            <div className="absolute -bottom-6 left-6 rounded-2xl border border-white/15 bg-[#062a33]/95 px-6 py-4 text-left shadow-xl backdrop-blur sm:left-10 sm:px-8">
+              <p className="font-extrabold text-[#E9D8A6]">Teaching is still part of the job</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#F8F4E8]/60">San Pedro, Ambergris Caye</p>
+            </div>
+          </div>
+
+          <article className="pt-8 text-left lg:pt-0">
+            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">Founder & PADI Dive Instructor</p>
+            <h2 className="mt-4 text-4xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-6xl">
+              Meet Roberto Castillo
+            </h2>
+            <div className="mt-8 space-y-5 text-lg font-light leading-relaxed text-[#F8F4E8]/75">
+              <p>
+                Roberto Castillo's story in San Pedro began long before Action Divers. Originally from Orange Walk,
+                Roberto moved to San Pedro in 1994 and began working in Belize's tourism industry in 1996. Two years
+                later, he earned his first Open Water diving certification and discovered a passion that would
+                eventually become both a career and a business.
+              </p>
+              <p>
+                After years in tourism and diving, Roberto founded <strong className="font-semibold text-[#F8F4E8]">Action Divers in 2009</strong>,
+                creating the kind of dive operation he believed guests deserved: smaller groups, personal attention,
+                and a relaxed, welcoming experience.
+              </p>
+              <p>
+                Roberto became a <strong className="font-semibold text-[#F8F4E8]">PADI Dive Instructor in 2011</strong> and remains an active instructor today.
+                Whether introducing someone to diving for the first time or guiding experienced divers along the
+                Belize Barrier Reef, he enjoys giving each guest the individual attention that can be difficult to
+                find in larger groups.
+              </p>
+              <p>
+                His favorite local dive sites include <strong className="font-semibold text-[#F8F4E8]">Mata Canyons</strong> and{' '}
+                <strong className="font-semibold text-[#F8F4E8]">Renegade</strong>, both off the northern side of Ambergris Caye.
+                Guests are just as likely to remember his warmth and natural hospitality—Roberto has a way of making
+                visitors feel less like customers and more like friends.
+              </p>
+              <p className="border-l-2 border-[#11C7D9] pl-5 font-medium text-[#E9D8A6]">
+                That personal approach remains at the heart of Action Divers today.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="border-y border-white/8 bg-white/[0.035] px-6 py-24 sm:py-28" aria-labelledby="journey-title">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">Three decades in Belize tourism</p>
+            <h2 id="journey-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
+              Roberto's Journey
+            </h2>
+          </div>
+
+          <ol className="relative mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-3 md:gap-x-8 md:gap-y-14">
+            <div className="absolute left-1/2 top-5 hidden h-px w-[67%] -translate-x-1/2 bg-gradient-to-r from-transparent via-[#11C7D9]/55 to-transparent md:block" aria-hidden="true" />
+            {journey.map((milestone) => (
+              <li key={milestone.year} className="relative rounded-2xl border border-white/10 bg-[#062a33] px-6 pb-7 pt-9 text-center shadow-lg">
+                <span className="absolute left-1/2 top-0 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#11C7D9]/60 bg-[#001219] px-4 py-2 text-sm font-extrabold text-[#8DE7EF] shadow-lg">
+                  {milestone.year}
+                </span>
+                <p className="text-base font-medium leading-relaxed text-[#F8F4E8]/78">{milestone.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="px-6 py-28 sm:py-36" aria-labelledby="difference-title">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The personal approach</p>
+            <h2 id="difference-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
+              Why Action Divers Feels Different
+            </h2>
+          </div>
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {differences.map(({ title, description, icon: Icon }) => (
+              <article key={title} className="group rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center transition-colors hover:border-[#11C7D9]/35 hover:bg-[#11C7D9]/[0.07] sm:p-10">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-[#11C7D9]/35 bg-[#11C7D9]/15 transition-colors group-hover:bg-[#11C7D9]/25">
+                  <Icon className="h-8 w-8 text-[#F8F4E8]" aria-hidden="true" />
+                </div>
+                <h3 className="mt-7 text-2xl font-extrabold tracking-tight">{title}</h3>
+                <p className="mt-4 text-lg font-light leading-relaxed text-[#F8F4E8]/65">{description}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mx-auto mt-12 max-w-3xl text-center text-xl font-medium leading-relaxed text-[#E9D8A6]">
+            Small groups. Personal attention. And the kind of Belizean hospitality that makes you feel like part of the family.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-white/[0.035] px-6 py-24 sm:py-28" aria-labelledby="crew-title">
+        <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 px-7 py-12 text-center sm:rounded-[3rem] sm:px-14 sm:py-16">
+          <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The people guests meet</p>
+          <h2 id="crew-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
+            Meet the Action Divers Crew
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#F8F4E8]/65">
+            Roberto works alongside a small core crew who share the same commitment to safe, personal, and welcoming
+            experiences. Their profiles and photographs are coming soon.
+          </p>
+        </div>
+      </section>
+
+      <section className="px-6 py-28 sm:py-36">
+        <div className="glass mx-auto max-w-4xl rounded-[2.5rem] border border-white/10 p-8 text-center shadow-2xl sm:p-16">
+          <h2 className="text-4xl font-extrabold tracking-[-0.035em] sm:text-5xl">
+            Ready to plan your <span className="text-[#11C7D9]">Belize adventure?</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#F8F4E8]/65">
+            Tell us your dates, group size, and the experiences you are interested in. We will help you choose the right options.
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              to="/reservations"
+              className="inline-flex min-h-14 items-center justify-center rounded-full bg-[var(--brand-orange)] px-9 py-4 font-bold uppercase tracking-[0.16em] text-white transition-colors hover:bg-[var(--brand-orange-light)]"
+            >
+              Plan a Trip
+            </Link>
+            <a
+              href="tel:0115016712624"
+              className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/15 px-8 py-4 font-bold text-[#F8F4E8] transition-colors hover:border-[#11C7D9]/50 hover:bg-white/5"
+            >
+              <Phone className="h-4 w-4" aria-hidden="true" />
+              011-501-671-2624
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 };
 
