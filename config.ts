@@ -15,7 +15,7 @@ export const CONTACT = {
 // paste the Worker URL here, e.g. 'https://actiondivers-api.<subdomain>.workers.dev'.
 // No trailing slash. Until this is set the reservations form falls back to
 // WhatsApp/phone and the Tour Assistant returns its offline message.
-const API_BASE_URL = 'https://actiondivers-api.davebze.workers.dev';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'https://actiondivers-api.davebze.workers.dev').replace(/\/$/, '');
 
 export const API = {
   baseUrl: API_BASE_URL,
