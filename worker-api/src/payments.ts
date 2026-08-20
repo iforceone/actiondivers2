@@ -280,7 +280,7 @@ async function startPayment(request: Request, env: PaymentEnv, json: Json, token
     const bank = await bankPost(env, '/register.do', {
       amount: String(row.amount_cents),
       description: row.description,
-      returnURL: `${env.PAYMENT_SITE_ORIGIN.replace(/\/$/, '')}/payment/return?token=${encodeURIComponent(token)}`,
+      returnUrl: `${env.PAYMENT_SITE_ORIGIN.replace(/\/$/, '')}/payment/return?token=${encodeURIComponent(token)}`,
       orderNumber: row.merchant_order_number,
       email: row.customer_email,
       dynamicCallbackUrl: `${requestUrl.origin}/payments/callback`,
