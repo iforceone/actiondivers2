@@ -56,6 +56,10 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
+export function merchantOrderNumber(): string {
+  return `${Date.now().toString().slice(-10)}${crypto.getRandomValues(new Uint32Array(1))[0].toString().padStart(10, '0').slice(-6)}`;
+}
+
 function bankBaseUrl(env: PaymentEnv): string {
   return env.PAYMENT_ENVIRONMENT === 'production' ? PRODUCTION_BASE_URL : SANDBOX_BASE_URL;
 }
@@ -256,11 +260,33 @@ async function finalizePaidReservation(env: PaymentEnv, row: PaymentIntentRow): 
 async function startPayment(request: Request, env: PaymentEnv, json: Json, token: string): Promise<Response> {
   if (!env.PAYMENTS_DB) return json({ ok: false, error: 'Payment database is not configured.' }, 503);
   if (env.PAYMENTS_ENABLED !== 'true') return json({ ok: false, error: 'Payments are not enabled.' }, 503);
-  const row = await findByToken(env, token);
+  let row = await findByToken(env, token);
   if (!row) return json({ ok: false, error: 'Payment request not found.' }, 404);
   if (Date.parse(row.expires_at) <= Date.now()) return json({ ok: false, error: 'This payment request has expired.' }, 410);
   if (row.status === 'paid') return json({ ok: false, error: 'This payment has already been completed.' }, 409);
   if (row.status === 'review_required') return json({ ok: false, error: 'This payment needs staff review. Please contact Action Divers.' }, 409);
+  if (row.status === 'declined') {
+    const retryOrderNumber = merchantOrderNumber();
+    const reset = await env.PAYMENTS_DB.prepare(
+      `UPDATE payment_intents
+       SET status = 'created', merchant_order_number = ?, bank_order_id = NULL, bank_form_url = NULL,
+           bank_status = NULL, last_error_code = NULL, updated_at = ?
+       WHERE id = ? AND status = 'declined'`,
+    )
+      .bind(retryOrderNumber, nowIso(), row.id)
+      .run();
+    if (!reset.meta.changes) return json({ ok: false, error: 'Payment retry is already in progress. Please try again shortly.' }, 409);
+    await recordEvent(env, row.id, 'guest', 'retry_requested');
+    row = {
+      ...row,
+      status: 'created',
+      merchant_order_number: retryOrderNumber,
+      bank_order_id: null,
+      bank_form_url: null,
+      bank_status: null,
+      last_error_code: null,
+    };
+  }
   if (!['created', 'registration_failed', 'registering', 'awaiting_payment'].includes(row.status)) {
     return json({ ok: false, error: 'This payment request is no longer active.' }, 409);
   }
