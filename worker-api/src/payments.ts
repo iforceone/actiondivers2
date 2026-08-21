@@ -175,7 +175,7 @@ function isAllowedGatewayUrl(value: string): boolean {
   }
 }
 
-async function refreshPayment(env: PaymentEnv, row: PaymentIntentRow, source: string): Promise<PaymentIntentRow> {
+export async function refreshPayment(env: PaymentEnv, row: PaymentIntentRow, source: string): Promise<PaymentIntentRow> {
   if (!env.PAYMENTS_DB) throw new Error('Payment database is not configured');
   if (!row.bank_order_id) return row;
   const bank = await bankPost(env, '/getOrderStatusExtended.do', { orderId: row.bank_order_id });
