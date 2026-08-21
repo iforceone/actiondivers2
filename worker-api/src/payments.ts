@@ -40,6 +40,7 @@ interface PaymentIntentRow {
 interface BankResponse {
   orderId?: string;
   orderID?: string;
+  formUrl?: string;
   formURL?: string;
   errorCode?: string | number;
   errorMessage?: string;
@@ -286,7 +287,7 @@ async function startPayment(request: Request, env: PaymentEnv, json: Json, token
       dynamicCallbackUrl: `${requestUrl.origin}/payments/callback`,
     });
     const orderId = bank.orderId ?? bank.orderID ?? '';
-    const formUrl = bank.formURL ?? '';
+    const formUrl = bank.formUrl ?? bank.formURL ?? '';
     if (Number(bank.errorCode ?? 0) !== 0 || !orderId || !isAllowedGatewayUrl(formUrl)) {
       const errorCode = String(bank.errorCode ?? 'invalid_gateway_response');
       await env.PAYMENTS_DB.prepare(
