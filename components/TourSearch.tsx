@@ -73,11 +73,11 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
   const searchLabel = filters.searchTerm.trim() ? ` matching "${filters.searchTerm.trim()}"` : '';
 
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur-lg md:p-8">
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 md:p-8">
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.45em] text-[#11C7D9]">Adventure Finder</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#11C7D9]">Adventure Finder</p>
             <h2 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
               Find Your Belize Adventure
             </h2>
@@ -87,7 +87,7 @@ const TourSearch: React.FC<{ onToursFiltered: (tours: typeof INITIAL_TOURS) => v
           </div>
           <div className="text-left lg:text-right">
             <p className="text-3xl font-extrabold tracking-tight text-[#F8F4E8]">{filteredTours.length}</p>
-            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-[#F8F4E8]/40">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F8F4E8]/65">
               {filteredTours.length === 1 ? 'Adventure Found' : 'Adventures Found'}
             </p>
           </div>

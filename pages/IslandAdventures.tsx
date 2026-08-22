@@ -14,6 +14,9 @@ const IslandAdventures: React.FC = () => {
         <img 
           src="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" 
           alt="Belizean Barrier Reef" 
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001219]/80 via-transparent to-[#001219]"></div>
@@ -49,6 +52,8 @@ const IslandAdventures: React.FC = () => {
                 <img 
                   src={tour.image} 
                   alt={tour.name} 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001219]/40 to-transparent"></div>
@@ -72,7 +77,7 @@ const IslandAdventures: React.FC = () => {
                 </div>
                 <div className="glass p-6 rounded-2xl border border-white/5">
                   <p className="text-[10px] uppercase tracking-widest text-[#F8F4E8]/40 mb-2">Departures</p>
-                  <p className="text-[#F8F4E8] font-medium">Daily from 9:00 AM</p>
+                  <p className="text-[#F8F4E8] font-medium">{tour.departureTime || 'Confirm when booking'}</p>
                 </div>
               </div>
               <div className="pt-8 flex items-center space-x-8">

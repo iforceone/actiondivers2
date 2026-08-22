@@ -2,6 +2,76 @@ import { GalleryImage } from '../types';
 
 export const GALLERY_IMAGES: GalleryImage[] = [
   {
+    id: 'gallery-70',
+    src: '/images/gallery/junior-scuba-student-belize.jpg',
+    alt: 'Young scuba student with an Action Divers instructor on a boat in Belize',
+    category: 'diving',
+    title: 'Junior Scuba Student in Belize'
+  },
+  {
+    id: 'gallery-71',
+    src: '/images/gallery/beginner-scuba-diver-ok-sign-belize.jpg',
+    alt: 'Young beginner scuba diver giving the OK signal beside an instructor in Belize',
+    category: 'diving',
+    title: 'Beginner Scuba Diver Ready to Explore'
+  },
+  {
+    id: 'gallery-72',
+    src: '/images/gallery/young-scuba-diver-boat-belize.jpg',
+    alt: 'Young scuba diver wearing full dive equipment aboard a boat in Belize',
+    category: 'diving',
+    title: 'Young Scuba Diver Aboard the Boat'
+  },
+  {
+    id: 'gallery-73',
+    src: '/images/gallery/snorkeling-guests-boat-belize-reef.jpg',
+    alt: 'Guests preparing to enter the clear water from a snorkeling boat in Belize',
+    category: 'snorkeling',
+    title: 'Snorkeling Guests on the Belize Reef'
+  },
+  {
+    id: 'gallery-74',
+    src: '/images/gallery/nurse-sharks-beside-snorkeling-boat-belize.jpg',
+    alt: 'Guests watching nurse sharks swim beside a snorkeling boat in Belize',
+    category: 'nature',
+    title: 'Nurse Sharks Beside the Snorkeling Boat'
+  },
+  {
+    id: 'gallery-75',
+    src: '/images/gallery/nurse-shark-encounter-clear-water-belize.jpg',
+    alt: 'A nurse shark swimming through clear Caribbean water near guests in Belize',
+    category: 'nature',
+    title: 'Nurse Shark Encounter in Clear Water'
+  },
+  {
+    id: 'gallery-76',
+    src: '/images/gallery/family-snorkeling-shallow-reef-belize.jpg',
+    alt: 'Family snorkeling together over a shallow reef in Belize',
+    category: 'snorkeling',
+    title: 'Family Snorkeling on a Shallow Reef'
+  },
+  {
+    id: 'gallery-77',
+    src: '/images/gallery/snorkel-tour-guests-caribbean-belize.jpg',
+    alt: 'Snorkel tour guests aboard a shaded boat on the Caribbean Sea in Belize',
+    category: 'boating',
+    title: 'Snorkel Tour Guests on the Caribbean'
+  },
+  {
+    id: 'gallery-78',
+    src: '/images/gallery/guests-snorkeling-clear-caribbean-water-belize.jpg',
+    alt: 'Guests snorkeling in clear Caribbean water beside an Action Divers boat',
+    category: 'snorkeling',
+    title: 'Guests Snorkeling in Clear Caribbean Water'
+  },
+  {
+    id: 'gallery-79',
+    src: '/images/gallery/preparing-snorkel-tour-belize-reef.jpg',
+    alt: 'Guests preparing for a snorkeling stop over a shallow Belize reef',
+    category: 'snorkeling',
+    title: 'Preparing for a Belize Reef Snorkel'
+  },
+  {
     id: 'gallery-1',
     src: '/images/gallery/12-29.png',
     alt: 'Action Divers Belize - 12 29',

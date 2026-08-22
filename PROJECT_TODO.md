@@ -1,35 +1,35 @@
-# Action Divers & Adventures Project Backlog
+# Action Divers & Adventures Launch Backlog
 
-## Payment and Reservation Flow
+The public experience, reservation interfaces, staff dashboard, customer portal, and
+Belize Bank workflow exist in code. External services remain deliberately gated. This
+file tracks what must happen after owner and infrastructure decisions resume.
 
-Recommended first release: **request to book, confirm availability, then collect payment**.
+## Owner confirmation
 
-- [ ] Store reservation requests in a server-side database with a public reference number and internal status.
-- [ ] Add staff workflow to confirm availability, party pricing, fees, deposit, and cancellation terms.
-- [ ] Add a secure guest payment portal, opened from an expiring link sent after confirmation.
-- [ ] Register each payment server-side with Belize Bank and redirect the guest to the bank-hosted payment form.
-- [ ] Keep merchant credentials and signing details exclusively in Worker secrets; never expose them to React or the browser.
-- [ ] Store the Belize Bank order ID against the reservation before redirecting the guest.
-- [ ] Verify callback and return results server-side, make updates idempotent, and show a receipt/status page.
-- [ ] Support deposit, balance, full-payment, refund, and reversal records with an audit trail.
-- [ ] Add a staff payment-link tool for guests who reserved by phone, email, WhatsApp, or in person.
-- [ ] Decide whether pre-authorization and later capture are operationally useful; do not make this the default without bank confirmation.
-- [ ] Complete Belize Bank test-environment certification before enabling production payments.
+- [ ] Approve current prices, fees, minimum billed quantities, and capacities.
+- [ ] Confirm departure/check-in times and durations for the four regular dives.
+- [ ] Confirm exact session hours for Refresher, Resort Course, and Scuba Discovery, plus the Advanced Open Water duration.
+- [ ] Approve public contact/location wording and PADI instructor wording.
+- [ ] Supply privacy, cancellation, refund, no-show, weather, and terms language.
+- [ ] Approve staff email addresses and customer-data retention period.
 
-Decisions still needed: merchant account credentials, final production domain, deposit rules, cancellation/refund policy, payment-link expiry, who can issue links, and whether prices shown include every tax and third-party fee.
+## Reservation and staff launch
 
-## Airport Pickup and Transfers
+- [x] Create separate preview and production D1 databases and apply existing migrations.
+- [x] Seed the production catalog from the current server-side catalog and verify empty customer/payment tables.
+- [ ] Configure Cloudflare Access for approved staff and verify Worker-side JWT checks.
+- [x] Test reservation storage, customer acknowledgement, staff notification, and customer portal retrieval.
+- [ ] Test staff quote, update, payment-link, and receipt delivery after Cloudflare Access is active.
+- [ ] Enable reservations, then the staff portal, then the frontend submission flag.
 
-- [ ] Confirm pickup locations, service area, and one-way/round-trip routes.
-- [ ] Confirm passenger and luggage capacity, vehicle types, operating hours, and lead time.
-- [ ] Set prices, taxes, waiting-time charges, child-seat policy, and cancellation/no-show rules.
-- [ ] Decide whether transfers are standalone services, tour add-ons, or both.
-- [ ] Collect flight number, arrival date/time, airline, passenger count, luggage, accommodation, and contact details.
-- [ ] Prepare service copy, photographs, FAQs, and transfer confirmation messages.
-- [ ] Add transfer availability and payment to the same reservation workflow after business rules are approved.
+## Payment launch
 
-## Media and Content
+- [ ] Complete Belize Bank sandbox certification and callback testing.
+- [ ] Confirm merchant settings, final payment expiry, and refund operations.
+- [ ] Enable payments only after policies, reservations, staff access, and email monitoring are live.
 
-- [ ] Move the remaining large gallery and tour images to Cloudinary with responsive formats and dimensions.
-- [ ] Replace file-derived gallery captions with curated titles and descriptions for the strongest images.
-- [ ] Confirm all departures, duration, minimum party sizes, inclusions, and age/fitness restrictions with Action Divers.
+## Domain and operations
+
+- [ ] Acquire/confirm the final public domain before changing canonical URLs or CORS.
+- [ ] Update DNS, origins, callbacks, sitemap, structured data, and email links together.
+- [ ] Establish D1 export, monitoring, incident response, and rollback procedures.

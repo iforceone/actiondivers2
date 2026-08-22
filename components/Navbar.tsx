@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Home, Info, Anchor, Map, Calendar, BookOpen, Settings, Phone, Images } from 'lucide-react';
+import { Menu, X, ChevronDown, Info, Anchor, BookOpen, Phone, Images, ShoppingBag, GraduationCap, Ship } from 'lucide-react';
+import { useBooking } from '../contexts/BookingContext';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,7 @@ const Navbar: React.FC = () => {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { items: cartItems } = useBooking();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,36 +39,35 @@ const Navbar: React.FC = () => {
     resetNavState();
   }, [location]);
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setActiveDropdown(null);
+      setMobileExpanded(null);
+      setIsOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
   const navItems = [
-    { name: 'Home', path: '/', icon: <Home className="w-5 h-5" /> },
-    { name: 'About Us', path: '/about', icon: <Info className="w-5 h-5" /> },
-    { name: 'Gallery', path: '/gallery', icon: <Images className="w-5 h-5" /> },
     { 
-      name: 'Island Adventures', 
-      path: '/island-adventures',
+      name: 'Adventures',
       icon: <Anchor className="w-5 h-5" />,
       items: [
-        { name: 'Scuba Diving', path: '/tour/scuba-diving' },
-        { name: 'Snorkeling', path: '/tour/snorkeling' },
-        { name: 'Beach Bar-B-Q', path: '/tour/beach-bbq' },
-        { name: 'Fishing', path: '/tour/fishing' },
+        { name: 'Island Adventures', path: '/island-adventures' },
+        { name: 'Mainland Adventures', path: '/mainland-adventures' },
       ]
     },
-    { 
-      name: 'Mainland Adventures', 
-      path: '/mainland-adventures',
-      icon: <Map className="w-5 h-5" />,
-      items: [
-        { name: 'Altun Ha & Cave Tubing', path: '/tour/altun-ha-cave-tubing' },
-        { name: 'Xunantunich & Cave Tubing', path: '/tour/xunantunich-cave-tubing' },
-        { name: 'Cave Tubing / Zip-lining', path: '/tour/cave-tubing-ziplining' },
-        { name: 'Lamanai', path: '/tour/lamanai' },
-        { name: 'ATM Caves', path: '/tour/atm-caves' },
-      ]
-    },
-    { name: 'Reservations', path: '/reservations', icon: <Calendar className="w-5 h-5" /> },
+    { name: 'Courses', path: '/courses', icon: <GraduationCap className="w-5 h-5" /> },
+    { name: 'Transfers', mobileName: 'Transfers & Charters', path: '/transfers-charters', icon: <Ship className="w-5 h-5" /> },
+    { name: 'Gallery', path: '/gallery', icon: <Images className="w-5 h-5" /> },
+    { name: 'About Us', path: '/about', icon: <Info className="w-5 h-5" /> },
     { name: 'Travel Guides', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
+    { name: 'Plan a Trip', path: '/reservations', icon: <ShoppingBag className="w-5 h-5" />, primary: true },
   ];
+
+  if (location.pathname.startsWith('/admin')) return null;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-[#001219] shadow-2xl border-b border-white/5' : 'bg-[#001219] md:bg-transparent border-b border-white/5 md:border-none'}`}>
@@ -78,12 +79,15 @@ const Navbar: React.FC = () => {
               <img
                 src="/images/brand/brand-logo-header-reverse-transparent.webp"
                 alt="Action Divers & Adventures"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="h-11 w-auto max-w-[210px] object-contain sm:h-12 lg:h-14 lg:max-w-[260px]"
               />
             </Link>
           </div>
 
-          <div className="hidden lg:flex items-center justify-end flex-1 gap-x-5 xl:gap-x-8 h-full lg:ml-12 lg:mt-1.5 xl:ml-20 xl:mt-0">
+          <div className="hidden h-full flex-1 items-center justify-end gap-x-2 lg:ml-6 lg:flex 2xl:ml-10 2xl:gap-x-4">
             {navItems.map((item) => (
               <div 
                 key={item.name} 
@@ -93,34 +97,35 @@ const Navbar: React.FC = () => {
               >
                 {item.items ? (
                   <div className="flex items-center h-full">
-                    {/* Replaced Link with a non-navigational parent to prevent hash collision errors */}
                     <div className="flex items-center h-full cursor-pointer group">
-                      <Link 
-                        to={item.path}
-                        className={`flex items-center text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none h-full whitespace-nowrap ${activeDropdown === item.name || location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
-                      >
+                      <button type="button" aria-haspopup="menu" aria-expanded={activeDropdown === item.name} onClick={() => setActiveDropdown((open) => open === item.name ? null : item.name)} onFocus={() => setActiveDropdown(item.name)} className={`flex h-full items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${activeDropdown === item.name ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}>
                         {item.name}
-                      </Link>
+                      </button>
                       <ChevronDown className={`ml-1 w-3 h-3 text-[#8DDCE7]/45 transition-transform duration-300 ${activeDropdown === item.name ? 'rotate-180 text-[var(--brand-aqua)]' : ''}`} />
                     </div>
                   </div>
                 ) : (
                   <Link 
                     to={item.path!} 
-                    className={`group relative flex items-center h-full text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300 outline-none whitespace-nowrap ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)]'}`}
+                    title={item.path === '/blog' ? 'Travel Guides' : undefined}
+                    className={`group relative flex items-center whitespace-nowrap text-xs font-bold uppercase tracking-[0.1em] outline-none transition-colors duration-300 ${item.primary ? 'min-h-11 rounded-full bg-[var(--brand-orange)] px-5 text-white hover:bg-[var(--brand-orange-light)]' : `h-full ${location.pathname === item.path ? 'text-[var(--brand-ivory)]' : 'text-[#8DDCE7]/75 hover:text-[var(--brand-aqua)]'}`}`}
                   >
-                    {item.name}
+                    {item.path === '/blog' ? <><BookOpen className="h-4 w-4 2xl:hidden" aria-hidden="true" /><span className="sr-only 2xl:not-sr-only">Travel Guides</span></> : item.name}
+                    {item.path === '/reservations' && cartItems.length > 0 && (
+                      <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--brand-orange)] px-1.5 text-[11px] text-white">{cartItems.length}</span>
+                    )}
                   </Link>
                 )}
 
                 {item.items && activeDropdown === item.name && (
                   <div className="absolute left-0 top-full w-64 pt-1 z-50">
-                    <div className="bg-[#001219] border border-white/10 rounded-2xl shadow-2xl py-4 animate-fade-in">
+                    <div role="menu" className="bg-[#001219] border border-white/10 rounded-2xl shadow-2xl py-4 animate-fade-in">
                       {item.items.map((sub) => (
                         <Link
                           key={sub.name}
                           to={sub.path}
-                          className="block px-6 py-3 text-[9px] font-bold tracking-[0.2em] text-[#8DDCE7]/60 hover:text-[var(--brand-aqua)] hover:bg-white/5 transition-all uppercase"
+                          role="menuitem"
+                          className="block px-6 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#8DDCE7]/70 transition-colors hover:bg-white/5 hover:text-[var(--brand-aqua)]"
                         >
                           {sub.name}
                         </Link>
@@ -131,18 +136,15 @@ const Navbar: React.FC = () => {
               </div>
             ))}
             
-            <div className="h-full flex items-center ml-2 xl:ml-4">
-              <Link to="/admin" className="p-2 rounded-full hover:bg-white/5 transition-all group" title="Owner Portal">
-                <Settings className="w-5 h-5 text-[#8DDCE7]/40 group-hover:text-[var(--brand-aqua)]" />
-              </Link>
-            </div>
           </div>
 
           <div className="lg:hidden flex items-center">
-            <button 
+            <button
               onClick={() => setIsOpen(true)} 
               className="text-[var(--brand-aqua)] p-2"
               aria-label="Open Menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
             >
               <Menu className="h-7 w-7" />
             </button>
@@ -151,19 +153,17 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div 
-        className={`lg:hidden fixed inset-0 z-[200] transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-      >
+      {isOpen && <div className="fixed inset-0 z-[200] lg:hidden">
         <div 
           className="absolute inset-0 bg-black/80 transition-opacity duration-300"
           onClick={() => setIsOpen(false)}
         ></div>
         
-        <div className={`absolute top-0 right-0 w-[85%] max-w-[320px] h-full bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] transition-transform duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Site navigation" className="absolute right-0 top-0 flex h-full w-[85%] max-w-[320px] flex-col bg-[#050f14] shadow-[-30px_0_70px_rgba(0,0,0,0.9)] animate-fade-in">
           
           <div className="flex items-center justify-between p-7 border-b border-white/5 bg-[#050f14] shrink-0">
             <div className="text-sm font-bold font-extrabold tracking-tight text-[var(--brand-ivory)] tracking-[0.3em] uppercase">Menu</div>
-            <button onClick={() => setIsOpen(false)} className="text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] p-2">
+            <button onClick={() => setIsOpen(false)} className="text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] p-2" aria-label="Close menu">
               <X className="w-7 h-7" />
             </button>
           </div>
@@ -185,18 +185,11 @@ const Navbar: React.FC = () => {
                       
                       {mobileExpanded === item.name && (
                         <div className="bg-black/40 py-2 border-y border-white/5">
-                          {/* Top-level link added to mobile expanded view */}
-                          <Link
-                            to={item.path!}
-                            className="flex items-center px-16 py-4 text-[11px] font-bold text-[var(--brand-ivory)] hover:text-white transition-colors uppercase tracking-widest bg-white/5"
-                          >
-                            All {item.name}
-                          </Link>
                           {item.items.map((sub) => (
                             <Link
                               key={sub.name}
                               to={sub.path}
-                              className="flex items-center px-16 py-4 text-[11px] font-bold text-[#8DDCE7]/45 hover:text-[var(--brand-aqua)] transition-colors uppercase tracking-widest"
+                              className="flex items-center px-16 py-4 text-sm font-bold text-[#8DDCE7]/65 hover:text-[var(--brand-aqua)] transition-colors uppercase tracking-[0.1em]"
                             >
                               {sub.name}
                             </Link>
@@ -210,7 +203,10 @@ const Navbar: React.FC = () => {
                       className={`flex items-center px-7 py-5 gap-5 transition-colors ${location.pathname === item.path ? 'text-[var(--brand-ivory)] bg-white/5' : 'text-[#8DDCE7]/80'}`}
                     >
                       <span className="text-[#8DDCE7]/40">{item.icon}</span>
-                      <span className="text-lg font-bold tracking-tight">{item.name}</span>
+                      <span className="text-lg font-bold tracking-tight">{item.mobileName ?? item.name}</span>
+                      {item.path === '/reservations' && cartItems.length > 0 && (
+                        <span className="ml-auto inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[var(--brand-orange)] px-2 text-xs font-bold text-white">{cartItems.length}</span>
+                      )}
                     </Link>
                   )}
                 </div>
@@ -219,7 +215,7 @@ const Navbar: React.FC = () => {
 
             <div className="p-8 border-t border-white/5 bg-[#030a0d]">
               <div className="mb-10">
-                <p className="text-[10px] uppercase tracking-[0.4em] text-[#F8F4E8]/20 mb-4 font-bold">Inquiries</p>
+                <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F8F4E8]/55">Inquiries</p>
                 <a href="tel:0115016712624" className="text-2xl font-extrabold tracking-tight text-[#F8F4E8] flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-[#11C7D9]/20 flex items-center justify-center">
                     <Phone className="w-4 h-4 text-[#F8F4E8]" />
@@ -228,22 +224,11 @@ const Navbar: React.FC = () => {
                 </a>
               </div>
 
-              <div className="flex items-center justify-between border-t border-white/5 pt-6">
-                <div className="flex items-center gap-2">
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#F8F4E8]/10 font-bold">Action Divers Belize</p>
-                  <Link 
-                    to="/admin" 
-                    className="p-1 text-[#F8F4E8]/10 hover:text-[#F8F4E8]/40 transition-colors"
-                    title="Access"
-                  >
-                    <Settings className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
+              <p className="border-t border-white/5 pt-6 text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8]/35">Action Divers Belize</p>
             </div>
           </div>
         </div>
-      </div>
+      </div>}
     </nav>
   );
 };

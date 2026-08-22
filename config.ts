@@ -15,11 +15,27 @@ export const CONTACT = {
 // paste the Worker URL here, e.g. 'https://actiondivers-api.<subdomain>.workers.dev'.
 // No trailing slash. Until this is set the reservations form falls back to
 // WhatsApp/phone and the Tour Assistant returns its offline message.
-const API_BASE_URL = 'https://actiondivers-api.davebze.workers.dev';
+const PRODUCTION_SITE_HOST = 'actiondivers2.davebze.workers.dev';
+const PREVIEW_API_BASE_URL = 'https://actiondivers-api-preview.davebze.workers.dev';
+const PRODUCTION_API_BASE_URL = 'https://actiondivers-api.davebze.workers.dev';
+const isWorkersPreview = typeof window !== 'undefined'
+  && window.location.hostname.endsWith('.davebze.workers.dev')
+  && window.location.hostname !== PRODUCTION_SITE_HOST;
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL
+  || (isWorkersPreview ? PREVIEW_API_BASE_URL : PRODUCTION_API_BASE_URL)
+).replace(/\/$/, '');
 
 export const API = {
   baseUrl: API_BASE_URL,
-  isConfigured: () => !API_BASE_URL.includes('REPLACE_WITH_API_WORKER_URL'),
+  isConfigured: () => {
+    try {
+      const url = new URL(API_BASE_URL);
+      return url.protocol === 'https:' && Boolean(url.hostname);
+    } catch {
+      return false;
+    }
+  },
   /** url('/inquiry') -> 'https://.../inquiry' */
   url: (path: string) => `${API_BASE_URL.replace(/\/$/, '')}${path}`,
 };
