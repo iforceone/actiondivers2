@@ -32,7 +32,7 @@ const Home: React.FC = () => {
           muted 
           playsInline
           className="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000"
-          poster="/images/gallery/Boat-out-at-sea.jpg"
+          poster="/images/gallery/great-blue-hole-poster.webp"
         >
           <source src="https://res.cloudinary.com/dmmtiqunw/video/upload/q_auto/f_auto/action-divers-belize_h0xat9.mp4" type="video/mp4" />
           Your browser does not support the video tag.
