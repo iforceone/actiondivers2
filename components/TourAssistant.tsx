@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { getAssistantResponse } from '../services/geminiService';
 import AssistantLauncher from './AssistantLauncher';
 
@@ -22,6 +24,7 @@ const TourAssistant: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -41,11 +44,12 @@ const TourAssistant: React.FC = () => {
     const textToSend = (customPrompt || input).trim();
     if (!textToSend || isTyping) return;
 
+    const currentHistory = [...messages];
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: textToSend }]);
     setIsTyping(true);
 
-    const response = await getAssistantResponse(textToSend);
+    const response = await getAssistantResponse(textToSend, currentHistory);
     setMessages(prev => [...prev, { role: 'assistant', content: response || "I'm sorry, I couldn't process that. Please ask again or contact our shop directly." }]);
     setIsTyping(false);
   };
@@ -111,7 +115,43 @@ const TourAssistant: React.FC = () => {
                       : 'bg-white/5 text-[#F8F4E8]/90 rounded-tl-none border border-white/10'
                     }`}
                   >
-                    {m.content}
+                    {m.role === 'user' ? (
+                      <div>{m.content}</div>
+                    ) : (
+                      <ReactMarkdown
+                        components={{
+                          a: ({ href, children, ...props }) => {
+                            const isInternal = Boolean(href && (href.startsWith('/') || href.startsWith('#')));
+                            return (
+                              <a
+                                href={href}
+                                onClick={(e) => {
+                                  if (isInternal && href && href.startsWith('/')) {
+                                    e.preventDefault();
+                                    setIsOpen(false);
+                                    navigate(href);
+                                  }
+                                }}
+                                className="text-[var(--brand-aqua)] font-bold underline decoration-[var(--brand-aqua)]/50 underline-offset-2 hover:text-[var(--brand-orange)] hover:decoration-[var(--brand-orange)] transition-colors cursor-pointer"
+                                target={isInternal ? undefined : '_blank'}
+                                rel={isInternal ? undefined : 'noopener noreferrer'}
+                                {...props}
+                              >
+                                {children}
+                              </a>
+                            );
+                          },
+                          p: ({ children }) => <p className="mb-2.5 last:mb-0 leading-relaxed">{children}</p>,
+                          ul: ({ children }) => <ul className="list-disc list-inside space-y-1.5 my-2 pl-1">{children}</ul>,
+                          ol: ({ children }) => <ol className="list-decimal list-inside space-y-1.5 my-2 pl-1">{children}</ol>,
+                          li: ({ children }) => <li className="text-sm leading-relaxed">{children}</li>,
+                          strong: ({ children }) => <strong className="font-bold text-white">{children}</strong>,
+                          em: ({ children }) => <em className="italic text-[#F8F4E8]">{children}</em>,
+                        }}
+                      >
+                        {m.content}
+                      </ReactMarkdown>
+                    )}
 
                     {/* Quick prompts shown under initial greeting when it's the welcome message */}
                     {i === 0 && m.role === 'assistant' && (

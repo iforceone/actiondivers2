@@ -183,7 +183,9 @@ export const hasMainlandDateConflict = (items: Array<{ category: BookingCategory
   return false;
 };
 
-export const estimateBookingItemCents = (catalogItem: BookingCatalogItem, participants: number, details?: BookingItemDetails) => {
+export type BookingItemPricingInput = Pick<BookingCatalogItem, 'pricingBasis' | 'priceCents'> & Partial<Pick<BookingCatalogItem, 'additionalParticipantPriceCents' | 'minimumPaidParticipants'>>;
+
+export const estimateBookingItemCents = (catalogItem: BookingItemPricingInput, participants: number, details?: BookingItemDetails) => {
   const count = Math.max(1, Math.round(participants));
   if (catalogItem.pricingBasis === 'tiered_transfer') {
     const oneWay = Math.max(catalogItem.priceCents, count * (catalogItem.additionalParticipantPriceCents ?? 0));

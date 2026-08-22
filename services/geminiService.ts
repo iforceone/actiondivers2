@@ -10,7 +10,10 @@ const FALLBACK =
  * the API key must never reach the browser. The system prompt and model choice
  * live there too, so this only ships the guest's message.
  */
-export async function getAssistantResponse(message: string): Promise<string> {
+export async function getAssistantResponse(
+  message: string,
+  history?: { role: 'user' | 'assistant'; content: string }[]
+): Promise<string> {
   if (!API.isConfigured()) {
     console.warn('Assistant endpoint not configured; set apiBaseUrl in config.ts');
     return FALLBACK;
@@ -20,7 +23,10 @@ export async function getAssistantResponse(message: string): Promise<string> {
     const res = await fetch(API.url('/assistant'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({
+        message,
+        messages: history ? [...history, { role: 'user', content: message }] : undefined,
+      }),
     });
 
     const data = (await res.json().catch(() => null)) as
@@ -42,3 +48,4 @@ export async function getAssistantResponse(message: string): Promise<string> {
     return FALLBACK;
   }
 }
+

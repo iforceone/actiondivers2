@@ -139,7 +139,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
           requestedDate: '',
           participantAdults,
           participantChildren,
-          details: catalogItem.serviceKind === 'transfer' ? { transferTrip: 'one_way' } : {},
+          details: catalogItem.serviceKind === 'transfer' ? { transferTrip: 'one_way' as const } : {},
         }].slice(0, 12);
     }),
     removeItem: (catalogItemId) => setItems((current) => current.filter((item) => item.catalogItemId !== catalogItemId)),

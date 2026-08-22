@@ -195,6 +195,16 @@ async function handleInquiry(request: Request, env: Env, json: Json): Promise<Re
     return json({ ok: true }, 200);
 }
 
+interface ChatMessagePayload {
+  role?: string;
+  content?: string;
+}
+
+interface AssistantRequestBody {
+  message?: string;
+  messages?: ChatMessagePayload[];
+}
+
 async function handleAssistant(request: Request, env: Env, json: Json): Promise<Response> {
   // The LLM call costs money per request, so this is limited harder than the form.
   const clientIp = request.headers.get('CF-Connecting-IP') ?? 'unknown';
@@ -203,25 +213,52 @@ async function handleAssistant(request: Request, env: Env, json: Json): Promise<
     return json({ ok: false, error: 'Too many questions at once. Please wait a moment.' }, 429);
   }
 
-  let body: { message?: unknown };
+  let body: AssistantRequestBody;
   try {
-    body = (await request.json()) as { message?: unknown };
+    body = (await request.json()) as AssistantRequestBody;
   } catch {
     return json({ ok: false, error: 'Invalid request.' }, 400);
   }
 
-  const message = typeof body.message === 'string' ? body.message.trim() : '';
-  if (!message) return json({ ok: false, error: 'Please include a message.' }, 422);
-  // Cap input length so a huge prompt can't run up the bill on one request.
-  if (message.length > MAX_MESSAGE_CHARS) {
+  const rawMessage = typeof body.message === 'string' ? body.message.trim() : '';
+  const rawList = Array.isArray(body.messages) ? body.messages : null;
+
+  if (!rawMessage && (!rawList || rawList.length === 0)) {
+    return json({ ok: false, error: 'Please include a message.' }, 422);
+  }
+
+  // Cap message lengths
+  if (rawMessage.length > MAX_MESSAGE_CHARS) {
     return json({ ok: false, error: 'That message is too long. Please shorten it.' }, 413);
+  }
+
+  let contents: Array<{ role: 'user' | 'model'; parts: [{ text: string }] }> | string;
+
+  if (rawList && rawList.length > 0) {
+    // Keep the most recent 10 turns and sanitize roles
+    const historyList = rawList
+      .filter((m) => typeof m.content === 'string' && m.content.trim())
+      .slice(-10)
+      .map((m) => ({
+        role: m.role === 'assistant' ? ('model' as const) : ('user' as const),
+        parts: [{ text: (m.content ?? '').slice(0, MAX_MESSAGE_CHARS) } as { text: string }],
+      }));
+
+    // Multi-turn Gemini requires alternating user/model starting with user
+    while (historyList.length > 0 && historyList[0].role === 'model') {
+      historyList.shift();
+    }
+
+    contents = historyList.length > 0 ? historyList : rawMessage;
+  } else {
+    contents = rawMessage;
   }
 
   try {
     const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
     const response = await ai.models.generateContent({
       model: ASSISTANT_MODEL,
-      contents: message,
+      contents,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.7,

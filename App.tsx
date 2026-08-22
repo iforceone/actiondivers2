@@ -548,6 +548,9 @@ const App: React.FC = () => {
             <Route path="/transfers-charters/request" element={<ServiceRequest mode="transfer" />} />
             <Route path="/tour/diving-courses" element={<Navigate to="/courses" replace />} />
             <Route path="/tour/beach-bbq" element={<Navigate to="/tour/fishing" replace />} />
+            <Route path="/plan-your-trip" element={<Navigate to="/reservations" replace />} />
+            <Route path="/adventures" element={<Navigate to="/island-adventures" replace />} />
+            <Route path="/contact" element={<Navigate to="/about" replace />} />
             <Route path="/tour/:id" element={<TourDetail />} />
             <Route path="/blog" element={<VoyageChronicles />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
