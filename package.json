@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender-meta.mjs",
+    "build": "npm run typecheck && vite build && node scripts/prerender-meta.mjs",
+    "typecheck": "tsc --noEmit",
+    "check": "npm --prefix worker-api run typecheck && npm --prefix worker-api test && npm run build && npm run check:readiness",
     "preview": "vite preview",
     "check:readiness": "node scripts/check-readiness.mjs"
   },
@@ -14,7 +16,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "6.28.0"
+    "react-router-dom": "6.30.6"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

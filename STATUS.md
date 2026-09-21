@@ -1,6 +1,25 @@
 # Production readiness checkpoint
 
-Updated: 2026-08-06
+Updated: 2026-09-21
+
+## Audit checkpoint before preview release — 2026-09-21
+
+See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for the initial audit evidence.
+These deployment observations precede the separately authorized preview release.
+Earlier entries below this checkpoint are historical.
+
+- Fetched GitHub and fast-forwarded `codex/action-divers-work` to `9acdd92`.
+- Production site is Worker version 68; branch preview is version 69. Both APIs
+  remain on August 22 deployments and need the matching refresher-booking update.
+- Production reservations and staff are enabled; payments are disabled.
+- Both databases have no pending migrations. API health, catalog, media, and
+  unauthenticated staff Access redirects were verified.
+- The business domain is in Cloudflare DNS and still serves WordPress.
+- Local cleanup fixes API typechecking, removes unused reservation UI, adds a
+  combined validation command, and stops the catch-all route masking broken links.
+- Router 6.30.6 removes high-severity runtime audit findings; two moderate package
+  findings remain for a separate major-version review.
+- No commit, push, merge to main, deployment, DNS edit, email, or payment was performed.
 
 ## Completed
 

@@ -6,7 +6,9 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const failures = [];
 
 const app = read('App.tsx');
-const routePatterns = [...app.matchAll(/<Route\s+path="([^"]+)"/g)].map((match) => match[1]);
+// The not-found route must not make every misspelled internal URL pass.
+const routePatterns = [...app.matchAll(/<Route\s+path="([^"]+)"/g)]
+  .map((match) => match[1]).filter((pattern) => pattern !== '*');
 const matchesRoute = (candidate) => routePatterns.some((pattern) => {
   if (pattern === candidate) return true;
   const expression = new RegExp(`^${pattern.replace(/:[^/]+/g, '[^/]+').replace(/\*/g, '.*')}$`);
@@ -37,9 +39,15 @@ for (const file of sourceFiles) {
 }
 
 const sitemap = read('public/sitemap.xml');
-for (const match of sitemap.matchAll(/<loc>https:\/\/actiondivers2\.davebze\.workers\.dev([^<]*)<\/loc>/g)) {
-  const target = match[1] || '/';
-  if (!matchesRoute(target)) failures.push(`public/sitemap.xml: URL has no route: ${target}`);
+const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)];
+if (!sitemapUrls.length) failures.push('public/sitemap.xml: no URLs found.');
+for (const match of sitemapUrls) {
+  try {
+    const target = new URL(match[1].trim()).pathname;
+    if (!matchesRoute(target)) failures.push(`public/sitemap.xml: URL has no route: ${target}`);
+  } catch {
+    failures.push(`public/sitemap.xml: invalid URL: ${match[1]}`);
+  }
 }
 
 const dist = path.join(root, 'dist');

@@ -7,12 +7,17 @@ Worker holding the API keys.
 **Live:** https://actiondivers2.davebze.workers.dev (still a `workers.dev` URL — see
 [Moving to a real domain](#moving-to-a-real-domain))
 
+**Launch audit: 2026-09-21.** See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for
+verified hosting state and release priorities. The public domain still serves
+WordPress. Work is on `codex/action-divers-work`, 33 commits ahead of `main`.
+
 ---
 
 ## Quick start
 
 ```bash
-npm install
+npm ci
+npm ci --prefix worker-api
 npm run dev          # http://localhost:3000
 ```
 
@@ -21,21 +26,22 @@ one, and adding one back would ship it to every visitor (see [Why there are two
 projects](#why-there-are-two-projects)). An older version of this README told you to do
 exactly that; it was wrong, and the key it referred to has been rotated.
 
-In local development the Tour Assistant calls the deployed Worker, which allows
-`http://localhost:3000` as an origin. Reservation, course, and transfer forms default
-to preview mode: guests can complete the UI and use the WhatsApp fallback, but the
-browser will not attempt a live reservation request. A future production build must
-explicitly set `VITE_RESERVATION_REQUESTS_ENABLED=true` only after the Worker reservation
-gate, database, email delivery, and staff workflow are ready.
+Local development defaults to the production API. Current reservation, course, and
+transfer forms submit real requests; `VITE_RESERVATION_REQUESTS_ENABLED` is no longer
+implemented. Set `VITE_API_BASE_URL` in ignored `.env.local` to the isolated preview
+API when testing submissions. Both deployed APIs allow `http://localhost:3000`;
+other local origins are not automatically allowed. Branch preview hosts select the
+preview API unless explicitly overridden. Do not submit fictional production requests.
 
 ```bash
-npm run build        # production build into dist/
+npm run build        # frontend typecheck, build, and route metadata
 npm run preview      # serve the built output
-npx tsc --noEmit     # typecheck (vite build does NOT typecheck)
+npm run typecheck    # frontend only
+npm run check        # API typecheck + tests, frontend build + readiness
 ```
 
-`npm run build` will happily build code with type errors. Run `tsc --noEmit` before
-pushing — that is what CI-equivalent checking looks like here.
+Use `npm run check` before a release. A build cannot verify inbox delivery, approved
+staff access, payment certification, or public-domain readiness.
 
 ---
 
@@ -77,23 +83,23 @@ touching infrastructure.
 | Cloudflare | **Davebze@gmail.com** (`9afab2d5eabc5a0cee88b9ecc5d2e795`) | Hosts both Workers |
 | GitHub | `iforceone/actiondivers2` | Source; pushes to `main` auto-deploy the site |
 | Resend | dpollard@iforcemarketing.com | Sends inquiry emails |
-| SiteGround | — | **DNS** for `actiondiversbelize.com` (not Cloudflare) |
+| Cloudflare DNS | Same account as Workers | Active domain zone; website still serves WordPress |
 | Google Workspace | — | Mailbox `info@actiondiversbelize.com` receives inquiries |
 
 ### ⚠️ The `CLOUDFLARE_API_TOKEN` trap
 
-The development machine has `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` set
-globally, pointing at a **different client's Cloudflare account**. That env var silently
-takes priority over `wrangler login`. It has already caused one misdeploy: the API Worker
-was created in the wrong account with both production API keys attached.
+Previous sessions had global `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+variables targeting another client's account. They were absent in the September 21
+audit, but these overrides can take priority over Wrangler OAuth. Check before writes.
 
 Before any `wrangler` command that writes:
 
 ```bash
-npx wrangler whoami       # must say davebze@gmail.com
+npx wrangler whoami       # must include account 9afab2d5eabc5a0cee88b9ecc5d2e795
 ```
 
-If it names any other account, clear the variables for that shell session.
+Verify the account ID, not just the login email: the current authorized member is
+`dpollard@iforcemarketing.com`. Clear wrong-account overrides only for that shell.
 
 ```powershell
 Remove-Item Env:CLOUDFLARE_API_TOKEN; Remove-Item Env:CLOUDFLARE_ACCOUNT_ID
@@ -121,6 +127,10 @@ version without touching production. These builds show up in the same build hist
 a red build there does **not** mean the live site is broken; check which branch the
 build came from before panicking.
 
+This is the documented Git build setup; verify it in Cloudflare before releasing.
+The production version checked on September 21 was uploaded with Wrangler and is
+newer than GitHub `main`. Do not release the stale `main` checkout.
+
 Both commands read `wrangler.jsonc` in the repo root. Keep it committed. Cloudflare's
 `cloudflare/workers-autoconfig` bot periodically opens a branch offering to generate its
 own config — it also switches the build to `@cloudflare/vite-plugin` and rewrites the
@@ -132,7 +142,7 @@ deciding you want that migration.
 
 ```bash
 cd worker-api
-npx wrangler whoami        # confirm davebze@gmail.com first
+npx wrangler whoami        # confirm account 9afab2d5eabc5a0cee88b9ecc5d2e795
 npm run deploy
 ```
 
@@ -144,8 +154,8 @@ few seconds and retest before investigating.
 
 ## Moving to a real domain
 
-The `workers.dev` URL is hardcoded in **seven** places. Miss the first one and both the
-chatbot and the reservations form return `403` on the new domain with no visible cause.
+The domain is already in Cloudflare DNS but has no mapping to the site Worker.
+Coordinate these changes in one reviewed cutover:
 
 1. **`worker-api/wrangler.toml`** → `ALLOWED_ORIGINS` — add the new origin (comma
    separated, no trailing slash), then **`npm run deploy` from `worker-api/`**. The Worker rejects any
@@ -155,6 +165,12 @@ chatbot and the reservations form return `403` on the new domain with no visible
    pages.
 3. **`index.html`** → four values: `og:url`, `og:image`, `twitter:image`, and
    `<link rel="canonical">`, plus the `"url"` field in the JSON-LD block.
+4. **`scripts/prerender-meta.mjs`** → `SITE_URL` for generated route metadata.
+5. **`public/sitemap.xml` and `public/robots.txt`** → public sitemap origin.
+6. **`worker-api/wrangler.toml`** → `PAYMENT_SITE_ORIGIN` and customer links/callbacks.
+7. **`config.ts`** → verify API host selection for the final domain.
+8. Inventory WordPress URLs, prepare redirects, map the chosen hostname to the Worker,
+   and verify apex/www behavior, TLS, staff Access coverage, and preview indexing.
 
 Keep `http://localhost:3000` in `ALLOWED_ORIGINS` or local dev breaks.
 
@@ -168,8 +184,12 @@ so contact details must be updated in both places. This is deliberate — it kee
 structured data available to crawlers that don't execute JavaScript — but it is easy to
 update one and forget the other.
 
-**`vite build` does not typecheck.** Real type errors have shipped green builds here.
-Run `npx tsc --noEmit`.
+**Use `npm run build`, not bare `vite build`.** The npm script typechecks the
+frontend. `npm run check` also checks the API.
+
+**Specify the API config explicitly.** Ad-hoc Wrangler commands can select the
+parent site's config even from `worker-api/`. Use `--config wrangler.toml` there.
+The API npm deployment script already does this.
 
 **The root `tsconfig.json` excludes `worker-api/`.** The Worker has its own tsconfig with
 Cloudflare types instead of DOM types. Typecheck it from inside `worker-api/`.
@@ -197,7 +217,7 @@ priority 0 that would hijack all inbound mail away from Google Workspace.
 ## Repo map
 
 ```
-App.tsx                    routing, footer, reservations page/form
+App.tsx                    routing and footer
 wrangler.jsonc             site Worker config (assets-only, points at dist/)
 config.ts                  contact details, Worker URL, review counts
 constants.tsx              tour data and pricing
@@ -207,6 +227,8 @@ components/
   TourAssistant.tsx        chat modal + open state
   SEO.tsx                  per-page meta tags, SITE_URL
 services/geminiService.ts  calls worker-api /assistant (no SDK, no key)
+pages/Reservations.tsx     current trip request form
+pages/ServiceRequest.tsx   course and transfer request forms
 worker-api/                the API Worker — see its own README
 PROJECT_TODO.md            business backlog (payments, transfers, content)
 ```
@@ -219,8 +241,9 @@ Remaining launch gates, roughly by priority:
 
 - **Owner content approval.** Confirm prices, schedules still labeled “Exact time
   confirmed after booking,” public contact details, and policy language.
-- **Reservation infrastructure.** Create D1, apply migrations, verify email delivery,
-  configure staff access, and enable the Worker and frontend gates in that order.
+- **Reservation operations.** D1/R2 exist, migrations are current, and reservations
+  and staff gates are enabled. Confirm actual inbox delivery, approved staff access,
+  and the complete request/quote workflow before the domain cutover.
 - **Belize Bank approval.** Keep payments disabled until sandbox certification and the
   cancellation/refund terms are approved.
 - **Email operations.** `FROM_EMAIL` and `TO_EMAIL` are both `info@`; confirm the staff

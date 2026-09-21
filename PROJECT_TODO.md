@@ -1,35 +1,53 @@
-# Action Divers & Adventures Launch Backlog
+# Action Divers launch backlog
 
-The public experience, reservation interfaces, staff dashboard, customer portal, and
-Belize Bank workflow exist in code. External services remain deliberately gated. This
-file tracks what must happen after owner and infrastructure decisions resume.
+Updated 2026-09-21. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for current evidence.
 
-## Owner confirmation
+## Next release candidate
 
-- [ ] Approve current prices, fees, minimum billed quantities, and capacities.
-- [ ] Confirm departure/check-in times and durations for the four regular dives.
-- [ ] Confirm exact session hours for Refresher, Resort Course, and Scuba Discovery, plus the Advanced Open Water duration.
-- [ ] Approve public contact/location wording and PADI instructor wording.
-- [ ] Supply privacy, cancellation, refund, no-show, weather, and terms language.
-- [ ] Approve staff email addresses and customer-data retention period.
+- [x] Fetch latest development branch and preserve unrelated workspace files.
+- [x] Fix API TypeScript error and remove unused legacy reservation UI.
+- [x] Add `npm run check` and fix catch-all masking in the internal-link check.
+- [x] Update React Router within v6 to remove high-severity runtime audit findings.
+- [ ] Review the remaining two moderate router package findings and plan/test v7.
+- [ ] Review and commit local cleanup; deploy matching frontend/API versions to preview.
+- [ ] Run an authorized fictional preview request through Refresher + same-day dive,
+      staff review, quote, customer portal, and actual inbox delivery.
+- [ ] Reconcile the 33-commit difference from `main` and verify Cloudflare Git build
+      settings before a production merge or push.
 
-## Reservation and staff launch
+## Owner and operations approval
 
-- [x] Create separate preview and production D1 databases and apply existing migrations.
-- [x] Seed the production catalog from the current server-side catalog and verify empty customer/payment tables.
-- [ ] Configure Cloudflare Access for approved staff and verify Worker-side JWT checks.
-- [x] Test reservation storage, customer acknowledgement, staff notification, and customer portal retrieval.
-- [ ] Test staff quote, update, payment-link, and receipt delivery after Cloudflare Access is active.
-- [ ] Enable reservations, then the staff portal, then the frontend submission flag.
+- [ ] Approve prices, fees, minimum quantities, capacities, and public contact details.
+- [ ] Resolve remaining dive/course schedules and unconfirmed service claims.
+- [ ] Supply approved privacy, terms, cancellation, refund, no-show, and weather policies.
+- [ ] Approve production staff accounts and customer-data retention.
+- [x] Verify separate production/preview D1 and R2 bindings.
+- [x] Verify both databases have no pending migrations.
+- [x] Verify unauthenticated production site/API staff routes redirect to Access.
+- [ ] Verify authorized staff sign-in and permissions; the public gate alone is insufficient.
+- [ ] Verify current Resend domain status and customer/staff delivery. Historical
+      documents disagree about sender verification; API acceptance is not inbox delivery.
+- [ ] Confirm production request, quote, portal, and staff operating procedures.
 
-## Payment launch
+## Public-domain launch
 
-- [ ] Complete Belize Bank sandbox certification and callback testing.
-- [ ] Confirm merchant settings, final payment expiry, and refund operations.
-- [ ] Enable payments only after policies, reservations, staff access, and email monitoring are live.
+- [x] Verify Cloudflare DNS access; business domain still serves WordPress.
+- [ ] Confirm canonical apex/www choice; current WordPress canonical uses `www`.
+- [ ] Inventory WordPress URLs and prepare tested redirects.
+- [ ] Update canonical/social/structured-data URLs, prerender metadata, sitemap,
+      robots, API origins, email links, payment origin, and Access hostname coverage.
+- [ ] Keep previews out of search results after cutover.
+- [ ] Record backups, deployment artifacts, Worker version IDs, and rollback steps.
+- [ ] Approve production release and DNS/Worker mapping changes.
+- [ ] Verify final public domain, desktop/mobile flows, redirects, and monitoring.
 
-## Domain and operations
+## Payment launch (separate)
 
-- [ ] Acquire/confirm the final public domain before changing canonical URLs or CORS.
-- [ ] Update DNS, origins, callbacks, sitemap, structured data, and email links together.
-- [ ] Establish D1 export, monitoring, incident response, and rollback procedures.
+- [x] Application sandbox scenarios recorded on 2026-08-21 in `PAYMENT_CERTIFICATION.md`.
+- [ ] Obtain Belize Bank written approval and resolve/waive the SSL-card discrepancy.
+- [ ] Confirm production credentials, gateway/callback URLs, expiry, and refund operations.
+- [ ] Complete `PAYMENT_CERTIFICATION.md` production checklist.
+- [ ] Activate only after explicit approval and reconciled live testing.
+
+Recommendation: launch the website and reservations with payments disabled, then
+activate payments separately after bank and operational approvals.

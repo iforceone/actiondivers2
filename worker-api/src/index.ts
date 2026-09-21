@@ -232,7 +232,7 @@ async function handleAssistant(request: Request, env: Env, json: Json): Promise<
     return json({ ok: false, error: 'That message is too long. Please shorten it.' }, 413);
   }
 
-  let contents: Array<{ role: 'user' | 'model'; parts: [{ text: string }] }> | string;
+  let contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> | string;
 
   if (rawList && rawList.length > 0) {
     // Keep the most recent 10 turns and sanitize roles
