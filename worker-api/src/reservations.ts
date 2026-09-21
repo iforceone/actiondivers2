@@ -1,4 +1,4 @@
-import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, hasMainlandDateConflict, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
+import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, hasMainlandDateConflict, isRefresherDivePair, requiresRefresher, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { paymentIsAvailable } from './reservationRules';
@@ -290,7 +290,9 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
     }
     if (catalogItem.serviceKind === 'recreational_dive') {
       if (!text(details.certificationLevel, 100) || !DATE_RE.test(text(details.lastDiveDate, 10))) return json({ ok: false, error: 'Recreational dives require certification and a valid last-dive date.' }, 422);
-      if (text(details.lastDiveDate, 10) < belizeDateAfter(-365)) return json({ ok: false, error: 'Guests whose last dive was more than one year ago should request a Refresher course.' }, 422);
+    }
+    if (catalogItem.id === 'course-refresher' && (!text(details.certificationLevel, 100) || !DATE_RE.test(text(details.lastDiveDate, 10)))) {
+      return json({ ok: false, error: 'A Refresher request requires the guest’s certification level and last-dive date.' }, 422);
     }
     if (catalogItem.id === 'course-referral' && typeof details.referralDocuments !== 'boolean') return json({ ok: false, error: 'Please confirm your referral-document status.' }, 422);
     if (catalogItem.serviceKind === 'transfer') {
@@ -299,12 +301,17 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
     }
     normalizedItems.push({ catalog: catalogItem, requestedDate, adults: itemAdults, children: itemChildren, details });
   }
+  const refresher = normalizedItems.find((item) => item.catalog.id === 'course-refresher');
+  const recreationalDives = normalizedItems.filter((item) => item.catalog.serviceKind === 'recreational_dive');
+  const pairedRefresherDive = isRefresherDivePair(normalizedItems.map((item) => ({ id: item.catalog.id, serviceKind: item.catalog.serviceKind, requestedDate: item.requestedDate })));
+  const inactiveDive = recreationalDives.find((item) => requiresRefresher(item.details.lastDiveDate ?? '') && !(pairedRefresherDive && item.requestedDate === refresher?.requestedDate));
+  if (inactiveDive) return json({ ok: false, error: 'Guests whose last dive was more than one year ago must request a Refresher before recreational diving.' }, 422);
   const requestKinds = new Set(normalizedItems.map((item) => item.catalog.category === 'Course' ? 'course' : item.catalog.category === 'Transfer' ? 'transfer' : 'tour'));
-  if (requestKinds.size !== 1) return json({ ok: false, error: 'Tour, course, and transfer requests must be submitted separately.' }, 422);
+  if (requestKinds.size !== 1 && !pairedRefresherDive) return json({ ok: false, error: 'Tour, course, and transfer requests must be submitted separately, except for a same-day Refresher with one afternoon dive.' }, 422);
   if (hasMainlandDateConflict(normalizedItems.map((item) => ({ category: item.catalog.category, requestedDate: item.requestedDate })))) {
     return json({ ok: false, error: 'Only one mainland adventure can be scheduled per day.' }, 422);
   }
-  const requestKind = [...requestKinds][0];
+  const requestKind = pairedRefresherDive ? 'course' : [...requestKinds][0];
   const timestamp = nowIso();
   const id = crypto.randomUUID();
   const reference = reservationReference();

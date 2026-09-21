@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { paymentIsAvailable } from '../src/reservationRules.ts';
-import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, hasMainlandDateConflict, withDefaultBookingPolicies } from '../../shared/bookingCatalog.ts';
+import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, estimateBookingItemCents, hasMainlandDateConflict, isRefresherDivePair, requiresRefresher, withDefaultBookingPolicies } from '../../shared/bookingCatalog.ts';
 
 test('catalog identifiers and prices are safe server inputs', () => {
   const ids = new Set(DEFAULT_BOOKING_CATALOG.items.map((item) => item.id));
@@ -72,6 +72,29 @@ test('the seven-day boundary is inclusive in Belize calendar dates', () => {
   assert.equal(belizeDateAfter(7, beforeMidnightBelize), '2026-08-07');
   const afterMidnightBelize = new Date('2026-08-01T06:30:00.000Z');
   assert.equal(belizeDateAfter(7, afterMidnightBelize), '2026-08-08');
+});
+
+test('the one-year dive boundary requires a Refresher only after one full year', () => {
+  const now = new Date('2026-08-02T12:00:00.000Z');
+  assert.equal(requiresRefresher('2025-08-02', now), false);
+  assert.equal(requiresRefresher('2025-08-01', now), true);
+  assert.equal(requiresRefresher('', now), false);
+});
+
+test('only one same-day recreational dive may pair with a Refresher request', () => {
+  assert.equal(isRefresherDivePair([
+    { id: 'course-refresher', serviceKind: 'course', requestedDate: '2026-09-10' },
+    { id: 'dive-single', serviceKind: 'recreational_dive', requestedDate: '2026-09-10' },
+  ]), true);
+  assert.equal(isRefresherDivePair([
+    { id: 'course-refresher', serviceKind: 'course', requestedDate: '2026-09-10' },
+    { id: 'dive-single', serviceKind: 'recreational_dive', requestedDate: '2026-09-11' },
+  ]), false);
+  assert.equal(isRefresherDivePair([
+    { id: 'course-refresher', serviceKind: 'course', requestedDate: '2026-09-10' },
+    { id: 'dive-single', serviceKind: 'recreational_dive', requestedDate: '2026-09-10' },
+    { id: 'dive-two', serviceKind: 'recreational_dive', requestedDate: '2026-09-10' },
+  ]), false);
 });
 
 test('new service facts and capacity policies hydrate older catalogs', () => {

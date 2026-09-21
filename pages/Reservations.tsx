@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { API } from '../config';
 import { useBooking } from '../contexts/BookingContext';
-import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict } from '../shared/bookingCatalog';
+import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict, requiresRefresher } from '../shared/bookingCatalog';
 
 interface SubmissionResult {
   ok?: boolean;
@@ -33,7 +33,7 @@ const Reservations: React.FC = () => {
   const mainlandDatesValid = !hasMainlandDateConflict(items);
   const participantsComplete = items.every((item) => item.participantAdults >= 0 && item.participantChildren >= 0 && item.participantAdults + item.participantChildren > 0 && item.participantAdults <= adults && item.participantChildren <= children && (!item.maxParticipants || item.participantAdults + item.participantChildren <= item.maxParticipants));
   const detailsComplete = items.every((item) => {
-    if (item.serviceKind === 'recreational_dive') return Boolean(item.details.certificationLevel && item.details.lastDiveDate);
+    if (item.serviceKind === 'recreational_dive') return Boolean(item.details.certificationLevel && item.details.lastDiveDate && !requiresRefresher(item.details.lastDiveDate));
     return true;
   });
   const availableCatalogItems = useMemo(() => catalog.items.filter((item) => item.active && (item.category === 'Island' || item.category === 'Mainland') && !items.some((cartItem) => cartItem.catalogItemId === item.id)).sort((a, b) => a.sortOrder - b.sortOrder), [catalog.items, items]);
@@ -171,6 +171,7 @@ const Reservations: React.FC = () => {
                     {item.serviceKind === 'recreational_dive' && <div className="grid gap-4 sm:col-span-4 sm:grid-cols-2">
                       <label className="text-sm font-semibold text-[#F8F4E8]/75">Certification level<input required value={item.details.certificationLevel ?? ''} onChange={(event) => setDetails(item.catalogItemId, { certificationLevel: event.target.value })} placeholder="Required" className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                       <label className="text-sm font-semibold text-[#F8F4E8]/75">Last dive date<input type="date" required max={belizeDateAfter(0)} value={item.details.lastDiveDate ?? ''} onChange={(event) => setDetails(item.catalogItemId, { lastDiveDate: event.target.value })} className="mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-[#06212a] px-4 text-[#F8F4E8] [color-scheme:dark] outline-none focus:border-[#11C7D9]" /></label>
+                      {requiresRefresher(item.details.lastDiveDate ?? '') && <div role="alert" className="flex flex-col gap-3 rounded-xl border border-amber-300/25 bg-amber-300/10 p-4 text-sm leading-relaxed text-amber-50 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between"><span><strong>Refresher required.</strong> It must be completed before a recreational dive when the guest has not dived in over one year.</span><Link to="/courses/request?course=course-refresher" className="shrink-0 font-bold text-amber-200 underline decoration-amber-200/45 underline-offset-4">Request Refresher + afternoon dive</Link></div>}
                     </div>}
                   </div>
                 ))}

@@ -183,6 +183,13 @@ export const hasMainlandDateConflict = (items: Array<{ category: BookingCategory
   return false;
 };
 
+export const isRefresherDivePair = (items: Array<{ id: string; serviceKind: ServiceKind; requestedDate: string }>) => {
+  if (items.length !== 2) return false;
+  const refresher = items.find((item) => item.id === 'course-refresher');
+  const dive = items.find((item) => item.serviceKind === 'recreational_dive');
+  return Boolean(refresher && dive && refresher.requestedDate === dive.requestedDate);
+};
+
 export type BookingItemPricingInput = Pick<BookingCatalogItem, 'pricingBasis' | 'priceCents'> & Partial<Pick<BookingCatalogItem, 'additionalParticipantPriceCents' | 'minimumPaidParticipants'>>;
 
 export const estimateBookingItemCents = (catalogItem: BookingItemPricingInput, participants: number, details?: BookingItemDetails) => {
@@ -203,6 +210,9 @@ export const belizeDateAfter = (days: number, now = new Date()) => {
   const date = new Date(Date.UTC(Number(value.year), Number(value.month) - 1, Number(value.day) + days));
   return date.toISOString().slice(0, 10);
 };
+
+export const requiresRefresher = (lastDiveDate: string, now = new Date()) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(lastDiveDate) && lastDiveDate < belizeDateAfter(-365, now);
 
 export const catalogItemsForTour = (tourId: string, catalog = DEFAULT_BOOKING_CATALOG) =>
   catalog.items.filter((catalogItem) => catalogItem.active && catalogItem.tourId === tourId).sort((a, b) => a.sortOrder - b.sortOrder);
