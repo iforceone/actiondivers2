@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import { getAssistantResponse } from '../services/geminiService';
 import AssistantLauncher from './AssistantLauncher';
 
-const WELCOME_MESSAGE = "Gud day! I’m Kaptin Kai, your local dive guide at Action Divers. Whether you're heading to the Great Blue Hole, checking out the nurse sharks at Hol Chan, or need gear advice—ask away man, mek we get you in di water!";
+const WELCOME_MESSAGE = "Hi! I’m Kaptin Kai, your local dive guide at Action Divers. Whether you're heading to the Great Blue Hole, checking out the nurse sharks at Hol Chan, or need gear advice, ask away! I'd be happy to help you plan a great day on the water.";
 
 const QUICK_PROMPTS = [
   '🌊 Top Dive Sites',
