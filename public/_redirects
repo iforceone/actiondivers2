@@ -1,0 +1,28 @@
+# Reviewed matches from the legacy WordPress sitemap. See PRODUCTION_LAUNCH.md.
+# Host redirects belong in a Cloudflare Redirect Rule, not this file.
+/about-us /about 301
+/about-us/ /about 301
+/contact /about 301
+/contact/ /about 301
+/scuba-dive /tour/scuba-diving 301
+/scuba-dive/ /tour/scuba-diving 301
+/local-dives /tour/scuba-diving 301
+/local-dives/ /tour/scuba-diving 301
+/scuba-instructions /courses 301
+/scuba-instructions/ /courses 301
+/snorkeling /tour/snorkeling 301
+/snorkeling/ /tour/snorkeling 301
+/fishing /tour/fishing 301
+/fishing/ /tour/fishing 301
+/beach-bar-b-q /tour/fishing 301
+/beach-bar-b-q/ /tour/fishing 301
+/cave-tubing-ziplining /tour/cave-tubing-ziplining 301
+/cave-tubing-ziplining/ /tour/cave-tubing-ziplining 301
+/altun-ha /tour/altun-ha-cave-tubing 301
+/altun-ha/ /tour/altun-ha-cave-tubing 301
+/xunantunich /tour/xunantunich-cave-tubing 301
+/xunantunich/ /tour/xunantunich-cave-tubing 301
+/lamani /tour/lamanai 301
+/lamani/ /tour/lamanai 301
+/category/island-adventures /island-adventures 301
+/category/island-adventures/ /island-adventures 301

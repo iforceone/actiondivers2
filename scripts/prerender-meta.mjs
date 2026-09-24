@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createServer } from 'vite';
+import { SITE_URL } from '../site.mjs';
 
-const SITE_URL = 'https://actiondivers2.davebze.workers.dev';
 const SITE_NAME = 'Action Divers & Adventures';
 const TITLE_SUFFIX = 'Action Divers Belize';
 const DEFAULT_IMAGE = `${SITE_URL}/images/brand/action-divers-social-share.png`;

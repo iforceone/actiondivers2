@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "check": "npm --prefix worker-api run typecheck && npm --prefix worker-api test && npm run build && npm run check:readiness",
     "preview": "vite preview",
-    "check:readiness": "node scripts/check-readiness.mjs"
+    "check:readiness": "node scripts/check-readiness.mjs",
+    "check:launch": "npm run check && node scripts/check-launch.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.563.0",

@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { isAdminPreviewEnabled } from '../utils/adminPreview';
+import { SITE_URL } from '../site.mjs';
 
-export const SITE_URL = 'https://actiondivers2.davebze.workers.dev';
+export { SITE_URL };
 export const SITE_NAME = 'Action Divers & Adventures';
 export const TITLE_SUFFIX = 'Action Divers Belize';
 export const DEFAULT_IMAGE = `${SITE_URL}/images/brand/action-divers-social-share.png`;
@@ -56,7 +57,8 @@ const SEO: React.FC<SEOProps> = ({
   structuredData,
 }) => {
   useEffect(() => {
-    const preventIndexing = noindex || isAdminPreviewEnabled();
+    const preventIndexing = noindex || isAdminPreviewEnabled()
+      || window.location.origin !== SITE_URL;
     const fullTitle = title.includes('Action Divers') ? title : `${title} | ${TITLE_SUFFIX}`;
     const canonical = absoluteUrl(path);
     const imageUrl = absoluteUrl(image);

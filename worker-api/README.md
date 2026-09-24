@@ -135,9 +135,12 @@ npx wrangler d1 migrations apply PAYMENTS_DB --remote --config wrangler.toml
 5. Build the frontend with `VITE_STAFF_PORTAL_ENABLED=true` only after both Access applications
    are active. No staff identity or credentials are embedded by this flag.
 6. Enable in stages: `RESERVATIONS_V2_ENABLED=true`, then `STAFF_PORTAL_ENABLED=true`.
-   Keep `PAYMENTS_ENABLED=false` until prices, policies, staff, retention, email delivery, and
-   the full Belize Bank sandbox flow are approved. Production payment credentials are a final,
-   separate launch step.
+   Keep `PAYMENTS_ENABLED=false` until prices, policies, staff, retention, and email delivery
+   are confirmed and the full Belize Bank sandbox flow passes. Install production credentials
+   directly in Cloudflare, complete deployment checks, and enable payments for an
+   owner-authorized controlled live test. Reconcile the payment before customer activation;
+   follow any conditions actually supplied with the credentials. See
+   `../PAYMENT_CERTIFICATION.md` for the current checklist.
 
 The customer cart uses versioned local browser storage, but submitted prices are ignored;
 the Worker resolves the active catalog and stores all money as integer USD cents.

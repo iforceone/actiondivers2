@@ -1,5 +1,9 @@
 # Action Divers launch readiness
 
+For the current September 24 preparation and completed email verification, see
+[PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md). The observations below are the
+historical September 21 audit, not current deployment status.
+
 Initial audit: 2026-09-21, before the authorized preview release. Recommendation: prepare and validate one matching website/API
 release in preview, then cut over the public domain with payments disabled.
 
@@ -115,7 +119,7 @@ to prove that mismatch through a customer record.
    the Worker domain. The preview homepage is also indexable. Update search behavior
    as part of the public-domain cutover.
 4. Approved privacy, terms, and cancellation/refund pages are still absent from routes.
-5. Current inbox delivery, Resend domain verification, staff workflow, and bank approval
+5. Current inbox delivery, Resend domain verification, staff workflow, and live payment processing
    were not tested. README and payment-certification notes disagree about Resend
    verification; settle that using the live Resend account and an authorized delivery test.
 

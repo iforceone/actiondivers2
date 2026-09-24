@@ -44,10 +44,11 @@ Updated 2026-09-21. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for current e
 ## Payment launch (separate)
 
 - [x] Application sandbox scenarios recorded on 2026-08-21 in `PAYMENT_CERTIFICATION.md`.
-- [ ] Obtain Belize Bank written approval and resolve/waive the SSL-card discrepancy.
+- [x] Production credentials supplied by Belize Bank and installed directly in Cloudflare (owner confirmation).
+- [ ] Verify the supported 3D Secure flow in a controlled live test and satisfy any conditions supplied with the production credentials. A separate written approval or SSL-test waiver is not established by the bank guide.
 - [ ] Confirm production credentials, gateway/callback URLs, expiry, and refund operations.
 - [ ] Complete `PAYMENT_CERTIFICATION.md` production checklist.
 - [ ] Activate only after explicit approval and reconciled live testing.
 
 Recommendation: launch the website and reservations with payments disabled, then
-activate payments separately after bank and operational approvals.
+activate payments separately after operational checks, reconciled live testing, and owner approval.

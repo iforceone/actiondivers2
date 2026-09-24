@@ -2,7 +2,7 @@
 
 Date: 2026-08-21  
 Environment: Belize Bank sandbox + isolated Cloudflare preview resources  
-Result: **Application integration passed; production activation remains blocked on external approvals.**
+Result: **Application integration passed; production configuration and a controlled live test remain before customer activation.**
 
 ## Tested preview stack
 
@@ -33,36 +33,41 @@ No card number, CVC, password, API key, or gateway credential is stored in this 
 - Visa 3DS2 Frictionless success: passed.
 - Mastercard designated failure: declined as expected, although the sandbox unexpectedly displayed an ACS challenge.
 - Visa 3DS2 Attempt success: passed.
-- Mastercard SSL success case: bank returned status `6`, action code `2003`, stating that payments cannot be made without 3D Secure. Belize Bank must clarify this discrepancy before certification is treated as unconditional.
+- Mastercard SSL success case: bank returned status `6`, action code `2003`, stating that payments cannot be made without 3D Secure. This is a recorded sandbox limitation, not evidence that a separate bank approval or waiver is required. Verify the supported 3D Secure flow during the controlled live test; contact the bank if a live failure needs resolution.
 
-## External blockers
+## Production readiness
 
-1. Belize Bank must approve the integration, provide production credentials/endpoints, and clarify the SSL test-card result.
-2. `actiondiversbelize.com` must be verified in Resend. Preview currently uses Resend's testing sender and can only deliver to the account owner's address.
+1. **Updated September 24, 2026:** The user confirms Belize Bank supplied production credentials. The supplied integration guide (pages 9–10) identifies the production endpoint and says production credentials are supplied when the merchant is ready to launch. It does not establish a separate written approval requirement. Follow any conditions actually supplied by the bank; verify the credentials and complete payment flow in a controlled live test.
+2. **Resolved September 24, 2026:** `actiondiversbelize.com` is verified in Resend. An authorized template test from `info@actiondiversbelize.com` was reported Delivered, and the recipient confirmed receipt. Production API email delivery remains a separate deployment smoke test. Preview retains its sandbox sender.
 3. Production sender, reply-to address, recipient routing, production secrets, and callback URL must be confirmed before activation.
+
+Production bank credentials were supplied by the user and installed in Cloudflare.
+On September 24, the active production API exposed both bank secret binding names
+without revealing their values; credential validity has not been tested with the bank.
+See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md) for the prepared configuration and
+remaining launch gates. The public website and live payment activation are unchanged.
 
 ## Production launch checklist
 
-Do not enable live payments until every item below is complete.
+Complete deployment preparation before the supervised live test. Complete reconciliation and obtain the owner's activation approval before opening payments to customers.
 
-- [ ] Belize Bank written sandbox/integration approval received.
-- [ ] SSL test-card discrepancy resolved or explicitly waived by Belize Bank.
-- [ ] Production merchant credentials received through a secure channel.
+- [x] User confirms production merchant credentials received and saved directly in Cloudflare.
 - [ ] Production gateway base URL and allowed redirect hosts confirmed.
-- [ ] Production callback URL supplied to and accepted by Belize Bank.
-- [ ] `actiondiversbelize.com` verified in Resend.
+- [ ] Production callback URL is reachable, included in gateway registration, and meets any callback allowlisting requirements actually specified by the bank.
+- [x] `actiondiversbelize.com` verified in Resend; sender delivery test and recipient receipt confirmed.
 - [ ] Production `FROM_EMAIL`, `TO_EMAIL`, and reply-to routing confirmed.
-- [ ] Production secrets installed directly in Cloudflare; never committed to Git.
-- [ ] Production D1 migrations and R2 binding verified.
+- [x] Production bank, Resend, and Gemini secret bindings present in Cloudflare; values not read or committed.
+- [x] Production D1 has no pending migrations; R2 binding is `actiondivers-media` (September 24).
 - [ ] Cloudflare Access protects all `/admin-api/*` production routes.
 - [ ] Production frontend origin is the only production CORS origin, apart from explicitly approved origins.
 - [ ] Production deployment smoke-tested with `PAYMENTS_ENABLED=false`.
 - [ ] Backup/rollback Worker version recorded.
 - [ ] Staff verifies quote creation, customer portal access, and email delivery without starting a charge.
-- [ ] A low-value live transaction is explicitly approved by the owner and Belize Bank.
-- [ ] Live transaction, callback, reservation transition, and receipt independently reconciled.
+- [ ] A low-value live transaction amount, operator, and test window are explicitly approved by the owner; any conditions supplied with the bank's production credentials are satisfied.
+- [ ] Temporarily enable production payments for the supervised test window, then disable them if reconciliation fails or general activation is not yet approved.
+- [ ] Live transaction through the supported 3D Secure flow, callback, reservation transition, and receipt independently reconciled.
 - [ ] Refund/cancellation operations and staff responsibilities documented.
-- [ ] Only after reconciliation: set production `PAYMENTS_ENABLED=true` and monitor the first transactions.
+- [ ] Only after reconciliation and owner approval: leave production `PAYMENTS_ENABLED=true` for customers and monitor the first transactions.
 
 ## Repository fixes produced during certification
 

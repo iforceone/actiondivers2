@@ -207,10 +207,17 @@ Resend's suppression list (Emails → Suppression list) or sends fail silently.
 **Resend's `{"ok":true}` means "accepted", not "delivered."** Always confirm in the Resend
 dashboard. The first test inquiry returned `ok:true` and bounced.
 
-**Sending is verified via the `send.` subdomain.** DKIM sits at `resend._domainkey`, with
-SPF and MX on `send.actiondiversbelize.com`, so the root SPF and Google Workspace MX
-records are untouched. Do not enable "Receiving" in Resend — it adds a root `MX` at
-priority 0 that would hijack all inbound mail away from Google Workspace.
+**Production sender verified September 24, 2026.** Resend DKIM uses
+`resend._domainkey`; DNS-only CNAMEs `rsend` and `send` point to
+`rsend.forge.rmta.net` and `send.forge.rmta.net`. The old SES MX/TXT records at
+`send` were replaced. Root SPF and Google Workspace MX records were preserved.
+Resend reported the authorized test from `info@actiondiversbelize.com` delivered,
+and the recipient confirmed receipt. This was a Resend template test, not a
+production reservation/API test. Keep Resend receiving disabled.
+
+**Public-domain release preparation:** see [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md).
+`npm run check:launch` validates the prepared release with live checkout disabled.
+Local launch configuration does not mean the public domain or API has been deployed.
 
 ---
 
@@ -244,8 +251,11 @@ Remaining launch gates, roughly by priority:
 - **Reservation operations.** D1/R2 exist, migrations are current, and reservations
   and staff gates are enabled. Confirm actual inbox delivery, approved staff access,
   and the complete request/quote workflow before the domain cutover.
-- **Belize Bank approval.** Keep payments disabled until sandbox certification and the
-  cancellation/refund terms are approved.
+- **Live payment verification.** Sandbox certification passed and production bank
+  credentials are installed. Complete production deployment checks, approved
+  cancellation/refund terms, and an owner-authorized controlled live payment test
+  before customer activation. Follow any conditions supplied with the credentials;
+  the bank guide does not establish a separate approval-letter requirement.
 - **Email operations.** `FROM_EMAIL` and `TO_EMAIL` are both `info@`; confirm the staff
   reply workflow and monitor delivery before enabling live requests.
 

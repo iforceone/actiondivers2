@@ -1,7 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { merchantOrderNumber, refreshPayment } from '../src/payments.ts';
+import { merchantOrderNumber, refreshPayment, handlePaymentRoute, startPaymentForPortal } from '../src/payments.ts';
 import { paymentIsAvailable } from '../src/reservationRules.ts';
+
+test('production checkout stays closed for both entry points until explicitly enabled', async (context) => {
+  const network = context.mock.method(globalThis, 'fetch', () => { throw new Error('Disabled checkout contacted the bank'); });
+  const env = {
+    PAYMENT_ENVIRONMENT: 'production',
+    PAYMENT_SITE_ORIGIN: 'https://actiondiversbelize.com',
+    PAYMENT_LIMITER: { limit: async () => ({ success: true }) },
+    PAYMENTS_DB: { prepare() { throw new Error('Disabled checkout touched payment data'); } },
+  };
+  const token = 'A'.repeat(43);
+  const request = new Request(`https://actiondivers-api.davebze.workers.dev/payments/${token}/start`, { method: 'POST' });
+  const json = (body, status) => Response.json(body, { status });
+  for (const enabled of ['false', undefined]) {
+    const disabledEnv = { ...env, PAYMENTS_ENABLED: enabled };
+    const responses = [
+      await handlePaymentRoute(request, disabledEnv, json, true),
+      await startPaymentForPortal(request, disabledEnv, json, token),
+    ];
+    for (const response of responses) {
+      assert.equal(response.status, 503);
+      assert.deepEqual(await response.json(), { ok: false, error: 'Payments are not enabled.' });
+    }
+  }
+  assert.equal(network.mock.callCount(), 0);
+});
 
 test('payment retries receive a fresh numeric merchant order number', () => {
   const first = merchantOrderNumber();
