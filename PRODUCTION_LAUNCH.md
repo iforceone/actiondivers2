@@ -1,12 +1,40 @@
 # Action Divers production launch preparation
 
 Updated September 24, 2026, on `codex/action-divers-work`.
-**Status: release source `5ca2a8b` committed and pushed; matching production and
-preview APIs deployed. The branch frontend preview is verified. Production
-checkout remains disabled. No merge to main, public-domain cutover, production
-frontend deployment, or live transaction has occurred.**
+**Status: production API remains on release `5ca2a8b`; preview API now runs
+Workers AI for Kaptin Kai from source `3860faa`. The branch frontend preview is
+verified. Production checkout remains disabled. No merge to main, public-domain
+cutover, production frontend deployment, or live transaction has occurred.**
 
-## September 24 API release checkpoint
+## September 24 Kaptin Kai preview verification
+
+- Missing `GEMINI_API_KEY` on the preview API caused the chat failure. Production's
+  Gemini secret was present and a direct production-origin chat retest succeeded.
+- Preview now uses native Cloudflare Workers AI, model
+  `@cf/google/gemma-4-26b-a4b-it`, without a Gemini key. Code commits `5d9888d` and
+  `3860faa` are pushed to `codex/action-divers-work`.
+- Active preview API: `0f498dbe-2c79-4a29-8c4c-42f20525c407`, verified at 100%
+  traffic. Its tag is `c5-preview`; the deployed source commit is `3860faa`.
+  Sandbox payment settings, D1, R2, mail sender, rate limits and Access are retained.
+- The actual preview chat's PADI shortcut returned course details. A follow-up
+  correctly calculated two Open Water certifications as $1,128.76 and explained
+  staff review followed by a private payment link. Tour prices, internal links,
+  and next-day requests going to phone/WhatsApp were checked with live responses.
+  Kai declined to confirm a booking or mark it paid in chat.
+- API TypeScript, 19 unit tests, frontend TypeScript/build, readiness and launch
+  checks passed. Deployed malformed-body, empty-history and oversized-message
+  checks returned 400, 422 and 413; health/catalog returned 200 and staff session
+  redirected to Access. These are bounded chat checks, not a new payment certification.
+- Final API samples took 1.5–2.1 seconds. Local evidence is in ignored
+  `.wrangler/launch-audit/workers-ai-verification.json`.
+- Workers AI's free allowance is 10,000 Neurons per account per day; Free-plan
+  requests fail when exhausted. No paid-plan upgrade or Gemini fallback was added.
+  See [Cloudflare pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+- Production API is still `bc81179c-6736-4bdb-bbc2-54e79c7622fb` at 100%, checked
+  after preview deployment. Moving production chat to Workers AI and updating
+  the final privacy notice remain separate launch steps.
+
+## Earlier September 24 API release checkpoint
 
 - Production API: `bc81179c-6736-4bdb-bbc2-54e79c7622fb`, 100% traffic, tag `5ca2a8b`.
   `PAYMENT_ENVIRONMENT=production`, `PAYMENTS_ENABLED=false`, apex payment origin,

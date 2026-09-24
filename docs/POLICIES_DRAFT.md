@@ -116,6 +116,12 @@ personal information. For booking-specific help, contact our staff directly.
 appropriate disclosure; do not promise that conversations are excluded from
 model improvement unless the account settings and terms support that statement.**
 
+**Preview implementation note, September 24: the branch preview now sends chat
+to Cloudflare Workers AI, using a Cloudflare-hosted Gemma model. Production still
+uses Gemini. If Workers AI is selected for production, replace the Gemini
+description and review [Cloudflare's data-use terms](https://developers.cloudflare.com/workers-ai/platform/data-usage/)
+before approving and publishing this notice.**
+
 We use booking information for your requested services and related support.
 **Before publication: confirm any separate marketing uses, analytics or advertising
 tools, and consent choices; the source-code review alone does not establish all
