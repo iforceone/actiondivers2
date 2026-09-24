@@ -44,7 +44,9 @@ No card number, CVC, password, API key, or gateway credential is stored in this 
 Production bank credentials were supplied by the user and installed in Cloudflare.
 On September 24, the active production API exposed both bank secret binding names
 without revealing their values; credential validity has not been tested with the bank.
-See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md) for the prepared configuration and
+The September 24 API release `5ca2a8b` now selects the production gateway while
+keeping checkout disabled; both deployed payment-start routes returned HTTP 503.
+See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md) for deployed version IDs and
 remaining launch gates. The public website and live payment activation are unchanged.
 
 ## Production launch checklist
@@ -59,9 +61,9 @@ Complete deployment preparation before the supervised live test. Complete reconc
 - [x] Production bank, Resend, and Gemini secret bindings present in Cloudflare; values not read or committed.
 - [x] Production D1 has no pending migrations; R2 binding is `actiondivers-media` (September 24).
 - [ ] Cloudflare Access protects all `/admin-api/*` production routes.
-- [ ] Production frontend origin is the only production CORS origin, apart from explicitly approved origins.
-- [ ] Production deployment smoke-tested with `PAYMENTS_ENABLED=false`.
-- [ ] Backup/rollback Worker version recorded.
+- [x] Production CORS allows apex and `www` only; branch preview and localhost rejected (September 24).
+- [x] Production API deployment smoke-tested with `PAYMENTS_ENABLED=false`; full frontend workflow remains below.
+- [x] Production D1 export and rollback Worker versions recorded (September 24).
 - [ ] Staff verifies quote creation, customer portal access, and email delivery without starting a charge.
 - [ ] A low-value live transaction amount, operator, and test window are explicitly approved by the owner; any conditions supplied with the bank's production credentials are satisfied.
 - [ ] Temporarily enable production payments for the supervised test window, then disable them if reconciliation fails or general activation is not yet approved.

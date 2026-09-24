@@ -1,8 +1,36 @@
 # Action Divers production launch preparation
 
-Prepared September 24, 2026, on `codex/action-divers-work`, based on `31895c2`.
-**Status: local release preparation only. No commit, push, merge, deployment,
-domain cutover, or live-payment activation was performed in this step.**
+Updated September 24, 2026, on `codex/action-divers-work`.
+**Status: release source `5ca2a8b` committed and pushed; matching production and
+preview APIs deployed. The branch frontend preview is verified. Production
+checkout remains disabled. No merge to main, public-domain cutover, production
+frontend deployment, or live transaction has occurred.**
+
+## September 24 API release checkpoint
+
+- Production API: `bc81179c-6736-4bdb-bbc2-54e79c7622fb`, 100% traffic, tag `5ca2a8b`.
+  `PAYMENT_ENVIRONMENT=production`, `PAYMENTS_ENABLED=false`, apex payment origin,
+  apex/www CORS, existing bank/email secrets retained. Credential validity has
+  not yet been tested against the live bank.
+- Preview API: `6ad5e929-478e-435f-8e63-a1f6eede2083`, 100% traffic, tag `5ca2a8b`.
+  Sandbox settings, sender, database, and bucket remain isolated.
+- Branch frontend: all nine compiled JS/CSS files match the local release build;
+  entry asset `index-BKxn0K6c.js`. All 26 legacy redirects and preview/private
+  indexing headers passed deployed checks.
+- Final HTTP verification: 25 checks passed, including both production checkout
+  entry points returning HTTP 503, unauthorized origins rejected, API health,
+  catalog/media, staff Access gates, and unchanged public WordPress delivery.
+  This does not substitute for an authenticated staff workflow or live payment.
+- Before deployment, production contained four reservations and zero payment
+  intents. A private database export was saved under the ignored
+  `.wrangler/launch-audit/production-before-api-release-2026-09-24.sql`.
+  SHA-256: `AA59F94352387CF48D329F2EE23D33D5423C8C438AFF4E50DFCA920681D8AA81`.
+- Local verification evidence: `.wrangler/launch-audit/release-5ca2a8b.json`.
+- Cloudflare Git settings were checked: production branch `main`; other branches
+  use `wrangler versions upload`. The production site Worker remains unchanged.
+- No general policies were found across the 83 published WordPress pages and
+  four posts. [Policy drafts](docs/POLICIES_DRAFT.md) are ready for owner review;
+  they are repository documents and are not published website pages.
 
 ## Verified progress
 
@@ -20,16 +48,16 @@ domain cutover, or live-payment activation was performed in this step.**
   unauthenticated visitors to Cloudflare Access.
 - The old WordPress website is still live. Apex currently redirects to `www`.
 
-## Prepared configuration versus live configuration
+## Prepared configuration versus live configuration after the API release
 
 | Setting | Live on September 24 | Prepared locally |
 | --- | --- | --- |
 | Public site | WordPress on `www.actiondiversbelize.com` | Canonical `https://actiondiversbelize.com` |
 | Website search metadata | Temporary Workers origin | Public apex in canonical, social, JSON-LD, sitemap, robots |
-| API payment environment | `sandbox` | `production` |
-| API payment website origin | `https://actiondivers2.davebze.workers.dev` | `https://actiondiversbelize.com` |
+| API payment environment | `production` | `production` |
+| API payment website origin | `https://actiondiversbelize.com` | `https://actiondiversbelize.com` |
 | Production checkout | `PAYMENTS_ENABLED=false` | `PAYMENTS_ENABLED=false` |
-| Production CORS | Worker URL, branch preview, localhost | Apex and `www` only |
+| Production CORS | Apex and `www` only | Apex and `www` only |
 | Preview API | Isolated sandbox | Unchanged sandbox variables and resources |
 
 The API remains at `https://actiondivers-api.davebze.workers.dev`; it does not need
@@ -43,7 +71,8 @@ use `--env preview` explicitly for sandbox work.
 
 ## Domain and Access cutover plan
 
-These are prepared settings, not applied changes.
+The API configuration has been deployed. Domain, frontend production, and Access
+hostname changes below remain unapplied.
 
 1. Record/export the current apex/www DNS records, Cloudflare Redirect Rules,
    Page Rules, Worker custom domains, and Access applications immediately before
@@ -101,8 +130,8 @@ returns HTTP 200 for unknown paths; proper 404/410 treatment for retired URLs
 remains a cutover task, not a completed part of this preparation.
 
 Approved privacy, terms, and cancellation/refund pages are still absent from the
-new site. Obtain the actual business policies and publish them before launch;
-this preparation does not invent cancellation terms or refund promises.
+new site. Review `docs/POLICIES_DRAFT.md`, confirm the proposed business terms and
+marked privacy details, then publish the approved versions before launch.
 
 ## Production gateway configuration and controlled live test
 
@@ -136,11 +165,12 @@ callbacks and verification must remain available for transactions already begun.
 
 ## Rollback record
 
-Reconfirmed active at 100% traffic on September 24:
+Recorded before the September 24 API release:
 
 - Website: `3f457aef-5084-49af-8ee0-b3212d895fdd`.
-- API: `b93b13ae-953c-4f29-a47c-ea25e79e7b6c` (includes installed bank-secret bindings;
-  its live payment environment is still sandbox and checkout is disabled).
+- Prior API rollback version: `b93b13ae-953c-4f29-a47c-ea25e79e7b6c` (includes installed
+  bank-secret bindings; sandbox environment with checkout disabled). The current
+  API version is recorded in the release checkpoint above.
 - Production D1: `d3d3ec34-c463-4f36-af2c-5ab32a45acda`.
 - Production R2: `actiondivers-media`.
 
@@ -167,5 +197,6 @@ active traffic and bindings; do not assume a version upload is a deployment.
   production mode and false/missing enable flags. Neither touches payment data
   nor calls the bank.
 - Existing Vite warning remains: the main JavaScript chunk exceeds 500 kB.
-- Live DNS, deployment, Access hostname changes, bank activation, real payment,
-  and production application-email tests are not covered by these local checks.
+- Deployed API and preview checks are recorded separately in the release checkpoint.
+  Public-domain cutover, Access hostname changes, real payment, and production
+  application-email delivery remain unverified.

@@ -7,9 +7,11 @@ Worker holding the API keys.
 **Live:** https://actiondivers2.davebze.workers.dev (still a `workers.dev` URL — see
 [Moving to a real domain](#moving-to-a-real-domain))
 
-**Launch audit: 2026-09-21.** See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for
-verified hosting state and release priorities. The public domain still serves
-WordPress. Work is on `codex/action-divers-work`, 33 commits ahead of `main`.
+**Launch checkpoint: 2026-09-24.** See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md)
+for current deployment evidence. Release `5ca2a8b` is on the work branch and its
+frontend preview; matching APIs are deployed. Production uses the live gateway
+configuration with checkout disabled. The public domain still serves WordPress;
+the production site Worker and `main` have not changed.
 
 ---
 
@@ -29,8 +31,8 @@ exactly that; it was wrong, and the key it referred to has been rotated.
 Local development defaults to the production API. Current reservation, course, and
 transfer forms submit real requests; `VITE_RESERVATION_REQUESTS_ENABLED` is no longer
 implemented. Set `VITE_API_BASE_URL` in ignored `.env.local` to the isolated preview
-API when testing submissions. Both deployed APIs allow `http://localhost:3000`;
-other local origins are not automatically allowed. Branch preview hosts select the
+API when testing submissions. Only the preview API allows `http://localhost:3000`;
+production allows the public apex and `www` origins. Branch preview hosts select the
 preview API unless explicitly overridden. Do not submit fictional production requests.
 
 ```bash

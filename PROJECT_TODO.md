@@ -1,6 +1,6 @@
 # Action Divers launch backlog
 
-Updated 2026-09-21. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for current evidence.
+Updated 2026-09-24. See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md) for current evidence.
 
 ## Next release candidate
 
@@ -9,35 +9,37 @@ Updated 2026-09-21. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for current e
 - [x] Add `npm run check` and fix catch-all masking in the internal-link check.
 - [x] Update React Router within v6 to remove high-severity runtime audit findings.
 - [ ] Review the remaining two moderate router package findings and plan/test v7.
-- [ ] Review and commit local cleanup; deploy matching frontend/API versions to preview.
+- [x] Review and commit local cleanup; deploy matching frontend/API versions to preview (`5ca2a8b`).
 - [ ] Run an authorized fictional preview request through Refresher + same-day dive,
       staff review, quote, customer portal, and actual inbox delivery.
-- [ ] Reconcile the 33-commit difference from `main` and verify Cloudflare Git build
-      settings before a production merge or push.
+- [x] Verify Cloudflare Git build settings: `main` is production; other branches upload previews.
+- [ ] Reconcile work-branch differences before any separately authorized merge to `main`.
 
 ## Owner and operations approval
 
 - [ ] Approve prices, fees, minimum quantities, capacities, and public contact details.
 - [ ] Resolve remaining dive/course schedules and unconfirmed service claims.
 - [ ] Supply approved privacy, terms, cancellation, refund, no-show, and weather policies.
+      Drafts prepared in `docs/POLICIES_DRAFT.md`; not approved or published.
 - [ ] Approve production staff accounts and customer-data retention.
 - [x] Verify separate production/preview D1 and R2 bindings.
 - [x] Verify both databases have no pending migrations.
 - [x] Verify unauthenticated production site/API staff routes redirect to Access.
 - [ ] Verify authorized staff sign-in and permissions; the public gate alone is insufficient.
-- [ ] Verify current Resend domain status and customer/staff delivery. Historical
-      documents disagree about sender verification; API acceptance is not inbox delivery.
+- [x] Verify Resend domain and production-sender delivery; recipient confirmed receipt.
+- [ ] Verify deployed production API customer/staff email delivery during the booking test.
 - [ ] Confirm production request, quote, portal, and staff operating procedures.
 
 ## Public-domain launch
 
 - [x] Verify Cloudflare DNS access; business domain still serves WordPress.
-- [ ] Confirm canonical apex/www choice; current WordPress canonical uses `www`.
-- [ ] Inventory WordPress URLs and prepare tested redirects.
+- [x] Prepare requested apex canonical; existing WordPress still redirects to `www`.
+- [x] Inventory 143 WordPress URLs and verify 26 redirects for direct matches in preview.
+- [ ] Resolve unmatched legacy services and implement proper 404/410 handling for retired URLs.
 - [ ] Update canonical/social/structured-data URLs, prerender metadata, sitemap,
       robots, API origins, email links, payment origin, and Access hostname coverage.
-- [ ] Keep previews out of search results after cutover.
-- [ ] Record backups, deployment artifacts, Worker version IDs, and rollback steps.
+- [x] Deploy and verify preview noindex and private-link headers.
+- [x] Record database backup, API/source versions, and rollback steps; refresh DNS snapshots at cutover.
 - [ ] Approve production release and DNS/Worker mapping changes.
 - [ ] Verify final public domain, desktop/mobile flows, redirects, and monitoring.
 
@@ -45,6 +47,7 @@ Updated 2026-09-21. See [LAUNCH_READINESS.md](LAUNCH_READINESS.md) for current e
 
 - [x] Application sandbox scenarios recorded on 2026-08-21 in `PAYMENT_CERTIFICATION.md`.
 - [x] Production credentials supplied by Belize Bank and installed directly in Cloudflare (owner confirmation).
+- [x] Deploy matching production API with live gateway selected and checkout disabled; verify both payment-start routes remain closed.
 - [ ] Verify the supported 3D Secure flow in a controlled live test and satisfy any conditions supplied with the production credentials. A separate written approval or SSL-test waiver is not established by the bank guide.
 - [ ] Confirm production credentials, gateway/callback URLs, expiry, and refund operations.
 - [ ] Complete `PAYMENT_CERTIFICATION.md` production checklist.
