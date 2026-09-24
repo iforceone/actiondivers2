@@ -61,7 +61,7 @@ namespace_id = "1001"
   limit = 5
   period = 60
 
-# Tour Assistant: every call bills against our Gemini quota, so cap chattiness.
+# Tour Assistant: cap requests against the selected provider's allowance.
 [[ratelimits]]
 name = "ASSISTANT_LIMITER"
 namespace_id = "1002"
@@ -91,6 +91,7 @@ namespace_id = "1003"
 name = "actiondivers-api-preview"
 
 [env.preview.vars]
+ASSISTANT_PROVIDER = "workers-ai"
 TO_EMAIL = "kuvious@gmail.com"
 FROM_EMAIL = "Action Divers Sandbox <onboarding@resend.dev>"
 ALLOWED_ORIGINS = "https://codex-action-divers-work-actiondivers2.davebze.workers.dev,http://localhost:3000"
@@ -102,6 +103,9 @@ PAYMENTS_ENABLED = "true"
 ACCESS_TEAM_DOMAIN = "https://muddy-frog-9df5.cloudflareaccess.com"
 ACCESS_AUD = "d3721f0fa2596469241c5ad06b2779828b01bcebd6ba2bd19d8d17e81e477228"
 OWNER_EMAILS = ""
+
+[env.preview.ai]
+binding = "AI"
 
 [[env.preview.d1_databases]]
 binding = "PAYMENTS_DB"

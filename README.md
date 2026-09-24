@@ -64,7 +64,7 @@ talks to that Worker instead of to Google or Resend directly.
 | Route | Purpose | Rate limit |
 | --- | --- | --- |
 | `POST /inquiry` (also `/`) | Emails reservation-form submissions via Resend | 5 / 60s |
-| `POST /assistant` | Proxies Tour Assistant chat to Google Gemini | 12 / 60s |
+| `POST /assistant` | Kaptin Kai: Workers AI on preview, Gemini on production | 12 / 60s |
 
 `config.ts` in the site root holds the Worker URL, contact details, and review counts.
 It is the single source of truth for those — prefer importing `CONTACT` over retyping a

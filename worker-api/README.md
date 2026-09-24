@@ -5,7 +5,7 @@ A standalone Cloudflare Worker backing the website. It does not touch the main s
 | Route | Does |
 | --- | --- |
 | `POST /inquiry` | Emails reservation-form submissions **from your own domain** via Resend, no third-party branding. Also served at `/` for the original single-route shape. |
-| `POST /assistant` | Proxies Tour Assistant chat to Google Gemini. |
+| `POST /assistant` | Kaptin Kai chat: Workers AI on preview; Gemini on production. |
 | `GET /catalog` | Returns the currently published server-side booking catalog. |
 | `POST /reservations` | Creates an idempotent reservation request and private customer portal link. |
 | `GET /portal/:token` | Returns one reservation through a hashed, expiring magic-link token. |
@@ -33,7 +33,22 @@ billable to you.
    to your own account email — fine for a first test, but not for production.
 3. Create an **API key** (Resend → API Keys). Copy it.
 
-### 2. Gemini API key
+### 2. Assistant provider
+Preview uses the native Workers AI `AI` binding with
+`ASSISTANT_PROVIDER=workers-ai` and model `@cf/google/gemma-4-26b-a4b-it`.
+No Gemini key or separate Cloudflare API token is needed for preview chat.
+Deploy it explicitly with `npx wrangler deploy --env preview --config wrangler.toml`.
+The server retains the same tour facts, at most 10 messages of 2,000 characters,
+and the per-IP limit; output is capped at 512 tokens with reasoning disabled.
+Provider errors or empty replies use the site's existing phone/contact fallback.
+
+Workers AI includes 10,000 Neurons per account per day. On Workers Free, requests
+fail after that daily allowance is exhausted; Workers Paid charges for excess
+usage. See [current pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+This configuration does not upgrade billing or silently fall back to Gemini.
+
+Production remains on Gemini (the default when `ASSISTANT_PROVIDER` is absent).
+Its existing secret stays in place. For a new Gemini deployment:
 Create a key at https://aistudio.google.com/apikey. If you previously had this key in
 `.env.local`, **rotate it** — older builds shipped it to the browser, so treat the old
 value as public.
@@ -74,7 +89,7 @@ Rate limits are per client IP, in `[[ratelimits]]` (`period` must be 10 or 60, a
 block needs its own `namespace_id`):
 
 - `INQUIRY_LIMITER` — 5/60s. Plenty for a human filling out a form.
-- `ASSISTANT_LIMITER` — 12/60s. Every call bills against your Gemini quota.
+- `ASSISTANT_LIMITER` — 12/60s. Every call consumes the selected AI provider's allowance.
 
 Requires **wrangler 4**. Wrangler 3 silently ignores `[[ratelimits]]` and leaves the
 bindings undefined, which throws on every request.
