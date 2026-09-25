@@ -9,7 +9,8 @@ Worker holding the API keys.
 
 **Launch checkpoint: 2026-09-24.** See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md)
 for current deployment evidence. Production API remains on `5ca2a8b`; preview
-API now runs Kaptin Kai on Cloudflare Workers AI from `3860faa`. Production uses
+API now runs Kaptin Kai on Cloudflare Workers AI from `4bd1936`, with a friendly,
+English-only greeting and instructions. Production uses
 the live gateway configuration with checkout disabled. The public domain still
 serves WordPress; the production site Worker and `main` have not changed.
 

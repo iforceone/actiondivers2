@@ -2,9 +2,20 @@
 
 Updated September 24, 2026, on `codex/action-divers-work`.
 **Status: production API remains on release `5ca2a8b`; preview API now runs
-Workers AI for Kaptin Kai from source `3860faa`. The branch frontend preview is
+Workers AI for Kaptin Kai from source `4bd1936`. The branch frontend preview is
 verified. Production checkout remains disabled. No merge to main, public-domain
 cutover, production frontend deployment, or live transaction has occurred.**
+
+## September 24 English-only Kai update
+
+- Source `4bd1936` is committed and pushed. Kai's greeting and system instructions
+  now use natural English with a friendly, casual tone and explicitly avoid Kriol.
+- Preview API version `0ea25d51-17bd-42bf-afb8-336d9d8f1f86` is deployed; branch
+  frontend serves matching entry asset `index-B94R0WbY.js` with the new greeting.
+- Two live chat tests returned English, including a request to use Kriol with
+  dialect in earlier conversation history. All 19 API tests, TypeScript, build,
+  readiness and launch checks passed. Production was not changed.
+- Evidence: ignored `.wrangler/launch-audit/kai-english-verification.json`.
 
 ## September 24 Kaptin Kai preview verification
 
@@ -13,7 +24,7 @@ cutover, production frontend deployment, or live transaction has occurred.**
 - Preview now uses native Cloudflare Workers AI, model
   `@cf/google/gemma-4-26b-a4b-it`, without a Gemini key. Code commits `5d9888d` and
   `3860faa` are pushed to `codex/action-divers-work`.
-- Active preview API: `0f498dbe-2c79-4a29-8c4c-42f20525c407`, verified at 100%
+- Preview API at this earlier checkpoint: `0f498dbe-2c79-4a29-8c4c-42f20525c407`, verified at 100%
   traffic. Its tag is `c5-preview`; the deployed source commit is `3860faa`.
   Sandbox payment settings, D1, R2, mail sender, rate limits and Access are retained.
 - The actual preview chat's PADI shortcut returned course details. A follow-up
