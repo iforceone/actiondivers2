@@ -1,0 +1,25 @@
+# Keep all temporary Worker hostnames out of search results.
+https://:version.:subdomain.workers.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+# Customer tokens must not be sent in referrers or indexed.
+/reservation/*
+  X-Robots-Tag: noindex, nofollow
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store
+
+/pay/*
+  X-Robots-Tag: noindex, nofollow
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store
+
+/payment/*
+  X-Robots-Tag: noindex, nofollow
+  Referrer-Policy: no-referrer
+  Cache-Control: no-store
+
+/admin
+  X-Robots-Tag: noindex, nofollow
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow

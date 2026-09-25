@@ -3,7 +3,7 @@
  *
  * Standalone Cloudflare Worker backing the website. Two routes:
  *   POST /inquiry   — emails reservation-form submissions from our own domain via Resend
- *   POST /assistant — proxies Tour Assistant chat to Gemini
+ *   POST /assistant — Tour Assistant chat through the configured AI provider
  *
  * Both API keys live only as Worker secrets. In particular the Gemini key must
  * never be bundled into the site: anything shipped to the browser is public, and
@@ -19,21 +19,19 @@
  *   ASSISTANT_LIMITER (binding) — rate limit for /assistant, keyed by client IP
  */
 
-import { GoogleGenAI } from '@google/genai';
+import { assistantMessages, assistantReply, MAX_MESSAGE_CHARS, type AssistantEnv } from './assistant';
 import { SYSTEM_INSTRUCTION } from './systemInstruction';
+import { handlePaymentRoute } from './payments';
+import { handleReservationRoute, ReservationEnv } from './reservations';
 
-export interface Env {
+export interface Env extends ReservationEnv, AssistantEnv {
   RESEND_API_KEY: string;
-  GEMINI_API_KEY: string;
   TO_EMAIL: string;
   FROM_EMAIL: string;
   ALLOWED_ORIGINS: string;
   INQUIRY_LIMITER: RateLimit;
   ASSISTANT_LIMITER: RateLimit;
 }
-
-const ASSISTANT_MODEL = 'gemini-3-flash-preview';
-const MAX_MESSAGE_CHARS = 2000;
 
 interface InquiryPayload {
   name?: string;
@@ -60,8 +58,9 @@ function corsHeaders(origin: string, allowed: string[]): Record<string, string> 
   const allowOrigin = allowed.includes(origin) ? origin : allowed[0] ?? '';
   return {
     'Access-Control-Allow-Origin': allowOrigin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Idempotency-Key, If-Match',
+    'Access-Control-Allow-Credentials': 'true',
     Vary: 'Origin',
   };
 }
@@ -192,42 +191,46 @@ async function handleInquiry(request: Request, env: Env, json: Json): Promise<Re
     return json({ ok: true }, 200);
 }
 
+interface AssistantRequestBody {
+  message?: unknown;
+  messages?: unknown;
+}
+
 async function handleAssistant(request: Request, env: Env, json: Json): Promise<Response> {
-  // The LLM call costs money per request, so this is limited harder than the form.
+  // Limit chat requests to protect the AI allowance.
   const clientIp = request.headers.get('CF-Connecting-IP') ?? 'unknown';
   const { success } = await env.ASSISTANT_LIMITER.limit({ key: clientIp });
   if (!success) {
     return json({ ok: false, error: 'Too many questions at once. Please wait a moment.' }, 429);
   }
 
-  let body: { message?: unknown };
+  let body: AssistantRequestBody;
   try {
-    body = (await request.json()) as { message?: unknown };
+    body = (await request.json()) as AssistantRequestBody;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return json({ ok: false, error: 'Invalid request.' }, 400);
+    }
   } catch {
     return json({ ok: false, error: 'Invalid request.' }, 400);
   }
 
-  const message = typeof body.message === 'string' ? body.message.trim() : '';
-  if (!message) return json({ ok: false, error: 'Please include a message.' }, 422);
-  // Cap input length so a huge prompt can't run up the bill on one request.
-  if (message.length > MAX_MESSAGE_CHARS) {
+  const rawMessage = typeof body.message === 'string' ? body.message.trim() : '';
+
+  // Cap message lengths
+  if (rawMessage.length > MAX_MESSAGE_CHARS) {
     return json({ ok: false, error: 'That message is too long. Please shorten it.' }, 413);
   }
 
+  const messages = assistantMessages(rawMessage, body.messages);
+  if (!messages.length) {
+    return json({ ok: false, error: 'Please include a message.' }, 422);
+  }
+
   try {
-    const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
-    const response = await ai.models.generateContent({
-      model: ASSISTANT_MODEL,
-      contents: message,
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.7,
-        topP: 0.95,
-      },
-    });
-    return json({ ok: true, text: response.text ?? '' }, 200);
+    const text = await assistantReply(env, SYSTEM_INSTRUCTION, messages);
+    return json({ ok: true, text }, 200);
   } catch (error) {
-    console.error('Gemini call failed', error);
+    console.error('Assistant call failed', env.ASSISTANT_PROVIDER ?? 'gemini', error);
     return json({ ok: false, error: 'Assistant unavailable.' }, 502);
   }
 }
@@ -241,19 +244,32 @@ export default {
       .filter(Boolean);
     const cors = corsHeaders(origin, allowed);
     const json: Json = (body, status) =>
-      new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...cors } });
+      new Response(JSON.stringify(body), {
+        status,
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store', ...cors },
+      });
 
+    const { pathname } = new URL(request.url);
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+    if (request.method === 'GET' && pathname === '/health') {
+      return json({ ok: true, service: 'actiondivers-api' }, 200);
+    }
+
+    const reservationResponse = await handleReservationRoute(request, env, json, allowed.includes(origin));
+    if (reservationResponse) return reservationResponse;
+
+    const paymentResponse = await handlePaymentRoute(request, env, json, allowed.includes(origin));
+    if (paymentResponse) return paymentResponse;
+
     if (request.method !== 'POST') return json({ ok: false, error: 'Method not allowed' }, 405);
 
     // CORS headers only constrain browsers. Enforce the allowlist server-side so
     // curl/scripts can't use this Worker as an open relay to send mail from our
-    // domain or burn through our Gemini quota.
+    // domain or burn through our AI allowance. Origin is not authentication.
     if (!allowed.includes(origin)) {
       return json({ ok: false, error: 'Forbidden' }, 403);
     }
 
-    const { pathname } = new URL(request.url);
     switch (pathname) {
       // '/' kept for the original single-purpose deploy shape.
       case '/':

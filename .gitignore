@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Local environment and credential bundles — never commit
+.env
+.env.*
+*.env
+!*.env.example
+
 # Cloudflare Workers local state / build output
 .wrangler
 # Local Worker secrets for `wrangler dev` — never commit
@@ -19,6 +25,7 @@ dist-ssr
 .dev.vars.*
 
 # Editor directories and files
+.claude/
 .vscode/*
 !.vscode/extensions.json
 .idea

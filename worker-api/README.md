@@ -5,7 +5,19 @@ A standalone Cloudflare Worker backing the website. It does not touch the main s
 | Route | Does |
 | --- | --- |
 | `POST /inquiry` | Emails reservation-form submissions **from your own domain** via Resend, no third-party branding. Also served at `/` for the original single-route shape. |
-| `POST /assistant` | Proxies Tour Assistant chat to Google Gemini. |
+| `POST /assistant` | Kaptin Kai chat: Workers AI on preview; Gemini on production. |
+| `GET /catalog` | Returns the currently published server-side booking catalog. |
+| `POST /reservations` | Creates an idempotent reservation request and private customer portal link. |
+| `GET /portal/:token` | Returns one reservation through a hashed, expiring magic-link token. |
+| `POST /portal/:token/payment/start` | Starts payment only for the current finalized, payable quote. |
+| `/admin-api/*` | Cloudflare Access-authenticated reservation, quote, catalog, template, and staff operations. |
+| `GET /payments/:token` | Returns the safe guest-facing reservation payment summary. |
+| `POST /payments/:token/start` | Registers the confirmed amount and returns Belize Bank's hosted payment URL. |
+| `POST /payments/:token/refresh` | Verifies the current order status directly with Belize Bank. |
+| `POST /payments/callback` | Receives bank events, then independently verifies status before updating D1. |
+
+`POST /payments/admin/intents` is intentionally retired. Payment intents are now created only
+when authenticated staff finalizes a versioned reservation quote.
 
 Both API keys live only as Worker secrets. **The Gemini key must never go back into the
 site bundle** — anything shipped to the browser is readable by anyone, and a leaked key is
@@ -21,7 +33,22 @@ billable to you.
    to your own account email — fine for a first test, but not for production.
 3. Create an **API key** (Resend → API Keys). Copy it.
 
-### 2. Gemini API key
+### 2. Assistant provider
+Preview uses the native Workers AI `AI` binding with
+`ASSISTANT_PROVIDER=workers-ai` and model `@cf/google/gemma-4-26b-a4b-it`.
+No Gemini key or separate Cloudflare API token is needed for preview chat.
+Deploy it explicitly with `npx wrangler deploy --env preview --config wrangler.toml`.
+The server retains the same tour facts, at most 10 messages of 2,000 characters,
+and the per-IP limit; output is capped at 512 tokens with reasoning disabled.
+Provider errors or empty replies use the site's existing phone/contact fallback.
+
+Workers AI includes 10,000 Neurons per account per day. On Workers Free, requests
+fail after that daily allowance is exhausted; Workers Paid charges for excess
+usage. See [current pricing](https://developers.cloudflare.com/workers-ai/platform/pricing/).
+This configuration does not upgrade billing or silently fall back to Gemini.
+
+Production remains on Gemini (the default when `ASSISTANT_PROVIDER` is absent).
+Its existing secret stays in place. For a new Gemini deployment:
 Create a key at https://aistudio.google.com/apikey. If you previously had this key in
 `.env.local`, **rotate it** — older builds shipped it to the browser, so treat the old
 value as public.
@@ -34,7 +61,7 @@ npm install
 npx wrangler login            # one-time, opens browser
 npx wrangler secret put RESEND_API_KEY    # paste the Resend key when prompted
 npx wrangler secret put GEMINI_API_KEY    # paste the Gemini key when prompted
-npx wrangler deploy
+npx wrangler deploy --config wrangler.toml
 ```
 
 Deploy prints the Worker URL, e.g. `https://actiondivers-api.<your-subdomain>.workers.dev`.
@@ -62,14 +89,76 @@ Rate limits are per client IP, in `[[ratelimits]]` (`period` must be 10 or 60, a
 block needs its own `namespace_id`):
 
 - `INQUIRY_LIMITER` — 5/60s. Plenty for a human filling out a form.
-- `ASSISTANT_LIMITER` — 12/60s. Every call bills against your Gemini quota.
+- `ASSISTANT_LIMITER` — 12/60s. Every call consumes the selected AI provider's allowance.
 
 Requires **wrangler 4**. Wrangler 3 silently ignores `[[ratelimits]]` and leaves the
 bindings undefined, which throws on every request.
 
 `/assistant` also caps input at 2000 characters so one huge prompt can't run up the bill.
 
-After changing vars, re-run `npx wrangler deploy`. Secrets persist across deploys.
+`GET /health` provides a non-secret availability check for monitoring the API Worker.
+
+After changing vars, re-run `npm run deploy`. Secrets persist across deploys.
+
+## Belize Bank payments
+
+Payments use Belize Bank's hosted payment page and standard authorization endpoint. The site
+never receives or stores card numbers or security codes. Staff confirms availability and the
+full USD amount first, then creates a private payment link.
+
+Before enabling payment routes:
+
+1. Confirm with Belize Bank that the merchant profile settles the API's amount as **USD**.
+2. Confirm the existing production and preview D1 bindings in `wrangler.toml`, then verify
+   that every migration has been applied:
+
+```bash
+npx wrangler d1 migrations list PAYMENTS_DB --remote --preview --config wrangler.toml
+npx wrangler d1 migrations list PAYMENTS_DB --remote --config wrangler.toml
+```
+
+3. Set payment secrets through Wrangler's hidden prompts:
+
+```bash
+npx wrangler secret put BELIZE_BANK_USERNAME
+npx wrangler secret put BELIZE_BANK_PASSWORD
+```
+
+4. Keep `PAYMENT_ENVIRONMENT = "sandbox"` until the bank accepts the complete sandbox test
+   evidence. Production is enabled only by changing it to `production` and deploying with the
+   separately supplied production credentials.
+
+Refunds and reversals remain manual in the first release so there is no public or
+browser-accessible refund endpoint.
+
+## Reservation and staff portal launch
+
+1. Use the separate preview and production D1 databases already bound as `PAYMENTS_DB` for
+   reservations, quotes, catalog revisions, audit events, and payment intents.
+2. Apply new migrations to preview first, then production:
+
+```bash
+npx wrangler d1 migrations apply PAYMENTS_DB --remote --preview --config wrangler.toml
+npx wrangler d1 migrations apply PAYMENTS_DB --remote --config wrangler.toml
+```
+
+3. In Cloudflare Zero Trust, create Access applications for the website `/admin*` path and
+   API Worker `/admin-api/*` path. Allow only approved staff emails using email one-time PIN.
+4. Set `ACCESS_TEAM_DOMAIN` to the team domain, `ACCESS_AUD` to the API Access application
+   audience tag, and `OWNER_EMAILS` to the initial approved owner email(s). The Worker validates
+   JWT signature, issuer, audience, time claims, email, and active staff membership itself.
+5. Build the frontend with `VITE_STAFF_PORTAL_ENABLED=true` only after both Access applications
+   are active. No staff identity or credentials are embedded by this flag.
+6. Enable in stages: `RESERVATIONS_V2_ENABLED=true`, then `STAFF_PORTAL_ENABLED=true`.
+   Keep `PAYMENTS_ENABLED=false` until prices, policies, staff, retention, and email delivery
+   are confirmed and the full Belize Bank sandbox flow passes. Install production credentials
+   directly in Cloudflare, complete deployment checks, and enable payments for an
+   owner-authorized controlled live test. Reconcile the payment before customer activation;
+   follow any conditions actually supplied with the credentials. See
+   `../PAYMENT_CERTIFICATION.md` for the current checklist.
+
+The customer cart uses versioned local browser storage, but submitted prices are ignored;
+the Worker resolves the active catalog and stores all money as integer USD cents.
 
 ## Local development
 `wrangler dev` reads secrets from a `.dev.vars` file in this folder (gitignored):
@@ -77,10 +166,16 @@ After changing vars, re-run `npx wrangler deploy`. Secrets persist across deploy
 ```
 GEMINI_API_KEY=your-key
 RESEND_API_KEY=your-key
+BELIZE_BANK_USERNAME=your-sandbox-username
+BELIZE_BANK_PASSWORD=your-sandbox-password
 ```
 
+For local payment API work, create the D1 binding first and apply the migration locally with
+`npx wrangler d1 migrations apply actiondivers-payments --local --config wrangler.toml`.
+Do not commit `.dev.vars`.
+
 ```bash
-npx wrangler dev --local
+npx wrangler dev --local --config wrangler.toml
 ```
 
 ## Test
