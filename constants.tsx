@@ -93,7 +93,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Snorkeling and diving options',
       'Protected coral reef environment',
       'Shark Ray Alley experience',
-      'Departures from the Action Divers tour desk'
+      'Pickup anywhere on Ambergris Caye'
     ],
     options: [
       { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A three-hour guided snorkeling excursion departing at 7:30 AM for groups of 4–12.', price: 90.00 },

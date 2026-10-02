@@ -7,7 +7,7 @@ const journey = [
   { year: '1994', detail: 'Made San Pedro home' },
   { year: '1996', detail: 'Began working in Belize tourism' },
   { year: '1998', detail: 'Earned his first Open Water certification' },
-  { year: '2009', detail: 'Founded Action Divers' },
+  { year: '2009', detail: 'Founded Action Divers and Adventures' },
   { year: '2011', detail: 'Became a PADI Dive Instructor' },
   { year: 'Today', detail: 'Still diving, teaching and personally welcoming guests to Ambergris Caye' },
 ];
@@ -34,8 +34,8 @@ const About: React.FC = () => {
   return (
     <main className="min-h-screen bg-[#001219] text-[#F8F4E8]">
       <SEO
-        title="About Action Divers & Roberto Castillo"
-        description="Meet Action Divers founder and PADI Dive Instructor Roberto Castillo, and discover the personal approach behind our Belize diving and adventure experiences."
+        title="About Action Divers and Adventures"
+        description="Meet Roberto Castillo, founder of Action Divers and Adventures, and discover the personal approach behind our Belize diving, beach barbecue, and mainland adventure experiences."
         path="/about"
         image="/images/brand/about-roberto-castillo-social-share.jpg"
         imageAlt="Roberto Castillo teaching a scuba student in San Pedro, Belize"
@@ -61,7 +61,7 @@ const About: React.FC = () => {
             Our <span className="text-[#11C7D9]">Story</span>
           </h1>
           <p className="mx-auto mt-8 max-w-3xl text-lg font-light leading-relaxed text-[#F8F4E8]/78 sm:text-xl">
-            Founded in San Pedro in 2009, Action Divers grew from one local diver's belief that Belize adventures
+            Founded in San Pedro in 2009, Action Divers and Adventures grew from one local diver's belief that Belize adventures
             should feel personal, unhurried, and genuinely welcoming.
           </p>
         </div>
@@ -92,15 +92,15 @@ const About: React.FC = () => {
             </h2>
             <div className="mt-8 space-y-5 text-lg font-light leading-relaxed text-[#F8F4E8]/75">
               <p>
-                Roberto Castillo's story in San Pedro began long before Action Divers. Originally from Orange Walk,
+                Roberto Castillo's story in San Pedro began long before Action Divers and Adventures. Originally from Orange Walk,
                 Roberto moved to San Pedro in 1994 and began working in Belize's tourism industry in 1996. Two years
                 later, he earned his first Open Water diving certification and discovered a passion that would
                 eventually become both a career and a business.
               </p>
               <p>
-                After years in tourism and diving, Roberto founded <strong className="font-semibold text-[#F8F4E8]">Action Divers in 2009</strong>,
-                creating the kind of dive operation he believed guests deserved: smaller groups, personal attention,
-                and a relaxed, welcoming experience.
+                After years in tourism and diving, Roberto founded <strong className="font-semibold text-[#F8F4E8]">Action Divers and Adventures in 2009</strong>,
+                creating the kind of operation he believed guests deserved: smaller groups, personal attention,
+                and a relaxed, welcoming experience, whether on the reef, on the beach, or inland.
               </p>
               <p>
                 Roberto became a <strong className="font-semibold text-[#F8F4E8]">PADI Dive Instructor in 2011</strong> and remains an active instructor today.
@@ -115,10 +115,47 @@ const About: React.FC = () => {
                 visitors feel less like customers and more like friends.
               </p>
               <p className="border-l-2 border-[#11C7D9] pl-5 font-medium text-[#E9D8A6]">
-                That personal approach remains at the heart of Action Divers today.
+                That personal approach remains at the heart of Action Divers and Adventures today.
               </p>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section className="px-6 pb-24 sm:pb-32" aria-labelledby="adventures-title">
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The Adventures in our name</p>
+            <h2 id="adventures-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
+              More Than Diving
+            </h2>
+            <p className="mt-6 text-lg font-light leading-relaxed text-[#F8F4E8]/70">
+              Diving is where it started, but the adventures are a big part of who we are. Spend a day on the water
+              with a beach barbecue, or head to the mainland for Maya ruins, caves, and rainforest.
+            </p>
+          </div>
+          <div className="mt-14 grid gap-8 md:grid-cols-2">
+            <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]">
+              <img src="/images/gallery/bbq-hero-highres.jpg" alt="Beach barbecue on the shore near Ambergris Caye" loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover" />
+              <div className="p-8 text-left sm:p-10">
+                <h3 className="text-2xl font-extrabold tracking-tight">Beach Bar-B-Q</h3>
+                <p className="mt-4 text-lg font-light leading-relaxed text-[#F8F4E8]/70">
+                  A full day on the water that combines fishing, snorkeling, and a freshly prepared barbecue lunch on the beach.
+                </p>
+                <Link to="/tour/fishing" className="mt-6 inline-flex font-bold text-[#8DE7EF] hover:text-white">See the Beach Bar-B-Q trip →</Link>
+              </div>
+            </article>
+            <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]">
+              <img src="/images/gallery/web-maya-ruin.jpg" alt="Maya ruins on a Belize mainland tour" loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover" />
+              <div className="p-8 text-left sm:p-10">
+                <h3 className="text-2xl font-extrabold tracking-tight">Mainland Tours</h3>
+                <p className="mt-4 text-lg font-light leading-relaxed text-[#F8F4E8]/70">
+                  Altun Ha, Xunantunich, Lamanai, cave tubing, zip-lining, and the ATM Cave, with guides who know the way.
+                </p>
+                <Link to="/mainland-adventures" className="mt-6 inline-flex font-bold text-[#8DE7EF] hover:text-white">Explore mainland tours →</Link>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -150,7 +187,7 @@ const About: React.FC = () => {
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The personal approach</p>
             <h2 id="difference-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
-              Why Action Divers Feels Different
+              Why Action Divers and Adventures Feels Different
             </h2>
           </div>
           <div className="mt-16 grid gap-6 md:grid-cols-3">
@@ -174,7 +211,7 @@ const About: React.FC = () => {
         <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 px-7 py-12 text-center sm:rounded-[3rem] sm:px-14 sm:py-16">
           <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The people guests meet</p>
           <h2 id="crew-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
-            Meet the Action Divers Crew
+            Meet the Action Divers and Adventures Crew
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#F8F4E8]/65">
             Roberto works alongside a small core crew who share the same commitment to safe, personal, and welcoming

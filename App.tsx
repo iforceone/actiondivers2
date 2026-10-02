@@ -27,6 +27,9 @@ const STAFF_PORTAL_BUILD_ENABLED = import.meta.env.DEV || import.meta.env.VITE_S
 const Admin = STAFF_PORTAL_BUILD_ENABLED ? React.lazy(() => import('./pages/Admin')) : null;
 const Gallery = React.lazy(() => import('./pages/Gallery'));
 const CustomerPortal = React.lazy(() => import('./pages/CustomerPortal'));
+const TermsPage = React.lazy(() => import('./pages/Policies').then((module) => ({ default: module.TermsPage })));
+const CancellationPolicyPage = React.lazy(() => import('./pages/Policies').then((module) => ({ default: module.CancellationPolicyPage })));
+const PrivacyPage = React.lazy(() => import('./pages/Policies').then((module) => ({ default: module.PrivacyPage })));
 const PaymentPage = React.lazy(() => import('./pages/Payment').then((module) => ({ default: module.PaymentPage })));
 const PaymentReturnPage = React.lazy(() => import('./pages/Payment').then((module) => ({ default: module.PaymentReturnPage })));
 
@@ -45,16 +48,16 @@ const Footer = () => (
           className="mb-6 h-auto w-64 max-w-full object-contain mx-auto md:mx-0"
         />
         <p className="text-[#F8F4E8]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
-          Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. Visit our dive shop and tour desk 5 miles north of town at La Perla Del Caribe.
+          Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. We pick up guests anywhere on the island.
         </p>
         <p className="mt-4 text-sm font-semibold text-[#8DE7EF]">Scuba courses taught by a PADI-certified instructor.</p>
       </div>
       <div>
         <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-[#F8F4E8] md:mb-6">Contact</h4>
         <div className="space-y-3 text-sm leading-relaxed text-[#F8F4E8]/70 md:space-y-4 md:text-xs md:tracking-wider">
-          <p>5 miles north of San Pedro at La Perla Del Caribe</p>
           <p>{CONTACT.phoneDisplay}</p>
           <p>{CONTACT.email}</p>
+          <p>Operating 5 miles north of San Pedro at La Perla Del Caribe</p>
         </div>
       </div>
       <div className="hidden md:block">
@@ -77,7 +80,12 @@ const Footer = () => (
         </div>
       </div>
     </div>
-    <div className="mx-auto mt-10 flex max-w-[1600px] items-center justify-center border-t border-white/5 px-4 pt-6 text-center text-[11px] uppercase tracking-[0.12em] text-[#F8F4E8]/50 md:mt-16 md:px-8 md:pt-8 lg:px-12">
+    <nav aria-label="Policies" className="mx-auto mt-10 flex max-w-[1600px] flex-wrap items-center justify-center gap-x-6 gap-y-2 px-4 text-xs tracking-widest text-[#F8F4E8]/60 md:px-8 lg:px-12">
+      <Link to="/terms" className="transition-colors hover:text-white">Booking Terms</Link>
+      <Link to="/cancellation-policy" className="transition-colors hover:text-white">Cancellation & Refund Policy</Link>
+      <Link to="/privacy" className="transition-colors hover:text-white">Privacy Notice</Link>
+    </nav>
+    <div className="mx-auto mt-6 flex max-w-[1600px] items-center justify-center border-t border-white/5 px-4 pt-6 text-center text-[11px] uppercase tracking-[0.12em] text-[#F8F4E8]/50 md:mt-16 md:px-8 md:pt-8 lg:px-12">
       <p>&copy; {new Date().getFullYear()} Action Divers & Adventures. All Rights Reserved.</p>
     </div>
   </footer>
@@ -151,7 +159,7 @@ const App: React.FC = () => {
         <main>
           <Routes>
             <Route path="/" element={<><SEO title="Belize Scuba Diving & Adventure Tours" description="Explore scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye with Action Divers & Adventures." path="/" structuredData={businessStructuredData} /><Home /></>} />
-            <Route path="/about" element={<><SEO title="About Action Divers Belize" description="Meet Action Divers & Adventures, a San Pedro, Ambergris Caye tour operator offering personal service and Belize reef and mainland adventures." path="/about" image="/images/gallery/SCUBA-and-Snorkelers-1.png" /><About /></>} />
+            <Route path="/about" element={<><SEO title="About Action Divers and Adventures" description="Meet Action Divers and Adventures, a San Pedro, Ambergris Caye tour operator offering personal service, reef dives, beach barbecues, and Belize mainland adventures." path="/about" image="/images/gallery/SCUBA-and-Snorkelers-1.png" /><About /></>} />
             <Route path="/gallery" element={<><SEO title="Belize Adventure Photo Gallery" description="Browse Action Divers & Adventures photos from Belize snorkeling, scuba diving, island adventures, fishing trips, Maya ruins, and mainland tours." path="/gallery" image="/images/gallery/Turtle.png" /><LazyPage><Gallery /></LazyPage></>} />
             <Route path="/island-adventures" element={<><SEO title="Island Tours from San Pedro, Belize" description="Explore Belize island tours from San Pedro, including scuba diving, Hol Chan snorkeling, Shark Ray Alley, Mexico Rocks, fishing, and beach barbecue adventures." path="/island-adventures" image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" /><IslandAdventures /></>} />
             <Route path="/mainland-adventures" element={<><SEO title="Belize Mainland Tours & Maya Ruins" description="Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures." path="/mainland-adventures" image="/images/gallery/web-maya-ruin.jpg" /><MainlandAdventures /></>} />
@@ -165,6 +173,9 @@ const App: React.FC = () => {
             <Route path="/adventures" element={<Navigate to="/island-adventures" replace />} />
             <Route path="/contact" element={<Navigate to="/about" replace />} />
             <Route path="/tour/:id" element={<TourDetail />} />
+            <Route path="/terms" element={<LazyPage><TermsPage /></LazyPage>} />
+            <Route path="/cancellation-policy" element={<LazyPage><CancellationPolicyPage /></LazyPage>} />
+            <Route path="/privacy" element={<LazyPage><PrivacyPage /></LazyPage>} />
             <Route path="/blog" element={<VoyageChronicles />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/reservations" element={<ReservationCartPage />} />

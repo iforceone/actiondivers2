@@ -206,6 +206,7 @@ const Reservations: React.FC = () => {
               <button disabled={submitting || !items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid} className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-50">
                 {submitting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving request…</> : 'Send reservation request'}
               </button>
+              <p className="mt-4 text-center text-xs leading-relaxed text-[#F8F4E8]/60">Sending a request does not confirm a booking. See our <Link to="/terms" className="underline hover:text-white">Booking Terms</Link>, <Link to="/cancellation-policy" className="underline hover:text-white">Cancellation & Refund Policy</Link>, and <Link to="/privacy" className="underline hover:text-white">Privacy Notice</Link>.</p>
             </div>
           </aside>
       </form>

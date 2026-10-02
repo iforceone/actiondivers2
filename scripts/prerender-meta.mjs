@@ -103,8 +103,8 @@ const routes = [
   },
   {
     path: '/about',
-    title: 'About Action Divers & Roberto Castillo',
-    description: 'Meet Action Divers founder and PADI Dive Instructor Roberto Castillo, and discover the personal approach behind our Belize diving and adventure experiences.',
+    title: 'About Action Divers and Adventures',
+    description: 'Meet Roberto Castillo, founder of Action Divers and Adventures, and discover the personal approach behind our Belize diving, beach barbecue, and mainland adventure experiences.',
     image: '/images/brand/about-roberto-castillo-social-share.jpg',
     imageAlt: 'Roberto Castillo teaching a scuba student in San Pedro, Belize',
     imageWidth: 1200,
@@ -115,6 +115,9 @@ const routes = [
   { path: '/mainland-adventures', title: 'Belize Mainland Tours & Maya Ruins', description: 'Explore mainland tours from San Pedro, including Altun Ha, Xunantunich, Lamanai, ATM Caves, cave tubing, zip-lining, and rainforest adventures.', image: '/images/gallery/web-maya-ruin.jpg' },
   { path: '/courses', title: 'Scuba Courses in Ambergris Caye, Belize', description: 'Compare Action Divers scuba courses, including Refresher, Resort Course, Scuba Discovery, Open Water options, Scuba Diver, and Advanced Open Water.', image: '/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg' },
   { path: '/transfers-charters', title: 'Belize Boat Transfers & Private Charters', description: 'Request an Action Divers boat transfer between Belize International Airport and San Pedro, with proposed pricing confirmed by staff.', image: '/images/gallery/Three-of-a-Kind-boat-1.png' },
+  { path: '/terms', title: 'Booking Terms', description: 'Booking terms for Action Divers & Adventures diving, snorkeling, fishing, island, and mainland tours, courses, and transfers in San Pedro, Belize.' },
+  { path: '/cancellation-policy', title: 'Cancellation & Refund Policy', description: 'Action Divers & Adventures cancellation, date-change, and refund policy for tours, courses, charters, and transfers in San Pedro, Belize.' },
+  { path: '/privacy', title: 'Privacy Notice', description: 'How Action Divers & Adventures collects, uses, and protects information submitted for tour enquiries, reservations, and payments.' },
   { path: '/reservations', title: 'Plan Your Belize Tours', description: 'Send Action Divers & Adventures a custom inquiry for Belize scuba diving, snorkeling, fishing, island tours, cave tubing, Maya ruins, and mainland tours.' },
   {
     path: '/blog',

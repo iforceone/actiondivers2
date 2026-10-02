@@ -1,23 +1,24 @@
 # Action Divers website policies — draft for review
 
-Prepared September 24, 2026. **Not approved or published.** These are proposed
-business terms, not a certification of legal compliance. Confirm the decisions
-below before these become customer-facing pages.
+Updated September 25, 2026. **Draft pages, not published.** The owner supplied the
+business name and cancellation policy below on September 25. These replace the
+earlier proposed 48-hour policy. Remaining questions and proposed wording are
+marked explicitly; the complete booking terms and privacy notice await review.
 
 ## Decisions for the owner
 
 | Decision | Proposed wording / confirmation needed |
 | --- | --- |
-| Customer cancellations | Full refund at least 48 hours before departure; no refund within 48 hours or for a no-show. This is a new proposal, not a recovered existing policy. |
-| Operator cancellations | Offer a rescheduled trip or a refund for the cancelled service when Action Divers cancels for weather, safety, or operational reasons. |
-| Courses, charters, outside suppliers | Any different cancellation terms must appear in the quote before payment. Confirm which services need exceptions and their actual terms. |
-| Refund processing | Initiate an approved refund to the original payment method within 10 business days. Confirm staff can meet this promise and have a working bank refund procedure. |
-| Business identity | Confirm the legal entity trading as Action Divers & Adventures and its business/postal address. The public shop location is La Perla Del Caribe, 5 miles north of San Pedro. |
-| Data handling | Confirm booking/accounting retention periods, deletion responsibility, tour partners who receive guest details, and the Gemini account's data-use settings before approving the privacy notice. |
+| Customer cancellations | Owner supplied: 100% refund at least 15 days before the tour date; date changes but no refund with less than 15 days and more than 36 hours' notice; neither with less than 36 hours. Draft treats exactly 36 hours as the date-change tier ("at least 36 hours"), the customer-favourable reading; owner to confirm. |
+| Operator cancellations or modifications | Owner reserves the right to cancel or modify trips for weather, mechanical breakdowns and circumstances beyond the business's control. Owner confirmed: if we cancel, the customer chooses a new date or a full refund. Drafted to apply to a materially modified trip as well; confirm that extension. |
+| Policy scope | Owner confirmed: the same policy applies across all services, with no exceptions. |
+| Refund processing | Refunds go to the original card (standard card-network practice; confirm with Belize Bank). Proposed: refund started within 3 business days of approval, with bank posting time not guaranteed. Owner asked about 24 hours; not recommended unless staff can reliably meet it, including weekends and holidays. |
+| Business identity | Owner confirmed: Action Divers and Adventures. Public phone confirmed: +501 671-2624. Confirm the address is La Perla Del Caribe, 5 miles north of San Pedro, Ambergris Caye, Belize. |
+| Data handling | Confirm whether booking details are used for marketing, how long enquiry/booking records are kept, who handles deletion requests, and any sharing with tour/transport partners. Provider details can be checked technically; production AI selection remains to be finalized. |
 
 ## Draft: Booking terms
 
-Action Divers & Adventures arranges diving, snorkeling, fishing, island activities,
+Action Divers and Adventures arranges diving, snorkeling, fishing, island activities,
 mainland excursions, courses, and transfers from San Pedro, Ambergris Caye, Belize.
 Contact us at info@actiondiversbelize.com or +501 671-2624.
 
@@ -48,45 +49,47 @@ Departure times, routes, and sites may change with weather, sea conditions,
 availability, and safety requirements. Our team will communicate material changes
 and explain the options available under the cancellation policy.
 
-The cancellation and refund policy below applies unless your quote clearly states
-different terms before payment. Nothing in these terms removes rights that cannot
-lawfully be excluded.
+The cancellation and refund policy below applies to your booking.
+Nothing in these terms removes rights that cannot lawfully be excluded.
 
 ## Draft: Cancellations and refunds
 
-To cancel or request a change, email info@actiondiversbelize.com or contact
-+501 671-2624 with your reservation reference. Cancellation timing is measured
-against the confirmed departure time in Belize local time. We will acknowledge
-your request in writing.
+Owner-supplied terms, edited for punctuation and readability without changing the
+notice periods or exclusions:
 
-For tours subject to our standard policy, cancellations received at least
-48 hours before departure receive a full refund. Cancellations received less
-than 48 hours before departure, missed departures, and no-shows are not refundable.
-Date changes are subject to availability; a change request does not automatically
-cancel or replace an existing booking.
+- Cancellations made 15 days or more before the tour date receive a 100% refund.
+- For cancellations made less than 15 days but at least 36 hours before the tour
+  date, we accept date changes but do not provide refunds.
+- For cancellations made less than 36 hours before the tour date, no refunds or
+  date changes are available.
+- No refund is given for no-shows or any unused portion of the service agreement.
+- No refund is given to anyone denied service for refusing to follow rules and
+  regulations.
 
-If Action Divers cancels a service because of weather, unsafe conditions, or
-operational reasons, you may choose an available replacement date or a refund
-for the cancelled service. If only part of a booking is cancelled, we will identify
-the affected service and refund amount in writing. Rain alone does not necessarily
-mean a tour is cancelled; contact our team before deciding not to attend.
+Action Divers and Adventures reserves the right to cancel or modify any trip due
+to weather conditions, mechanical breakdowns, or circumstances beyond our control.
+If we cancel or materially modify your trip, you may choose a new date or a full
+refund.
 
-Courses, private charters, transfers, and services involving outside suppliers may
-have different conditions. Any exceptions must be disclosed in your quote before
-you pay. They do not apply retrospectively to an existing booking.
+This policy applies to all of our services.
 
-Approved refunds are returned to the original payment method. We aim to initiate
-them within 10 business days of approval. Your bank may need additional time to
-show the credit, and card-issuer currency conversion may affect the amount shown
-in your home currency. Contact us if a refund has not appeared after the expected
-processing period.
+Proposed contact instructions: to cancel or request a date change, email
+info@actiondiversbelize.com or contact +501 671-2624 with your reservation reference.
+Notice is measured against the confirmed departure time in Belize local time.
+
+Approved refunds are returned to the original card. We will start your refund
+within 3 business days of approval; your bank may take additional days to post it.
+
+**Before publication: owner to confirm the 3-business-day refund timeframe, that
+exactly 36 hours' notice falls in the date-change tier (as drafted), and the
+contact and Belize-time notice wording.**
 
 ## Draft: Privacy notice
 
-Action Divers & Adventures uses information you provide to answer enquiries,
+Action Divers and Adventures uses information you provide to answer enquiries,
 prepare quotes, arrange activities, manage reservations and payments, and provide
-customer support. **Before publication: insert the confirmed legal entity and
-business address.** Privacy questions can be sent to info@actiondiversbelize.com.
+customer support. **Before publication: insert the confirmed business address.**
+Privacy questions can be sent to info@actiondiversbelize.com.
 
 When you make an enquiry or trip request, we collect the details you submit,
 such as your name, email address, telephone number, accommodation, requested

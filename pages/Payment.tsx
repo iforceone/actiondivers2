@@ -211,6 +211,7 @@ export const PaymentPage: React.FC = () => {
               {!starting && <ArrowRight className="h-5 w-5" />}
             </button>
           )}
+          <p className="mt-4 text-center text-xs leading-relaxed text-[#F8F4E8]/60">By continuing to payment you agree to our <Link to="/terms" className="underline hover:text-white">Booking Terms</Link> and <Link to="/cancellation-policy" className="underline hover:text-white">Cancellation & Refund Policy</Link>.</p>
           <p className="mt-4 text-center text-xs leading-relaxed text-[#F8F4E8]/50">Action Divers never receives or stores your card number or security code.</p>
         </div>
       </div>
