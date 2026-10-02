@@ -93,7 +93,7 @@ export const INITIAL_TOURS: Tour[] = [
       'Snorkeling and diving options',
       'Protected coral reef environment',
       'Shark Ray Alley experience',
-      'Pickup anywhere on Ambergris Caye'
+      'Pickup from La Perla Del Caribe south through San Pedro Town'
     ],
     options: [
       { name: 'Hol Chan & Shark Ray Alley Snorkeling', description: 'A three-hour guided snorkeling excursion departing at 7:30 AM for groups of 4–12.', price: 90.00 },

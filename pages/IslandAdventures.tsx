@@ -104,7 +104,7 @@ const IslandAdventures: React.FC = () => {
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
           <h2 className="text-5xl font-extrabold tracking-tight text-[#F8F4E8]">Ready for a <span className="text-[#11C7D9]">Reef Day?</span></h2>
           <p className="text-[#F8F4E8]/60 text-xl font-light leading-relaxed">
-            We pick up guests anywhere on Ambergris Caye. Tell us what your group wants to do, and we will help match you with the right day on the water.
+            We offer pickup from La Perla Del Caribe south through San Pedro Town, and guests staying farther north can meet us at La Perla. Tell us what your group wants to do, and we will help match you with the right day on the water.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
             <div className="flex items-center justify-center space-x-3 text-[#F8F4E8]/40">

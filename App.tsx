@@ -48,7 +48,7 @@ const Footer = () => (
           className="mb-6 h-auto w-64 max-w-full object-contain mx-auto md:mx-0"
         />
         <p className="text-[#F8F4E8]/60 leading-relaxed max-w-md font-light mx-auto md:mx-0">
-          Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. We pick up guests anywhere on the island.
+          Scuba diving, snorkeling, fishing, island adventures, and mainland tours from San Pedro, Ambergris Caye. We offer pickup from La Perla Del Caribe south through San Pedro Town. Staying farther north? We'll meet you at La Perla.
         </p>
         <p className="mt-4 text-sm font-semibold text-[#8DE7EF]">Scuba courses taught by a PADI-certified instructor.</p>
       </div>

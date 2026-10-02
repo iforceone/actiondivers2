@@ -61,7 +61,7 @@ const Home: React.FC = () => {
           <div className="hidden md:block">
             <RatingBadge className="mt-7" />
             <p className="mt-6 text-sm font-semibold text-white/80">
-              Operating 5 miles north of San Pedro at La Perla Del Caribe. We pick up guests anywhere on Ambergris Caye.
+              Operating 5 miles north of San Pedro at La Perla Del Caribe. Pickup is available from here south through San Pedro Town.
             </p>
           </div>
         </div>
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
       <div className="px-4 py-7 text-center md:hidden">
         <RatingBadge />
         <p className="mx-auto mt-4 max-w-sm text-sm font-semibold leading-relaxed text-[#F8F4E8]/75">
-          Operating 5 miles north of San Pedro at La Perla Del Caribe. We pick up guests anywhere on Ambergris Caye.
+          Operating 5 miles north of San Pedro at La Perla Del Caribe. Pickup is available from here south through San Pedro Town.
         </p>
       </div>
 
