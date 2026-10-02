@@ -3,15 +3,6 @@ import { Heart, Phone, Sparkles, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 
-const journey = [
-  { year: '1994', detail: 'Made San Pedro home' },
-  { year: '1996', detail: 'Began working in Belize tourism' },
-  { year: '1998', detail: 'Earned his first Open Water certification' },
-  { year: '2009', detail: 'Founded Action Divers and Adventures' },
-  { year: '2011', detail: 'Became a PADI Dive Instructor' },
-  { year: 'Today', detail: 'Still diving, teaching and personally welcoming guests to Ambergris Caye' },
-];
-
 const differences = [
   {
     title: 'Small Groups',
@@ -93,7 +84,7 @@ const About: React.FC = () => {
             <div className="mt-8 space-y-5 text-lg font-light leading-relaxed text-[#F8F4E8]/75">
               <p>
                 Roberto Castillo's story in San Pedro began long before Action Divers and Adventures. Originally from Orange Walk,
-                Roberto moved to San Pedro in 1994 and began working in Belize's tourism industry in 1996. Two years
+                Roberto moved to San Pedro in 1994 and has spent three decades in Belize's tourism industry, beginning in 1996. Two years
                 later, he earned his first Open Water diving certification and discovered a passion that would
                 eventually become both a career and a business.
               </p>
@@ -159,29 +150,6 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      <section className="border-y border-white/8 bg-white/[0.035] px-6 py-24 sm:py-28" aria-labelledby="journey-title">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">Three decades in Belize tourism</p>
-            <h2 id="journey-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
-              Roberto's Journey
-            </h2>
-          </div>
-
-          <ol className="relative mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-3 md:gap-x-8 md:gap-y-14">
-            <div className="absolute left-1/2 top-5 hidden h-px w-[67%] -translate-x-1/2 bg-gradient-to-r from-transparent via-[#11C7D9]/55 to-transparent md:block" aria-hidden="true" />
-            {journey.map((milestone) => (
-              <li key={milestone.year} className="relative rounded-2xl border border-white/10 bg-[#062a33] px-6 pb-7 pt-9 text-center shadow-lg">
-                <span className="absolute left-1/2 top-0 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#11C7D9]/60 bg-[#001219] px-4 py-2 text-sm font-extrabold text-[#8DE7EF] shadow-lg">
-                  {milestone.year}
-                </span>
-                <p className="text-base font-medium leading-relaxed text-[#F8F4E8]/78">{milestone.detail}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
       <section className="px-6 py-28 sm:py-36" aria-labelledby="difference-title">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
@@ -203,19 +171,6 @@ const About: React.FC = () => {
           </div>
           <p className="mx-auto mt-12 max-w-3xl text-center text-xl font-medium leading-relaxed text-[#E9D8A6]">
             Small groups. Personal attention. And the kind of Belizean hospitality that makes you feel like part of the family.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-white/[0.035] px-6 py-24 sm:py-28" aria-labelledby="crew-title">
-        <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 px-7 py-12 text-center sm:rounded-[3rem] sm:px-14 sm:py-16">
-          <p className="text-sm font-bold uppercase tracking-[0.24em] text-[#11C7D9]">The people guests meet</p>
-          <h2 id="crew-title" className="mt-4 text-4xl font-extrabold tracking-[-0.035em] sm:text-6xl">
-            Meet the Action Divers and Adventures Crew
-          </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg font-light leading-relaxed text-[#F8F4E8]/65">
-            Roberto works alongside a small core crew who share the same commitment to safe, personal, and welcoming
-            experiences. Their profiles and photographs are coming soon.
           </p>
         </div>
       </section>
