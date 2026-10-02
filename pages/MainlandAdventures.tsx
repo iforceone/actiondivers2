@@ -12,7 +12,7 @@ const MainlandAdventures: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-[62vh] min-h-[520px] max-h-[720px] flex items-center justify-center overflow-hidden">
         <img 
-          src="/images/gallery/web-maya-ruin.jpg"
+          src="/images/gallery/altun-ha-maya-temple.jpg"
           alt="Maya temple rising above the Belize rainforest"
           loading="eager"
           fetchPriority="high"

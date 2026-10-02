@@ -7,7 +7,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'A practical guide to the best snorkeling trips from San Pedro, including Hol Chan, Shark Ray Alley, Mexico Rocks, and full-day island adventures.',
     date: '2026-06-05',
     author: 'Action Divers & Adventures',
-    image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
+    image: '/images/gallery/snorkelers-with-fish-on-reef.jpg',
     tags: ['Snorkeling', 'San Pedro', 'Hol Chan', 'Belize Barrier Reef'],
     relatedTours: ['snorkeling'],
     body: [
@@ -24,7 +24,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Compare two of Ambergris Caye’s most popular snorkel trips so you can choose the right reef experience for your group.',
     date: '2026-06-05',
     author: 'Action Divers & Adventures',
-    image: '/images/gallery/Male-Snorkeler-OK-Sign.png',
+    image: '/images/gallery/snorkeler-ok-sign.jpg',
     tags: ['Hol Chan', 'Mexico Rocks', 'Snorkeling', 'Ambergris Caye'],
     relatedTours: ['snorkeling'],
     body: [
@@ -40,7 +40,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'What certified divers and first-time guests should know before booking a Belize scuba diving trip from San Pedro.',
     date: '2026-06-05',
     author: 'Action Divers & Adventures',
-    image: '/images/gallery/Scuba-Diver.png',
+    image: '/images/gallery/scuba-diving-reef-tour.jpg',
     tags: ['Scuba Diving', 'Ambergris Caye', 'Belize Barrier Reef'],
     relatedTours: ['scuba-diving'],
     body: [
@@ -56,7 +56,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'How to decide between reef days, beach barbecues, Maya ruins, cave tubing, zip-lining, and jungle adventures during a Belize vacation.',
     date: '2026-06-05',
     author: 'Action Divers & Adventures',
-    image: '/images/gallery/web-maya-ruin.jpg',
+    image: '/images/gallery/altun-ha-maya-temple.jpg',
     tags: ['Belize Tours', 'Island Adventures', 'Mainland Adventures'],
     relatedTours: ['fishing', 'altun-ha-cave-tubing', 'xunantunich-cave-tubing'],
     body: [
@@ -72,7 +72,7 @@ export const BLOG_POSTS: BlogPost[] = [
     excerpt: 'Belize tour ideas for families, mixed ages, and groups that want memorable adventure without overcomplicating the day.',
     date: '2026-06-05',
     author: 'Action Divers & Adventures',
-    image: '/images/gallery/Snorkelers-reaching-hand-out-768x432.png',
+    image: '/images/gallery/snorkelers-reaching-for-fish.jpg',
     tags: ['Family Travel', 'San Pedro', 'Belize Activities'],
     relatedTours: ['snorkeling', 'fishing'],
     body: [

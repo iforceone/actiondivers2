@@ -37,7 +37,7 @@ const VoyageChronicles: React.FC = () => {
         title="Belize Travel Guides"
         description="Read guides to snorkeling, scuba diving, island tours, mainland tours, and family-friendly Belize activities from San Pedro."
         path="/blog"
-        image="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png"
+        image="/images/gallery/snorkelers-with-fish-on-reef.jpg"
         structuredData={structuredData}
       />
       <div className="text-center mb-24">

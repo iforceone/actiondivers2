@@ -63,7 +63,7 @@ const About: React.FC = () => {
           <div className="relative">
             <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-3 shadow-2xl sm:rounded-[3rem] sm:p-5">
               <img
-                src="/images/gallery/Roberto-with-Student-e1673390226440-768x542.jpg"
+                src="/images/gallery/scuba-instructor-with-student.jpg"
                 alt="Roberto Castillo teaching a scuba student in a pool in San Pedro, Belize"
                 loading="lazy"
                 decoding="async"
@@ -137,7 +137,7 @@ const About: React.FC = () => {
               </div>
             </article>
             <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04]">
-              <img src="/images/gallery/web-maya-ruin.jpg" alt="Maya ruins on a Belize mainland tour" loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover" />
+              <img src="/images/gallery/altun-ha-maya-temple.jpg" alt="Maya ruins on a Belize mainland tour" loading="lazy" decoding="async" className="aspect-[16/10] w-full object-cover" />
               <div className="p-8 text-left sm:p-10">
                 <h3 className="text-2xl font-extrabold tracking-tight">Mainland Tours</h3>
                 <p className="mt-4 text-lg font-light leading-relaxed text-[#F8F4E8]/70">

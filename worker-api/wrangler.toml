@@ -10,6 +10,8 @@ enabled = true
 # Prepared production launch configuration. Local edits are not deployed state.
 # See PRODUCTION_LAUNCH.md before deploying or enabling payments.
 [vars]
+# Kaptin Kai runs on Cloudflare Workers AI (binding below); set to "gemini" to fall back.
+ASSISTANT_PROVIDER = "workers-ai"
 # Where inquiries are delivered. Must be a real mailbox — reservations@ does not
 # exist and bounced with "Recipient not found" (MX records prove the domain accepts
 # mail, not that a given address does).
@@ -33,6 +35,9 @@ PAYMENTS_ENABLED = "false"
 ACCESS_TEAM_DOMAIN = "https://muddy-frog-9df5.cloudflareaccess.com"
 ACCESS_AUD = "d3721f0fa2596469241c5ad06b2779828b01bcebd6ba2bd19d8d17e81e477228"
 OWNER_EMAILS = ""
+
+[ai]
+binding = "AI"
 
 # Shared reservation, quote, portal, and payment-intent storage. Preview and
 # production use separate databases; IDs are non-secret Cloudflare resource IDs.

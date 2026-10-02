@@ -12,7 +12,7 @@ const IslandAdventures: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-[62vh] min-h-[520px] max-h-[720px] flex items-center justify-center overflow-hidden">
         <img 
-          src="/images/gallery/Group-of-Snorkelers-with-fish-768x432.png" 
+          src="/images/gallery/snorkelers-with-fish-on-reef.jpg" 
           alt="Belizean Barrier Reef" 
           loading="eager"
           fetchPriority="high"

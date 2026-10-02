@@ -1,6 +1,6 @@
 # Action Divers website policies — draft for review
 
-Updated September 25, 2026. **Draft pages, not published.** The owner supplied the
+**October 2, 2026: Roberto approved the cancellation policy wording and the privacy terms as drafted below (relayed by David Pollard), and chat moves to Cloudflare Workers AI. The pages are built at `/terms`, `/cancellation-policy` and `/privacy`; the "Before publication" notes below are resolved by that approval.** Earlier status: Updated September 25, 2026. **Draft pages, not published.** The owner supplied the
 business name and cancellation policy below on September 25. These replace the
 earlier proposed 48-hour policy. Remaining questions and proposed wording are
 marked explicitly; the complete booking terms and privacy notice await review.

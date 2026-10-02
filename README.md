@@ -1,6 +1,6 @@
 # Action Divers & Adventures — Belize Tours
 
-Marketing and reservations site for a San Pedro, Ambergris Caye dive shop and tour
+Marketing and reservations site for a San Pedro, Ambergris Caye dive and adventure tour
 operator. React + Vite + Tailwind, deployed on Cloudflare Workers, with a separate
 Worker holding the API keys.
 

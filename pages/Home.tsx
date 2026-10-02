@@ -42,7 +42,7 @@ const Home: React.FC = () => {
         
         <div className="relative z-10 text-center px-4 max-w-4xl">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.32em] text-white/85">
-            San Pedro, Ambergris Caye Dive Shop & Tour Operator
+            San Pedro, Ambergris Caye Dive & Adventure Tour Operator
           </p>
           <h1 className="mb-6 text-[46px] font-black leading-[0.98] tracking-[-0.035em] text-white drop-shadow-lg md:text-8xl md:leading-tight md:tracking-tighter">
             Dive, Explore, <br className="hidden md:block" /><span className="text-[var(--brand-orange)]">Experience Belize</span>

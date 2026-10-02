@@ -19,7 +19,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Guided reef and night dives for certified divers who have dived within the previous year.',
     longDescription: 'Explore dive sites around Ambergris Caye on single-dive, two-dive, Hol Chan combo, and night-dive options. Recreational dive guests must be certified and have completed a dive within the previous year. A certified diver returning after more than one year should complete a Refresher in the morning and may then join a recreational dive that afternoon. New divers should choose Resort Course or Scuba Discovery through the Courses page.',
     isAvailable: true,
-    image: '/images/gallery/Scuba-Diver.png', // REAL Action Divers Belize image - SCUBA DIVING
+    image: '/images/gallery/scuba-diving-reef-tour.jpg', // REAL Action Divers Belize image - SCUBA DIVING
     duration: 'Single, two-tank, and night-dive options',
     groupSize: 'Minimum 2 guests',
     meetingPickup: 'Exact meeting and check-in details are sent after confirmation.',
@@ -50,7 +50,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Breathtaking snorkeling excursions including Hol Chan and Shark Ray Alley.',
     longDescription: 'There are a couple of popular snorkeling excursions that are a must-see when visiting Ambergris Caye. One excursion is Hol Chan and Shark-Ray Alley where you snorkel at the marine reserve through protected coral reefs with turtles, barracudas, spotted eagle rays, and more! After, feed the nurse sharks and rays at Shark-Ray Alley. Those who are brave enough can snorkel with them! Another great location is Mexico Rocks, located north of our shop.',
     isAvailable: true,
-    image: '/images/gallery/Male-Snorkeler-OK-Sign.png', // REAL Action Divers Belize image - SNORKELING
+    image: '/images/gallery/snorkeler-ok-sign.jpg', // REAL Action Divers Belize image - SNORKELING
     duration: '2–3 hour and full-day options',
     departureTime: '7:30 AM or 9:00 AM, depending on the tour',
     groupSize: '4–12 guests',
@@ -81,7 +81,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Choose a snorkeling excursion or combo dive at one of Ambergris Caye’s best-known marine reserve areas.',
     longDescription: 'Hol Chan Marine Reserve and Shark Ray Alley combine protected reef scenery with the chance to encounter Belizean marine life. Action Divers currently offers this destination as a snorkeling excursion and as a combo dive, giving both snorkelers and certified divers a way to experience the area.',
     isAvailable: true,
-    image: '/images/gallery/Group-of-Snorkelers-with-fish-768x432.png',
+    image: '/images/gallery/snorkelers-with-fish-on-reef.jpg',
     duration: '3 hours for snorkeling',
     departureTime: '7:30 AM for snorkeling',
     groupSize: '4–12 guests for snorkeling; minimum 2 for the combo dive',
@@ -192,7 +192,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Reef, deep sea, and flat fishing options, plus a full-day Beach Bar-B-Q experience.',
     longDescription: 'Choose reef, deep sea, or flat fishing in half-day and full-day formats, or request the Beach Bar-B-Q option for a full day combining fishing, snorkeling, and a prepared meal. The barbecue location may vary with weather, water conditions, and the group’s accommodation setup; staff will confirm the final arrangement.',
     isAvailable: true,
-    image: '/images/gallery/fishing-hero-highres.jpg', // HIGH-RES REAL Action Divers Belize image
+    image: '/images/gallery/fishing-guest-barracuda-catch.jpg', // HIGH-RES REAL Action Divers Belize image
     duration: 'Half-day and full-day options',
     departureTime: '9:00 AM for every fishing option',
     groupSize: 'Reef and deep sea: 1–4; flat fishing: 1–2; Beach Bar-B-Q: minimum 4',
@@ -254,7 +254,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'A perfect blend of Mayan history and natural wonder, featuring ruins and cave exploration.',
     longDescription: 'Experience the best of Belize’s mainland. Start your day by exploring the ancient Mayan city of Altun Ha, famous for the discovery of the Jade Head. Wander through its impressive plazas and climb the Temple of the Masonry Altars for a breathtaking view. Afterward, journey to the Nohoch Che’en Caves for a refreshing cave tubing tour. Drift through mystical limestone caves while learning about the sacred rituals of the ancient Maya.',
     isAvailable: true,
-    image: '/images/gallery/web-maya-ruin.jpg', // REAL Action Divers Belize image
+    image: '/images/gallery/altun-ha-maya-temple.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
     departureTime: '7:00 AM water taxi',
     groupSize: 'Minimum 2 guests',
@@ -300,7 +300,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Journey to the "Submerged Crocodile" archaeological site in the Orange Walk District.',
     longDescription: 'Lamanai "Submerged Crocodile" is an archaeological site in the Orange Walk District surrounded by rainforest. The full-day trip leaves on the 6:00 AM water taxi. Mainland travel to Tower Hill takes approximately 45 minutes to a little over one hour, followed by another hour or more by boat along the New River. Additional time is needed for the archaeological tour, temple climbing, meals, and return travel. Guests should leave the Lamanai area by approximately 3:00 PM; exact return-water-taxi details are confirmed before the trip.',
     isAvailable: true,
-    image: '/images/gallery/web-lamani.jpg', // REAL Action Divers Belize image
+    image: '/images/gallery/lamanai-maya-temple.jpg', // REAL Action Divers Belize image
     duration: 'Full day',
     departureTime: '6:00 AM water taxi',
     groupSize: 'Minimum 2 guests',
@@ -323,7 +323,7 @@ export const INITIAL_TOURS: Tour[] = [
     description: 'Actun Tunichil Muknal - a legendary Maya archaeological cave site.',
     longDescription: 'Actun Tunichil Muknal, also known locally as ATM, is a cave in Belize, near San Ignacio, Cayo District, notable as a Maya archaeological site that includes skeletons, ceramics, and stoneware. The ATM Caves is a full-day, intensive tour that leaves the island on the 6:00 AM water taxi.',
     isAvailable: true,
-    image: '/images/gallery/cave-exploration-real.jpg', // UPGRADED REAL Action Divers Belize image
+    image: '/images/gallery/atm-cave-exploration.jpg', // UPGRADED REAL Action Divers Belize image
     duration: 'Full day',
     departureTime: '6:00 AM water taxi',
     groupSize: 'Minimum 2 guests',
