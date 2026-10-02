@@ -20,26 +20,23 @@ const AssistantLauncher: React.FC<AssistantLauncherProps> = ({ onOpen }) => (
         type="button"
         onClick={onOpen}
         className="flex min-h-11 items-center justify-center gap-3 rounded-full bg-[var(--brand-navy)]/80 py-1 pl-1.5 pr-4 text-sm font-bold text-[var(--brand-ivory)] transition-all hover:bg-white/10 sm:min-h-12 sm:pr-5"
-        aria-label="Ask Kaptin Kai - Virtual Divemaster & Island Concierge"
+        aria-label="Ask Kaptin Kai, the AI concierge"
       >
         {/* Avatar with active online indicator */}
         <div className="relative flex-shrink-0">
           <img
             src="/images/kaptin-kai.webp"
-            alt="Kaptin Kai - Virtual Divemaster & Island Concierge"
+            alt="Kaptin Kai, AI concierge avatar"
             className="h-10 w-10 rounded-full border-2 border-[var(--brand-aqua)] object-cover shadow-md"
             loading="eager"
             width={40}
             height={40}
           />
-          <span className="absolute bottom-0 right-0 flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full border-2 border-[#071820] bg-emerald-500"></span>
-          </span>
+          <span className="absolute -bottom-1 -right-1.5 rounded-full border-2 border-[#071820] bg-[var(--brand-aqua)] px-1 py-px text-[8px] font-extrabold leading-none text-[#001219]">AI</span>
         </div>
 
         <div className="flex flex-col text-left">
-          <span className="text-[10px] font-bold text-[var(--brand-aqua)] uppercase tracking-wider leading-none">Online</span>
+          <span className="text-[10px] font-bold text-[var(--brand-aqua)] uppercase tracking-wider leading-none">AI Concierge</span>
           <span className="font-extrabold tracking-tight text-[var(--brand-ivory)] text-sm leading-tight">Ask Kaptin Kai</span>
         </div>
       </button>

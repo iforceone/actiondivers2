@@ -1,12 +1,15 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Send } from 'lucide-react';
+import { X, Send, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { getAssistantResponse } from '../services/geminiService';
 import AssistantLauncher from './AssistantLauncher';
+import { buildWhatsAppUrl } from '../config';
 
-const WELCOME_MESSAGE = "Hi! I’m Kaptin Kai, your local dive guide at Action Divers. Whether you're heading to the Great Blue Hole, checking out the nurse sharks at Hol Chan, or need gear advice, ask away! I'd be happy to help you plan a great day on the water.";
+const WELCOME_MESSAGE = "Hi! I’m Kaptin Kai, the AI assistant for Action Divers and Adventures. Roberto and the crew are often out on the water with guests, so I’m here to answer your questions about dive sites, tours, and planning in the meantime. Bookings and special requests are always confirmed by our team, and you can message Roberto directly on WhatsApp anytime.";
+
+const WHATSAPP_URL = buildWhatsAppUrl("Hi Roberto, I have a question about Action Divers and Adventures.");
 
 const QUICK_PROMPTS = [
   '🌊 Top Dive Sites',
@@ -83,17 +86,24 @@ const TourAssistant: React.FC = () => {
                     width={48}
                     height={48}
                   />
-                  <span className="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-[#041922] bg-emerald-500"></span>
-                  </span>
+                  <span className="absolute -bottom-1 -right-2 rounded-full border-2 border-[#041922] bg-[var(--brand-aqua)] px-1.5 py-px text-[9px] font-extrabold leading-none text-[#001219]">AI</span>
                 </div>
 
                 <div>
                   <h3 id="tour-assistant-title" className="font-extrabold tracking-tight text-[#F8F4E8] text-lg leading-tight">Kaptin Kai</h3>
-                  <p className="text-xs text-[#8DDCE7]/85 font-medium tracking-wide">Action Divers Concierge • Local Reef Guide</p>
+                  <p className="text-xs text-[#8DDCE7]/85 font-medium tracking-wide">AI Concierge • Action Divers and Adventures</p>
                 </div>
               </div>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mr-1 inline-flex min-h-10 items-center gap-2 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3.5 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-400 hover:text-[#001219]"
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden sm:inline">Message Roberto</span>
+                <span className="sm:hidden">WhatsApp</span>
+              </a>
               <button 
                 ref={closeButtonRef}
                 onClick={() => setIsOpen(false)} 
@@ -184,8 +194,12 @@ const TourAssistant: React.FC = () => {
               )}
             </div>
 
+            <p className="border-t border-white/10 bg-[#001219] px-5 pt-3 text-center text-[11px] leading-snug text-[#F8F4E8]/55">
+              Kai is an AI assistant and can make mistakes. For bookings or anything urgent, <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-emerald-300 underline">message Roberto on WhatsApp</a>; he replies as soon as he is off the water.
+            </p>
+
             {/* Input Area */}
-            <div className="p-4 sm:p-5 border-t border-white/10 bg-[#001219] flex space-x-3 items-center">
+            <div className="p-4 sm:p-5 bg-[#001219] flex space-x-3 items-center">
               <input
                 type="text"
                 name="tourQuestion"
