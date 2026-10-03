@@ -50,6 +50,21 @@ for (const match of sitemapUrls) {
   }
 }
 
+// Every route must either have a prerendered HTML file or be listed in the site
+// Worker's app-only routes. Otherwise the Worker would serve a 404 for it.
+const { APP_ONLY_ROUTES } = await import('../site-worker/index.ts');
+const redirectSources = new Set(read('public/_redirects').split(/\r?\n/).filter((line) => line.startsWith('/')).map((line) => line.split(/\s+/)[0]));
+const distDir = path.join(root, 'dist');
+for (const pattern of routePatterns) {
+  if (pattern === '/' || pattern.includes('*')) continue;
+  if (pattern.startsWith('/tour/:') || pattern.startsWith('/blog/:')) continue; // prerendered per item; unknown ids 404 by design
+  const sample = pattern.replace(/:[^/]+/g, 'sample');
+  const prerendered = fs.existsSync(path.join(distDir, `${sample.slice(1)}.html`));
+  if (fs.existsSync(distDir) && !prerendered && !redirectSources.has(sample) && !APP_ONLY_ROUTES.some((expression) => expression.test(sample))) {
+    failures.push(`site-worker: route ${pattern} has no prerendered file and is not in APP_ONLY_ROUTES (it would return 404).`);
+  }
+}
+
 const dist = path.join(root, 'dist');
 if (!fs.existsSync(dist)) {
   failures.push('dist is missing; run the production build before this check.');

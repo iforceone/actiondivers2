@@ -7,10 +7,13 @@
 // branch builds — has no such fallback and fails with "Missing entry-point to
 // Worker script or to assets directory".
 //
-// Assets-only: there is no Worker script, just the Vite build in dist/.
+// A small Worker fronts the static assets (site-worker/index.ts) so unknown URLs
+// return a real 404 instead of the single-page app's 200 index.html, while the
+// app-only routes (customer links, forms, staff portal) still load.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "actiondivers2",
+  "main": "site-worker/index.ts",
   "compatibility_date": "2026-06-07",
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
@@ -18,7 +21,10 @@
   },
   "assets": {
     "directory": "./dist",
-    // Client-side routing: unknown paths serve index.html instead of 404ing.
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    // Serve files directly; the Worker only runs for page navigations.
+    "run_worker_first": ["/*", "!/assets/*", "!/images/*"],
+    // The Worker decides what an unknown path means (see site-worker/index.ts).
+    "not_found_handling": "none"
   }
 }
