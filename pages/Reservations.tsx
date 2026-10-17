@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { CheckCircle2, Loader2, Plus, Trash2, TriangleAlert } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
-import { API } from '../config';
+import { API, CONTACT, buildWhatsAppUrl } from '../config';
 import { useBooking } from '../contexts/BookingContext';
 import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict, requiresRefresher } from '../shared/bookingCatalog';
 
@@ -110,6 +110,12 @@ const Reservations: React.FC = () => {
         <p className="text-sm font-bold text-[#11C7D9]">Reservation request</p>
         <h1 className="mt-4 text-5xl font-extrabold tracking-[-0.035em] text-[#F8F4E8] sm:text-7xl">Build your Belize trip.</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#F8F4E8]/70">Choose dates at least seven days in advance for each experience. This is a request—not an instant booking. Staff confirms availability and sends the final quote before payment.</p>
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#F8F4E8]/70">
+          Need a last-minute booking within the next seven days? Contact Roberto directly on{' '}
+          <a href={buildWhatsAppUrl('Hi Roberto, I would like to make a last-minute booking.')} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#11C7D9] underline underline-offset-4">WhatsApp</a>
+          {' '}or by email at{' '}
+          <a href={`mailto:${CONTACT.email}?subject=${encodeURIComponent('Last-minute booking request')}`} className="font-semibold text-[#11C7D9] underline underline-offset-4">{CONTACT.email}</a>.
+        </p>
       </header>
 
       {!catalogOnline && (
