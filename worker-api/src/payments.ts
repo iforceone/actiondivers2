@@ -324,7 +324,8 @@ async function startPayment(request: Request, env: PaymentEnv, json: Json, token
       )
         .bind(errorCode, nowIso(), row.id)
         .run();
-      await recordEvent(env, row.id, 'bank', 'registration_failed', null, errorCode);
+      const detail = bank.errorMessage ? `${errorCode}: ${bank.errorMessage}` : errorCode;
+      await recordEvent(env, row.id, 'bank', 'registration_failed', null, detail);
       return json({ ok: false, error: 'Belize Bank could not start this payment. Please contact Action Divers.' }, 502);
     }
     await env.PAYMENTS_DB.prepare(
