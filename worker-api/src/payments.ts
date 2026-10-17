@@ -51,6 +51,8 @@ interface BankResponse {
 const TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 const SANDBOX_BASE_URL = 'https://sandbox.belizebank.com/payment/rest';
 const PRODUCTION_BASE_URL = 'https://gateway.belizebank.com/payment/rest';
+// ISO 4217 numeric code for USD. Without it the gateway uses the terminal default (BZD).
+const USD_CURRENCY_CODE = '840';
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -306,6 +308,7 @@ async function startPayment(request: Request, env: PaymentEnv, json: Json, token
     const requestUrl = new URL(request.url);
     const bank = await bankPost(env, '/register.do', {
       amount: String(row.amount_cents),
+      currency: USD_CURRENCY_CODE,
       description: row.description,
       returnUrl: `${env.PAYMENT_SITE_ORIGIN.replace(/\/$/, '')}/payment/return?token=${encodeURIComponent(token)}`,
       orderNumber: row.merchant_order_number,
