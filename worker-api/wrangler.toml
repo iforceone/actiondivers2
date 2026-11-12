@@ -28,7 +28,7 @@ PAYMENT_SITE_ORIGIN = "https://actiondiversbelize.com"
 # until deployment checks and an explicitly authorized controlled live test.
 RESERVATIONS_V2_ENABLED = "true"
 STAFF_PORTAL_ENABLED = "true"
-PAYMENTS_ENABLED = "false"
+PAYMENTS_ENABLED = "true"
 # Non-secret Cloudflare Access configuration for the path-protected site and API
 # staff routes. Staff membership is stored in D1; keep OWNER_EMAILS empty unless
 # emergency bootstrap access is intentionally required.
