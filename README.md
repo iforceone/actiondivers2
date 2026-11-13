@@ -51,7 +51,7 @@ staff access, payment certification, or public-domain readiness.
 ## Why there are two projects
 
 ```
-/            → the React site   → Worker "actiondivers2"     (deploy manually)
+/            → the React site   → Worker "actiondivers2"     (auto-deploys from main)
 /worker-api  → the API backend  → Worker "actiondivers-api"  (deploy manually)
 ```
 
@@ -120,9 +120,17 @@ through the dashboard, where the account is visible.
 
 ## Deploying
 
-Both Workers are deployed by hand from the working branch. When a change touches both,
-deploy the **site first, then the API**: a newer form talking briefly to the older API
-is safe, but a stricter API can reject requests from the older form.
+**Site:** pushing to `main` deploys it. Cloudflare Workers Builds runs `npm run build`
+then `npx wrangler deploy` (about 90 seconds; author shows as the account owner).
+Pushes to other branches run `wrangler versions upload`, which only uploads a preview
+version. You can also deploy the site by hand with Wrangler, as below; if you do, push
+the same commit to `main` afterwards so the next Git build doesn't roll it back.
+
+**API:** has no Git integration. Always deploy it by hand.
+
+When a change touches both, release the **site first, then the API**: a newer form
+talking briefly to the older API is safe, but a stricter API can reject requests from
+the older form.
 
 ```bash
 npx wrangler whoami        # confirm account 9afab2d5eabc5a0cee88b9ecc5d2e795
@@ -139,12 +147,6 @@ Afterwards, confirm the live entry asset on https://actiondiversbelize.com match
 new build and record the version IDs Wrangler printed in PRODUCTION_LAUNCH.md.
 Deploys take a few seconds to propagate; if you test immediately you may hit the
 previous version. Wait a few seconds and retest before investigating.
-
-**Git builds.** The repo was originally connected to Cloudflare Workers Builds
-(`main` → `wrangler deploy`, other branches → `wrangler versions upload`, which only
-uploads a preview version). Recent production deployments were made with Wrangler and
-`main` lags the working branch. Check Workers & Pages → `actiondivers2` → Settings →
-Build before pushing to `main`, so an old `main` build can't replace newer live code.
 
 Wrangler reads `wrangler.jsonc` in the repo root. Keep it committed. Cloudflare's
 `cloudflare/workers-autoconfig` bot periodically opens a branch offering to generate its
@@ -247,8 +249,6 @@ PROJECT_TODO.md            business backlog (payments, transfers, content)
   button with card logos.
 - **Official card marks.** `CardBrands.tsx` draws simple Visa/Mastercard marks; swap in
   the official acceptance-mark artwork if Belize Bank or the card brands require it.
-- **`main` is behind** the working branch. Bring it up to date once the Git build
-  settings are confirmed (see [Deploying](#deploying)).
 - **Dependencies.** `npm audit` reports two moderate findings in the site packages that
   need a major-version upgrade; review separately.
 - **Owner content approval.** Prices, schedules still labeled “Exact time confirmed

@@ -3,8 +3,8 @@
 Updated November 12, 2026, on `codex/action-divers-work`.
 **Status: live. `actiondiversbelize.com` serves the site Worker (`www` redirects to
 the apex). Reservations, the staff portal and Belize Bank card payments in USD are
-enabled in production. Kaptin Kai uses Workers AI. Both Workers deploy manually with
-Wrangler; `main` is behind the working branch.** Entries are newest first; sections
+enabled in production. Kaptin Kai uses Workers AI. The site auto-deploys from `main`
+(Workers Builds); the API deploys manually with Wrangler.** Entries are newest first; sections
 from September and earlier are historical.
 
 ## November 12 phone validation and payment button release
@@ -21,6 +21,9 @@ from September and earlier are historical.
   note, the payment page chunks are live, and the production API returned 422 for
   phone `123` (no record created). TypeScript, 19 API tests and the build passed.
 - Not yet verified: a real end-to-end reservation and its email.
+- `main` was fast-forwarded to `65811f5`. Workers Builds then deployed site version
+  `4feef146-bdcc-4fb5-ad3a-b9b5ddb44862` from it; the live entry asset stayed
+  `index-Brf9xzdO.js`, confirming an identical build.
 
 ## November 12 payments re-enabled
 
