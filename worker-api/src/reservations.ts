@@ -1,4 +1,5 @@
 import { belizeDateAfter, DEFAULT_BOOKING_CATALOG, BookingCatalog, BookingCatalogItem, BookingItemDetails, estimateBookingItemCents, hasMainlandDateConflict, isRefresherDivePair, requiresRefresher, withDefaultBookingPolicies } from '../../shared/bookingCatalog';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { requireStaff, staffErrorStatus, StaffIdentity, AccessEnv } from './auth';
 import { PaymentEnv, startPaymentForPortal } from './payments';
 import { paymentIsAvailable } from './reservationRules';
@@ -247,13 +248,15 @@ async function createReservation(request: Request, env: ReservationEnv, json: Js
   const customer = (body.customer ?? {}) as Record<string, unknown>;
   const name = text(customer.name, 100);
   const email = text(customer.email, 200).toLowerCase();
-  const phone = text(customer.phone, 40);
+  const parsedPhone = parsePhoneNumberFromString(text(customer.phone, 40));
+  const phone = parsedPhone?.isValid() ? parsedPhone.number : '';
   const adults = Number(body.adults);
   const children = Number(body.children ?? 0);
   const submittedItems = Array.isArray(body.items) ? body.items : [];
   if (!name || !EMAIL_RE.test(email) || !Number.isInteger(adults) || adults < 1 || adults > 40 || !Number.isInteger(children) || children < 0 || children > 40) {
     return json({ ok: false, error: 'Valid contact information and party size are required.' }, 422);
   }
+  if (!phone) return json({ ok: false, error: 'A valid phone number with country code is required.' }, 422);
   if (submittedItems.length < 1 || submittedItems.length > 12) return json({ ok: false, error: 'Choose between 1 and 12 tours.' }, 422);
   const catalog = await publishedCatalog(env);
   const catalogById = new Map(catalog.items.filter((item) => item.active).map((item) => [item.id, item]));

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Clock3, CreditCard, Loader2, LockKeyhole, Mail, ShieldCheck, TriangleAlert } from 'lucide-react';
 import SEO from '../components/SEO';
+import CardBrands from '../components/CardBrands';
 import { API, CONTACT } from '../config';
 
 interface PaymentDetails {
@@ -200,6 +201,7 @@ export const PaymentPage: React.FC = () => {
           {error && <p role="alert" className="mt-6 rounded-xl bg-[var(--brand-orange)]/12 px-4 py-3 text-sm leading-relaxed text-[#F8F4E8]">{error}</p>}
 
           {canPay && (
+            <>
             <button
               type="button"
               onClick={startPayment}
@@ -207,9 +209,11 @@ export const PaymentPage: React.FC = () => {
               className="mt-8 flex w-full items-center justify-center gap-3 rounded-full bg-[var(--brand-orange)] px-6 py-4 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {starting ? <Loader2 className="h-5 w-5 animate-spin" /> : <CreditCard className="h-5 w-5" />}
-              {starting ? 'Connecting securely…' : 'Continue to Belize Bank'}
+              {starting ? 'Connecting securely…' : 'Proceed to secure payment'}
               {!starting && <ArrowRight className="h-5 w-5" />}
             </button>
+            <CardBrands className="mt-4" />
+            </>
           )}
           <p className="mt-4 text-center text-xs leading-relaxed text-[#F8F4E8]/60">By continuing to payment you agree to our <Link to="/terms" className="underline hover:text-white">Booking Terms</Link> and <Link to="/cancellation-policy" className="underline hover:text-white">Cancellation & Refund Policy</Link>.</p>
           <p className="mt-4 text-center text-xs leading-relaxed text-[#F8F4E8]/50">Action Divers never receives or stores your card number or security code.</p>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CalendarDays, CheckCircle2, Clock3, CreditCard, Loader2, LockKeyhole, Mail, Ship, TriangleAlert } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import SEO from '../components/SEO';
+import CardBrands from '../components/CardBrands';
 import { API, CONTACT } from '../config';
 import { formatUsd } from '../shared/bookingCatalog';
 
@@ -141,7 +142,10 @@ const CustomerPortal: React.FC = () => {
                   {paid ? (
                     <div className="mt-6 rounded-xl bg-emerald-400/10 p-4 text-sm text-emerald-100"><CheckCircle2 className="mb-2 h-5 w-5" />Payment confirmed{payment?.paid_at ? ` on ${formatDate(payment.paid_at)}` : ''}.{payment?.receipt_reference && <span className="mt-2 block text-xs text-emerald-100/75">Receipt reference: {payment.receipt_reference}</span>}</div>
                   ) : data.paymentAvailable ? (
-                    <button type="button" onClick={startPayment} disabled={starting} className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-3 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:opacity-60">{starting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <CreditCard className="mr-2 h-5 w-5" />}{starting ? 'Connecting securely…' : 'Continue to Belize Bank'}</button>
+                    <>
+                    <button type="button" onClick={startPayment} disabled={starting} className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[var(--brand-orange)] px-6 py-3 font-bold text-white transition-colors hover:bg-[var(--brand-orange-light)] disabled:opacity-60">{starting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <CreditCard className="mr-2 h-5 w-5" />}{starting ? 'Connecting securely…' : 'Proceed to secure payment'}</button>
+                    <CardBrands className="mt-4" />
+                    </>
                   ) : (
                     <p className="mt-6 rounded-xl bg-white/5 p-4 text-sm leading-relaxed text-[#F8F4E8]/65">Payment is not currently available. Staff may still be reviewing the request, or this quote may have expired.</p>
                   )}

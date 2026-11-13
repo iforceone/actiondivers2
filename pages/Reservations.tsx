@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { CheckCircle2, Loader2, Plus, Trash2, TriangleAlert } from 'lucide-react';
+import { CheckCircle2, Loader2, Mail, Plus, Trash2, TriangleAlert } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import PhoneInput from '../components/PhoneInput';
 import { API, CONTACT, buildWhatsAppUrl } from '../config';
 import { useBooking } from '../contexts/BookingContext';
 import { belizeDateAfter, estimateBookingItemCents, formatUsd, hasMainlandDateConflict, requiresRefresher } from '../shared/bookingCatalog';
@@ -20,6 +21,7 @@ const Reservations: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneValid, setPhoneValid] = useState(false);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
   const [accommodation, setAccommodation] = useState('');
@@ -49,6 +51,10 @@ const Reservations: React.FC = () => {
     event.preventDefault();
     if (!items.length || !datesComplete || !participantsComplete || !detailsComplete || !mainlandDatesValid) {
       setError(mainlandDatesValid ? 'Complete each experience, including a date at least seven days away and any required diving or transfer details.' : 'Choose a different date for each mainland adventure. Only one mainland tour can be scheduled per day.');
+      return;
+    }
+    if (!phoneValid) {
+      setError('Enter a valid phone number, including the country and area code.');
       return;
     }
     setSubmitting(true);
@@ -91,6 +97,12 @@ const Reservations: React.FC = () => {
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-[#F8F4E8]/72">
             Reference <strong className="text-[#F8F4E8]">{result.reference}</strong>. Staff will review availability and email you before any payment is requested.
           </p>
+          {result.emailStatus !== 'failed' && (
+            <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-[#11C7D9]/25 bg-[#11C7D9]/[0.07] p-5 text-left text-sm leading-relaxed text-[#F8F4E8]/80">
+              <p className="flex items-center gap-2 font-bold text-[#F8F4E8]"><Mail className="h-4 w-4 text-[#11C7D9]" /> Please check your email</p>
+              <p className="mt-2">We just sent a confirmation that we received your reservation request. If you don't see it in your inbox within a few minutes, please check your spam or junk folder and mark it as <strong className="text-[#F8F4E8]">Not spam</strong>. That way your quote and any follow-up messages from Action Divers land in your inbox.</p>
+            </div>
+          )}
           {result.emailStatus === 'failed' && (
             <p className="mt-6 rounded-xl bg-amber-400/10 p-4 text-sm text-amber-100">The reservation was saved, but the acknowledgement email could not be delivered. Keep the reference above.</p>
           )}
@@ -190,7 +202,7 @@ const Reservations: React.FC = () => {
               <div className="mt-7 grid gap-5 sm:grid-cols-2">
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Full name<input required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
-                <label className="text-sm font-semibold text-[#F8F4E8]/75">Phone (optional)<input type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
+                <PhoneInput label="Phone" labelClassName="text-sm font-semibold text-[#F8F4E8]/75" fieldClassName="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" onChange={(value, valid) => { setPhone(value); setPhoneValid(valid); }} />
                 <label className="text-sm font-semibold text-[#F8F4E8]/75">Hotel or villa<input autoComplete="off" value={accommodation} onChange={(event) => setAccommodation(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
                 <label className="text-sm font-semibold text-[#F8F4E8]/75 sm:col-span-2">Anything else we should know?<textarea rows={5} value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 w-full resize-y rounded-xl border border-white/15 bg-[#06212a] p-4 text-[#F8F4E8] outline-none focus:border-[#11C7D9]" /></label>
               </div>
