@@ -1,6 +1,10 @@
 # Production readiness checkpoint
 
-Updated: 2026-09-21
+Updated: 2026-11-12
+
+**Current state:** the site is live on `actiondiversbelize.com` with reservations,
+the staff portal and USD card payments enabled. The latest release log is in
+[PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md). Entries below are historical.
 
 ## Audit checkpoint before preview release — 2026-09-21
 

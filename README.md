@@ -4,15 +4,15 @@ Marketing and reservations site for a San Pedro, Ambergris Caye dive and adventu
 operator. React + Vite + Tailwind, deployed on Cloudflare Workers, with a separate
 Worker holding the API keys.
 
-**Live:** https://actiondivers2.davebze.workers.dev (still a `workers.dev` URL — see
-[Moving to a real domain](#moving-to-a-real-domain))
+**Live:** https://actiondiversbelize.com (`www` redirects to the apex). The same site
+Worker also answers at https://actiondivers2.davebze.workers.dev.
 
-**Launch checkpoint: 2026-09-24.** See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md)
-for current deployment evidence. Production API remains on `5ca2a8b`; preview
-API now runs Kaptin Kai on Cloudflare Workers AI from `4bd1936`, with a friendly,
-English-only greeting and instructions. Production uses
-the live gateway configuration with checkout disabled. The public domain still
-serves WordPress; the production site Worker and `main` have not changed.
+**Status — 2026-11-12.** The public domain serves the site Worker (WordPress is
+retired). Reservations, the staff portal and Belize Bank card payments (USD) are live
+in production. Kaptin Kai runs on Cloudflare Workers AI in production and preview.
+Both Workers were last deployed by hand with Wrangler from `codex/action-divers-work`
+at commit `d9fca18`. See [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md) for the
+deployment log.
 
 ---
 
@@ -51,7 +51,7 @@ staff access, payment certification, or public-domain readiness.
 ## Why there are two projects
 
 ```
-/            → the React site   → Worker "actiondivers2"     (auto-deploys from main)
+/            → the React site   → Worker "actiondivers2"     (deploy manually)
 /worker-api  → the API backend  → Worker "actiondivers-api"  (deploy manually)
 ```
 
@@ -65,7 +65,7 @@ talks to that Worker instead of to Google or Resend directly.
 | Route | Purpose | Rate limit |
 | --- | --- | --- |
 | `POST /inquiry` (also `/`) | Emails reservation-form submissions via Resend | 5 / 60s |
-| `POST /assistant` | Kaptin Kai: Workers AI on preview, Gemini on production | 12 / 60s |
+| `POST /assistant` | Kaptin Kai on Cloudflare Workers AI | 12 / 60s |
 
 `config.ts` in the site root holds the Worker URL, contact details, and review counts.
 It is the single source of truth for those — prefer importing `CONTACT` over retyping a
@@ -84,9 +84,9 @@ touching infrastructure.
 | Service | Account | What it does |
 | --- | --- | --- |
 | Cloudflare | **Davebze@gmail.com** (`9afab2d5eabc5a0cee88b9ecc5d2e795`) | Hosts both Workers |
-| GitHub | `iforceone/actiondivers2` | Source; pushes to `main` auto-deploy the site |
+| GitHub | `iforceone/actiondivers2` | Source; working branch `codex/action-divers-work` |
 | Resend | dpollard@iforcemarketing.com | Sends inquiry emails |
-| Cloudflare DNS | Same account as Workers | Active domain zone; website still serves WordPress |
+| Cloudflare DNS | Same account as Workers | `actiondiversbelize.com` → site Worker; `www` redirects to apex |
 | Google Workspace | — | Mailbox `info@actiondiversbelize.com` receives inquiries |
 
 ### ⚠️ The `CLOUDFLARE_API_TOKEN` trap
@@ -120,62 +120,55 @@ through the dashboard, where the account is visible.
 
 ## Deploying
 
-**The site deploys itself.** Push to `main` and Cloudflare Workers Builds runs
-`npm run build` then `npx wrangler deploy`. Takes about 90 seconds. Watch it under
-Workers & Pages → `actiondivers2` → Deployments.
+Both Workers are deployed by hand from the working branch. When a change touches both,
+deploy the **site first, then the API**: a newer form talking briefly to the older API
+is safe, but a stricter API can reject requests from the older form.
 
-**Pushes to any other branch also build.** Non-production branches run
-`npx wrangler versions upload` instead of `wrangler deploy` — it uploads a preview
-version without touching production. These builds show up in the same build history, so
-a red build there does **not** mean the live site is broken; check which branch the
-build came from before panicking.
+```bash
+npx wrangler whoami        # confirm account 9afab2d5eabc5a0cee88b9ecc5d2e795
+npm run check              # API typecheck + tests, site build + readiness
+npx wrangler deploy        # site Worker "actiondivers2" (reads wrangler.jsonc, serves dist/)
+```
 
-This is the documented Git build setup; verify it in Cloudflare before releasing.
-The production version checked on September 21 was uploaded with Wrangler and is
-newer than GitHub `main`. Do not release the stale `main` checkout.
+```bash
+cd worker-api
+npm run deploy             # API Worker "actiondivers-api" (uses --config wrangler.toml)
+```
 
-Both commands read `wrangler.jsonc` in the repo root. Keep it committed. Cloudflare's
+Afterwards, confirm the live entry asset on https://actiondiversbelize.com matches the
+new build and record the version IDs Wrangler printed in PRODUCTION_LAUNCH.md.
+Deploys take a few seconds to propagate; if you test immediately you may hit the
+previous version. Wait a few seconds and retest before investigating.
+
+**Git builds.** The repo was originally connected to Cloudflare Workers Builds
+(`main` → `wrangler deploy`, other branches → `wrangler versions upload`, which only
+uploads a preview version). Recent production deployments were made with Wrangler and
+`main` lags the working branch. Check Workers & Pages → `actiondivers2` → Settings →
+Build before pushing to `main`, so an old `main` build can't replace newer live code.
+
+Wrangler reads `wrangler.jsonc` in the repo root. Keep it committed. Cloudflare's
 `cloudflare/workers-autoconfig` bot periodically opens a branch offering to generate its
 own config — it also switches the build to `@cloudflare/vite-plugin` and rewrites the
 npm scripts, which is a much larger change than it appears. Don't merge it without
 deciding you want that migration.
 
-**The Worker does not.** It has no Git integration. After changing anything in
-`worker-api/`:
-
-```bash
-cd worker-api
-npx wrangler whoami        # confirm account 9afab2d5eabc5a0cee88b9ecc5d2e795
-npm run deploy
-```
-
-Deploys take a few seconds to propagate. If you deploy and immediately test, you may hit
-the previous version — this happened during setup and looked like a config bug. Wait a
-few seconds and retest before investigating.
-
 ---
 
-## Moving to a real domain
+## Domain
 
-The domain is already in Cloudflare DNS but has no mapping to the site Worker.
-Coordinate these changes in one reviewed cutover:
+`actiondiversbelize.com` is mapped to the site Worker. If the domain or origin ever
+changes, update these together:
 
-1. **`worker-api/wrangler.toml`** → `ALLOWED_ORIGINS` — add the new origin (comma
-   separated, no trailing slash), then **`npm run deploy` from `worker-api/`**. The Worker rejects any
-   other `Origin` with 403 server-side; this is real access control, not just a CORS
-   header, so it will not "just work" until you do this.
-2. **`components/SEO.tsx`** → `SITE_URL` — drives canonical URLs and JSON-LD across all
-   pages.
-3. **`index.html`** → four values: `og:url`, `og:image`, `twitter:image`, and
-   `<link rel="canonical">`, plus the `"url"` field in the JSON-LD block.
-4. **`scripts/prerender-meta.mjs`** → `SITE_URL` for generated route metadata.
-5. **`public/sitemap.xml` and `public/robots.txt`** → public sitemap origin.
-6. **`worker-api/wrangler.toml`** → `PAYMENT_SITE_ORIGIN` and customer links/callbacks.
-7. **`config.ts`** → verify API host selection for the final domain.
-8. Inventory WordPress URLs, prepare redirects, map the chosen hostname to the Worker,
-   and verify apex/www behavior, TLS, staff Access coverage, and preview indexing.
+1. **`worker-api/wrangler.toml`** → `ALLOWED_ORIGINS` (comma separated, no trailing
+   slash), then redeploy the API. The Worker rejects any other `Origin` with 403.
+2. **`worker-api/wrangler.toml`** → `PAYMENT_SITE_ORIGIN` (payment return links).
+3. **`components/SEO.tsx`** and **`scripts/prerender-meta.mjs`** → `SITE_URL`.
+4. **`index.html`** → `og:url`, `og:image`, `twitter:image`, canonical link and the
+   JSON-LD `"url"`.
+5. **`public/sitemap.xml`** and **`public/robots.txt`**.
+6. **`config.ts`** → API host selection.
 
-Keep `http://localhost:3000` in `ALLOWED_ORIGINS` or local dev breaks.
+`http://localhost:3000` is allowed only by the preview API.
 
 ---
 
@@ -220,7 +213,7 @@ production reservation/API test. Keep Resend receiving disabled.
 
 **Public-domain release preparation:** see [PRODUCTION_LAUNCH.md](PRODUCTION_LAUNCH.md).
 `npm run check:launch` validates the prepared release with live checkout disabled.
-Local launch configuration does not mean the public domain or API has been deployed.
+Passing local checks does not mean anything has been deployed.
 
 ---
 
@@ -228,7 +221,7 @@ Local launch configuration does not mean the public domain or API has been deplo
 
 ```
 App.tsx                    routing and footer
-wrangler.jsonc             site Worker config (assets-only, points at dist/)
+wrangler.jsonc             site Worker config (site-worker/index.ts + dist/ assets)
 config.ts                  contact details, Worker URL, review counts
 constants.tsx              tour data and pricing
 types.ts                   shared types
@@ -239,6 +232,8 @@ components/
 services/geminiService.ts  calls worker-api /assistant (no SDK, no key)
 pages/Reservations.tsx     current trip request form
 pages/ServiceRequest.tsx   course and transfer request forms
+components/PhoneInput.tsx  required phone field (country picker + libphonenumber-js)
+components/CardBrands.tsx  Visa / Mastercard marks under payment buttons
 worker-api/                the API Worker — see its own README
 PROJECT_TODO.md            business backlog (payments, transfers, content)
 ```
@@ -247,20 +242,17 @@ PROJECT_TODO.md            business backlog (payments, transfers, content)
 
 ## Known open items
 
-Remaining launch gates, roughly by priority:
-
-- **Owner content approval.** Confirm prices, schedules still labeled “Exact time
-  confirmed after booking,” public contact details, and policy language.
-- **Reservation operations.** D1/R2 exist, migrations are current, and reservations
-  and staff gates are enabled. Confirm actual inbox delivery, approved staff access,
-  and the complete request/quote workflow before the domain cutover.
-- **Live payment verification.** Sandbox certification passed and production bank
-  credentials are installed. Complete production deployment checks, approved
-  cancellation/refund terms, and an owner-authorized controlled live payment test
-  before customer activation. Follow any conditions supplied with the credentials;
-  the bank guide does not establish a separate approval-letter requirement.
-- **Email operations.** `FROM_EMAIL` and `TO_EMAIL` are both `info@`; confirm the staff
-  reply workflow and monitor delivery before enabling live requests.
+- **End-to-end check of the 2026-11-12 release.** Submit one real reservation and
+  confirm the acknowledgement email, the "check your spam" note, and the payment
+  button with card logos.
+- **Official card marks.** `CardBrands.tsx` draws simple Visa/Mastercard marks; swap in
+  the official acceptance-mark artwork if Belize Bank or the card brands require it.
+- **`main` is behind** the working branch. Bring it up to date once the Git build
+  settings are confirmed (see [Deploying](#deploying)).
+- **Dependencies.** `npm audit` reports two moderate findings in the site packages that
+  need a major-version upgrade; review separately.
+- **Owner content approval.** Prices, schedules still labeled “Exact time confirmed
+  after booking,” and policy language.
 
 `PROJECT_TODO.md` holds the business backlog — payments via Belize Bank, airport
 transfers, and content work. Those are larger and need decisions from Action Divers

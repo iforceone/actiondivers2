@@ -1,10 +1,37 @@
-# Action Divers production launch preparation
+# Action Divers production launch log
 
-Updated September 24, 2026, on `codex/action-divers-work`.
-**Status: production API remains on release `5ca2a8b`; preview API now runs
-Workers AI for Kaptin Kai from source `4bd1936`. The branch frontend preview is
-verified. Production checkout remains disabled. No merge to main, public-domain
-cutover, production frontend deployment, or live transaction has occurred.**
+Updated November 12, 2026, on `codex/action-divers-work`.
+**Status: live. `actiondiversbelize.com` serves the site Worker (`www` redirects to
+the apex). Reservations, the staff portal and Belize Bank card payments in USD are
+enabled in production. Kaptin Kai uses Workers AI. Both Workers deploy manually with
+Wrangler; `main` is behind the working branch.** Entries are newest first; sections
+from September and earlier are historical.
+
+## November 12 phone validation and payment button release
+
+- Source `d9fca18`: phone is required on the trip, course and transfer forms and is
+  validated with `libphonenumber-js` (country picker; stored in E.164). The API
+  rejects missing or invalid numbers with 422. After a request is sent, guests are
+  asked to check spam and mark the acknowledgement “Not spam”. The payment button
+  reads “Proceed to secure payment” with Visa/Mastercard marks.
+- Site Worker `actiondivers2` version `0fa01f7f-99f5-4fa8-894f-3ea48522d6a7`
+  deployed first; API Worker `actiondivers-api` version
+  `3490a8d0-5523-486a-a1bf-53d744110a6f` deployed immediately after.
+- Verified: the live domain serves the new entry asset with the phone field and spam
+  note, the payment page chunks are live, and the production API returned 422 for
+  phone `123` (no record created). TypeScript, 19 API tests and the build passed.
+- Not yet verified: a real end-to-end reservation and its email.
+
+## November 12 payments re-enabled
+
+- Source `c7fc9ef`: Belize Bank enabled USD on the terminal, so production
+  `PAYMENTS_ENABLED` returned to `true`. API deployed 2026-11-12 16:40 UTC.
+
+## October 17 USD currency fix
+
+- Sources `0c89190` through `20fb160`: payments register with ISO currency 840 (USD),
+  Belize Bank `errorMessage` is recorded on failure, and production payments were
+  disabled until the bank enabled USD on the terminal. Preview stayed enabled.
 
 ## September 24 English-only Kai update
 
